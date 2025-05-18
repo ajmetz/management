@@ -1,0 +1,19 @@
+
+So if you click top level,
+    end up on a mid level pie chart
+        side box can contain...
+            all timetracking entries under that top level category
+
+
+so wait...
+
+PIE     =   Top level
+Detail  =   Show time ranges and top levels
+
+PIE     =   MID LEVEL
+Detail  =   Show time ranges for all under MID LEVEL category
+            ...but under mid-level, there's only bottom so wtf!?
+
+PIE     =   BOTTOM
+Detail  =   Show time tracking entry.
+
