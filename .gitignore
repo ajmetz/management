@@ -1,0 +1,8 @@
+log.txt
+pid.txt
+/*local.conf
+renametoreload*
+*.*-shm
+*.*-wal
+*.db
+nano.save
