@@ -1,0 +1,111 @@
+
+Routine Checklist
+
+PieChart
+	Top level categories
+	mid-level categories
+	lower-level categories
+
+Table with details
+	Click pie segment to drill down on it,
+	once drilled down to the lower-level,
+	show details on the subsequent click.
+	Is that a good approach?
+
+======
+
+In short:
+
+Routine Checklist
+Pie Chart
+Details
+Toggle
+	Waking day (from wake up, to go to bed or significant sleep block)
+	24 hour day (from 0:00 to 23:59)
+Day stats
+	Perceived Opportunity Costs (voluntary text field)
+	Diet
+		When ate
+		What ate
+		UPDATE: KCal
+	Key Times (would this be part of routine?)
+		Time woke
+		Time slept
+	Sleep
+		Night's sleep
+		Naps
+	UPDATE:Toilet times
+
+Okay.
+So far (13:00) that's it.
+
+So in short?
+
+In short:
+
+Time Range Toggle
+Pie Chart
+Routine Checklist
+Pie Chart Details/Drill down
+Health
+Diet
+Key Times
+Sleep
+
+Health would be - key times of health issues:
+	burping/farting/acid reflux
+		For each:
+			Time range
+			Type/Label/Tag
+			Description
+			
+13:41 - Should we add toilet rate? Am curious if I'm losing 15 mins in every hour to toilet visits.
+Nah, leave that for now.
+
+15:11 - We should add:
+
+Order options
+	1) Chronological
+		How is this possible with a total?
+	2) Quantity.
+
+No.
+
+It will always be quantity.
+Won't it?
+
+No. You'll need the toggle.
+You'll need to understand how a day plans out.
+
+Then each time range will be labelled or tagged.
+
+Yeah.
+
+Hm.
+
+Quite a lot of crap going on here.
+
+Yes.
+
+We won't need sqitch?
+Not with Mojo Migrations.
+
+=====
+
+Additionally we found, from 1st May notes:
+
+Okay - if we design a system. 
+
+What do we most need to know?
+
+* Hours of sleep
+* Hours of work
+	what work
+* Meal times
+* toilet times
+What was eaten.
+Calories.
+
+I mean, that's about it, =).
+
+

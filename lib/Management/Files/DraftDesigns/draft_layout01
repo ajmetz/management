@@ -1,0 +1,42 @@
+
+Col 1:
+
+    Toggles:
+        Time Range Toggle
+        Chronological Toggle
+
+    Pie Chart
+
+    Routine Checklist
+
+Col 2:
+
+    Blank
+    
+    Pie Chart Details/Drill down
+
+    Day knowledge:
+        Health
+        Diet
+        Key Times
+        Sleep
+        
+=======
+
+Alternatively:
+
+Top row:
+    Col 1:
+        Toggles
+        Pie
+    Col 2:
+        Details/Drill Down
+
+Next row:
+    Spanning both cols:
+        Routine
+        Health
+        Diet
+        Key Times
+        Sleep
+
