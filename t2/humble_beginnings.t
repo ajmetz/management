@@ -44,8 +44,8 @@ my $test_object = Test::Mojo->new('Management');
 # Get Tests
 $test_object->get_ok('/hello')->status_is(200)->content_like(qr/hello/i);
 ok($test_object->get_ok('/website01_static.htm')->status_is(200)->tx->res->dom->at('canvas#myChart'), "We have a chart on a static page.");
+ok($test_object->get_ok('/dynamic01')->status_is(200)->tx->res->dom->at('canvas#myChart'), "We have a chart on a dynamic page.");
 
-#$t->get_ok('/website02_dynamic')->status_is(200)->content_like(qr/hello/i);
 
 
 done_testing();
