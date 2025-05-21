@@ -12,5 +12,11 @@ class   Management::Controller::Root :repr(HASH) {
         );
 
     }
+    
+    method dynamic01 {
+        $self->render(text=>'Dynamic01');
+    }
 
 }
+
+__END__

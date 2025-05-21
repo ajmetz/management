@@ -7,16 +7,15 @@ use English;
 
 sub register ($self, $app, $conf) {
 
-#    $app->routes
-#        ->under('/*rest_of_url')->to(rest_of_url => q{})
- #       ->under ->to('Auto#'.   'auto')
-  #      ->under ->to('Stash#'.  'values')
-   #     ->under ->to('Stash#'.  'ticket')
-    #    ->under ->to('Stash#'.  'form_validation_rules')
-    #    ->under ->to('Form#'.   'save_form_submission')
-    #    ->under ->to('Stash#'.  'database')
-#        ->any   ->to('Root#'.   'home_page');
-        $app->routes->any('/hello')      ->to('Root#'.   'hello_world'   );
+    my  @default_route  =   (
+        controller  => 'Root',
+        action      => 'hello_world',
+    );
+
+
+    $app->defaults(@default_route);
+
+    $app->routes->any('/dynamic01')->to('Root#'.   'dynamic01'   );
         #$app->routes->any('/build_out')  ->to('Root#'.   'build_out'     );
     return; # Why not return true?
 }
