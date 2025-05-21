@@ -1,12 +1,16 @@
-package Management::Controller::Root;
-use Mojo::Base 'Mojolicious::Controller', -signatures;
-use Management::Boilerplate::Code;
-use English;
+use     Management::Boilerplate::Code;
+use     Object::Pad v0.820;
 
-sub hello_world ($self) {
+class   Management::Controller::Root :repr(HASH) {
 
-    $self->render(
-        text => "Hello World!",
-    );
+    inherit Mojolicious::Controller;
+
+    method hello_world {
+
+        $self->render(
+            text => "Hello World!",
+        );
+
+    }
 
 }

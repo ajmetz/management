@@ -7,7 +7,7 @@ use English;
 
 sub register ($self, $app, $conf) {
 
-    $app->routes
+#    $app->routes
 #        ->under('/*rest_of_url')->to(rest_of_url => q{})
  #       ->under ->to('Auto#'.   'auto')
   #      ->under ->to('Stash#'.  'values')
@@ -16,7 +16,8 @@ sub register ($self, $app, $conf) {
     #    ->under ->to('Form#'.   'save_form_submission')
     #    ->under ->to('Stash#'.  'database')
 #        ->any   ->to('Root#'.   'home_page');
-      ->any   ->to('Root#'.   'hello_world');
+        $app->routes->any('/hello')      ->to('Root#'.   'hello_world'   );
+        #$app->routes->any('/build_out')  ->to('Root#'.   'build_out'     );
     return; # Why not return true?
 }
 
