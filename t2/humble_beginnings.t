@@ -36,8 +36,11 @@ Will fill this out in due course.
 
 =cut
 
-say 'Testing our test can function.';
-ok(1, "pass");
+
+ok(1, "Testing our test can function.");
+
+
+
 done_testing();
 
 =head1 AUTHOR
