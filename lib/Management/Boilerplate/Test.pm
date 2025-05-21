@@ -26,11 +26,11 @@ sub import {
                                         };
 
     # Processing / Declaring what to import:
-    Code                    ->import::into  ($calling_module_level_depth);
-    Test::Output            ->import::into  ($calling_module_level_depth);
-    Test2::V0               ->import::into  ($calling_module_level_depth);
-    Test2::Tools::Compare   ->import::into  ($calling_module_level_depth, @compare_imports);
-    Test2::Tools::Exception ->import::into  ($calling_module_level_depth);
+    Management::Boilerplate::Code   ->  import::into  ($calling_module_level_depth);
+    Test::Output                    ->  import::into  ($calling_module_level_depth);
+    Test2::V0                       ->  import::into  ($calling_module_level_depth);
+    Test2::Tools::Compare           ->  import::into  ($calling_module_level_depth, @compare_imports);
+    Test2::Tools::Exception         ->  import::into  ($calling_module_level_depth);
 
 }
 

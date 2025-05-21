@@ -4,6 +4,6 @@ use Test::More;
 use Test::Mojo;
 
 my $t = Test::Mojo->new('Management');
-$t->get_ok('/')->status_is(200)->content_like(qr/Mojolicious/i);
+$t->get_ok('/hello')->status_is(200)->content_like(qr/hello/i);
 
 done_testing();
