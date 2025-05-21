@@ -1,0 +1,64 @@
+So what's essentially happening is we have a url scheme by design, for SEO purposes.
+
+But of course, there are no SEO purposes.
+
+So - the idea would be a single endpoint.
+
+Yes.
+
+A form value delivered via post method.
+This is why we've historically had our stash values controller - to grab the values from the form and enter them into the stash.
+The stashed form values will inform which subset of data to load.
+
+So when we think of time logging,
+we think of a timeline,
+and each subset is ..
+
+...no.
+Each subset is a category.
+
+Really?
+
+Surely it depends.
+
+If we sort by quantity - then the subset all entries in that category.
+
+If we sort chronologically - then we surely go straight to detail.
+Perhaps not.
+Perhaps there is a block.
+
+Right.
+
+So, if you wish to save in a database, how would you do that?
+
+I'm not experienced with that.
+
+So what I'm likely to do, is come up with the values, that exist, and then see what we've got to store, and decide how best to store it.
+
+Cool.
+
+There may also be object relational mapping to consider, and that will be yet another complexity layer to apprehend.
+
+For now, we can get things working at a simpler level.
+
+So - in this case, we've got what I'd call a block.
+
+So:
+
+For quantity order:
+	Block = all entries that match category
+For chronological order:
+	Block = all consecutive category matching entries, from the first entry's start time.
+
+
+So what we're doing here, 
+....the first page will generate input - the values that trigger the generation of the pages linked to. Well - that's essentially saying a page full of links has links.
+But yes, you're right. The required links will need to be generated from the data.
+
+Since we drill down from a top level however,
+all links will be child data of the parent.
+Not that we need to think in those terms, if we're just processing text.
+
+21:18 - Okay. So essentially a whole system design needs to be done. You may be better placed to do that at home.
+
+What we can do in the meantime, is the simple approach of re-creating our static template.
