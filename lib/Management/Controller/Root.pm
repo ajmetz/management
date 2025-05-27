@@ -25,6 +25,7 @@ class   Management::Controller::Root :repr(HASH) {
             template_ext            =>  '', # Blank so can declare extension under the NAME key.
                                             # This will allow me to use htm and html
                                             # or anything else as I wish.
+            escape_char             =>  '\\',
         );
     
         my  $layout_data_structure  =   {
