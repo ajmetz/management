@@ -8,6 +8,8 @@ use English;
 sub register ($self, $app, $conf) {
 
     $app->routes
+        ->any('/')              ->to('Root#'.   'homepage'      );
+    $app->routes
         ->any('/dynamic01')     ->to('Root#'.   'dynamic01'     );
     $app->routes
         ->any('/*rest_of_url')  ->to('Root#'.   'hello_world'   );

@@ -14,20 +14,18 @@ class   Management::Controller::Root :repr(HASH) {
         );
 
     }
-    
+
+    method homepage {
+
+        $self->render(
+            text => "Management",
+        );
+
+    }
+
     method dynamic01 {
 
         # Initial values:
-        my  @layout_settings        =   (
-            template_dir            =>  $self->app->home->rel_file('lib/Management/Files')->child('layouts')->to_string,
-            fixed_indent            =>  1,
-            token_delims            =>  ['PUT','HERE'],
-            template_ext            =>  '', # Blank so can declare extension under the NAME key.
-                                            # This will allow me to use htm and html
-                                            # or anything else as I wish.
-            escape_char             =>  '\\',
-        );
-    
         my  $layout_data_structure  =   {
             NAME                    =>  'main.htm',
             CONTENT                 =>  {
@@ -49,7 +47,7 @@ class   Management::Controller::Root :repr(HASH) {
         };
         
         # Processing:
-        my  $layout_object          =   Template::Nest->new(@layout_settings);
+        my  $layout_object          =   Template::Nest->new($self->stash->{layout_settings}->@*);
 
         # Output:
         $self->render(
