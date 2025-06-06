@@ -9,6 +9,7 @@ use Management::Boilerplate::Test;
 # Specific Modules used:
 use Test::Mojo;
 use Day;
+use Entry;
 
 =pod Name, Version, Synopsis, Description
 
@@ -64,7 +65,10 @@ ok($test_object->get_ok('/')->status_is(200)->content_like(qr/management/i)->suc
 ok($test_object->get_ok('/outcomes')->status_is(200)->content_like(qr/print/i)->success,                'Our outcomes page shows our outcomes.' );
 
 my  $day_object     =   Day->new();
-isa_ok($day_object,     ['Day'],                                                                        'Our Day is a Day.'                     );
+isa_ok($day_object  ,   ['Day'],                                                                        'Our Day is a Day.'                     );
+
+my  $entry_object   =   Entry->new();
+isa_ok($entry_object,   ['Entry'],                                                                      'Our Entry is an Entry.'                );
 
 done_testing();
 
