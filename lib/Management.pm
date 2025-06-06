@@ -1,10 +1,12 @@
-package Management;
-use Mojo::Base 'Mojolicious', -signatures;
-use Management::Boilerplate::Code;
-use English;
+use     Object::Pad v0.820;
+
+class   Management 1.00;
+
+use     Management::Boilerplate::Code;
+inherit Mojolicious;
 
 # This method will run once at server start
-sub startup ($self) {
+method startup {
 
     $self
     ->get_configuration_from_file
@@ -13,45 +15,45 @@ sub startup ($self) {
 
 }
 
-sub load_additional_plugins ($self) {
+method load_additional_plugins {
 
     $self->plugin('Management::Plugin::Routes');
-    
+
     return $self;
 
 }
 
-sub get_configuration_from_file ($self) {
+method get_configuration_from_file {
     $self->plugin('NotYAMLConfig');
     return $self;
 }
 
-sub configure_the_application ($self) {
+method configure_the_application {
 
     $self           ->  secrets(
                             $self->config->{secrets}
                         );
 
     return $self    ->  exclude_author_commands
-                    ->  setup_custom_file_paths
+                    ->  setup_customisation_of_mojolicious_file_paths
                     ->  setup_template_nest; # returns $self
 }
 
-sub exclude_author_commands ($self) {
+method exclude_author_commands {
 
     # Exclude author commands...
     $self->commands->namespaces([
         'Mojolicious::Command',
     ]);
-    # ...by setting just Mojolicious::Command 
-    # and not Mojolicious::Command 
+    # ...by setting just Mojolicious::Command
+    # and not Mojolicious::Command
     # and Mojolicious::Command::Author::whatever)
 
     return $self;
 
 }
 
-sub setup_custom_file_paths ($self) {
+method setup_customisation_of_mojolicious_file_paths {
 
     #Initial Values:
     my  $files                  =   $self->home->rel_file('lib/Management/Files');
@@ -66,13 +68,13 @@ sub setup_custom_file_paths ($self) {
 
 }
 
-sub setup_template_nest ($self) {
-    
+method setup_template_nest {
+
     $self->defaults(
 
         # Store Template::Nest setup data in the stash:
         layout_settings        =>   [
-        
+
             template_dir       =>  $self->app->home->rel_file('lib/Management/Files')->child('layouts')->to_string,
             fixed_indent       =>  1,
             token_delims       =>  ['PUT','HERE'],
@@ -85,11 +87,8 @@ sub setup_template_nest ($self) {
 
     );
 
-}
+    return $self;
 
-sub setup_homepage ($self) {
-    #$self->hook(before_dispatch => sub ($c) {$c->reply->static('index.htm')}); # Should use url_for here and leave the reply helper for the routes plugin.
 }
-
 
 __END__
