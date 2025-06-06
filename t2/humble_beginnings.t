@@ -8,6 +8,7 @@ use Management::Boilerplate::Test;
 
 # Specific Modules used:
 use Test::Mojo;
+use Day;
 
 =pod Name, Version, Synopsis, Description
 
@@ -53,7 +54,7 @@ or a specific DOM lookup via C<< tx->res->dom->at >> etc.
 
 =cut
 
-my $test_object = Test::Mojo->new('Management');
+my  $test_object    =   Test::Mojo->new('Management');
 
 # Get Tests
 ok($test_object->get_ok('/hello')->status_is(200)->content_like(qr/hello/i)->success,                   'Our Hello World page appears to work.' );
@@ -61,6 +62,9 @@ ok($test_object->get_ok('/website01_static.htm')->status_is(200)->tx->res->dom->
 ok($test_object->get_ok('/dynamic01')->status_is(200)->tx->res->dom->at('canvas#myChart'),              'We have a chart on a dynamic page.'    );
 ok($test_object->get_ok('/')->status_is(200)->content_like(qr/management/i)->success,                   'Our home page shows our categories.'   );
 ok($test_object->get_ok('/outcomes')->status_is(200)->content_like(qr/print/i)->success,                'Our outcomes page shows our outcomes.' );
+
+my  $day_object     =   Day->new();
+isa_ok($day_object,     ['Day'],                                                                        'Our Day is a Day.'                     );
 
 done_testing();
 
