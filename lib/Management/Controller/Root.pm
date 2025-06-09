@@ -18,12 +18,12 @@ method homepage {
 
     # Initial values:
     my  $layout_data_structure      =   {
-        NAME                        =>  'main.htm',
+        TEMPLATE                    =>  'main.htm',
         SCRIPTS                     =>  q{},
         CONTENT                     =>  {
-            NAME                    =>  'generic-content.htm',
+            TEMPLATE                =>  'generic-content.htm',
             'SPECIFIC CONTENT'      =>  {
-                NAME                =>  'homepage/content.htm',
+                TEMPLATE            =>  'homepage/content.htm',
             },
         },
     };
@@ -42,12 +42,12 @@ method outcomes {
 
     # Initial values:
     my  $layout_data_structure      =   {
-        NAME                        =>  'main.htm',
+        TEMPLATE                    =>  'main.htm',
         SCRIPTS                     =>  q{},
         CONTENT                     =>  {
-            NAME                    =>  'generic-content.htm',
+            TEMPLATE                =>  'generic-content.htm',
             'SPECIFIC CONTENT'      =>  {
-                NAME                =>  'outcomes/content.htm',
+                TEMPLATE            =>  'outcomes/content.htm',
             },
         },
     };
@@ -66,20 +66,20 @@ method dynamic01 {
 
     # Initial values:
     my  $layout_data_structure      =   {
-        NAME                        =>  'main.htm',
+        TEMPLATE                    =>  'main.htm',
         SCRIPTS                     =>  {
-            NAME                    =>  'demo-chart/scripts.htm',
+            TEMPLATE                =>  'demo-chart/scripts.htm',
         },
         CONTENT                     =>  {
-            NAME                    =>  'generic-content.htm',
+            TEMPLATE                =>  'generic-content.htm',
             'SPECIFIC CONTENT'      =>  {
-                NAME                =>  'demo-chart/content.htm',
+                TEMPLATE            =>  'demo-chart/content.htm',
 
                 TOGGLES             =>  {
-                    NAME            =>  'demo-chart/toggles.htm',
+                    TEMPLATE        =>  'demo-chart/toggles.htm',
                 },
                 CHART               =>  {
-                    NAME            =>  'demo-chart/chart.htm',
+                    TEMPLATE        =>  'demo-chart/chart.htm',
                 },
                 #'DETAILS BOX'       =>  '\PUT DETAILS BOX HERE',
                 #'DAY SIZE'          =>  '\PUT DAY SIZE HERE',

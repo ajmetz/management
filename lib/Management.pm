@@ -73,15 +73,16 @@ method setup_template_nest {
     $self->defaults(
 
         # Store Template::Nest setup data in the stash:
-        layout_settings        =>   [
+        layout_settings     =>   [
 
-            template_dir       =>  $self->app->home->rel_file('lib/Management/Files')->child('layouts')->to_string,
-            fixed_indent       =>  1,
-            token_delims       =>  ['PUT','HERE'],
-            escape_char        =>  '\\',
-            template_ext       =>  '',  # Blank so can declare extension under the NAME key.
-                                        # This will allow me to use htm and html
-                                        # or anything else as I wish.
+            template_dir    =>  $self->app->home->rel_file('lib/Management/Files')->child('layouts')->to_string,
+            fixed_indent    =>  1,
+            token_delims    =>  ['PUT','HERE'],
+            escape_char     =>  '\\',
+            name_label      =>  'TEMPLATE',
+            template_ext    =>  '', # Blank so can declare extension under the NAME key.
+                                    # This will allow me to use htm and html
+                                    # or anything else as I wish.
 
         ],
 
