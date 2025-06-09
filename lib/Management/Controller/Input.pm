@@ -18,7 +18,7 @@ method add_entry {
             TEMPLATE                =>  'generic-content.htm',
             'SPECIFIC CONTENT'      =>  {
                 TEMPLATE            =>  'add_entry/content.htm',
-                PROMPT              =>  $self->localise_html('Please enter some data...'),
+                PROMPT              =>  $self->language->localise_html('Please enter some data as input...'),
             },
         },
     };

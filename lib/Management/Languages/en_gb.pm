@@ -12,7 +12,7 @@ my  @tokens = (
 );
 
 my  @phrases = (
-    'Please enter some data...' =>	'Please enter some data (translated)...',
+    'Please enter some data as input...' =>	'Please enter some data as input (translated)...',
 
 );
 
