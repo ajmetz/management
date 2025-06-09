@@ -18,7 +18,7 @@ method startup {
 method load_additional_plugins {
 
     $self->plugin('Management::Plugin::Routes');
-
+    $self->plugin('Management::Plugin::Languages');
     return $self;
 
 }
