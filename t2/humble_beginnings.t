@@ -10,6 +10,7 @@ use Management::Boilerplate::Test;
 use Test::Mojo;
 use Day;
 use Entry;
+use TimeRange;
 
 =pod Name, Version, Synopsis, Description
 
@@ -64,11 +65,14 @@ ok($test_object->get_ok('/dynamic01')->status_is(200)->tx->res->dom->at('canvas#
 ok($test_object->get_ok('/')->status_is(200)->content_like(qr/management/i)->success,                   'Our home page shows our categories.'   );
 ok($test_object->get_ok('/outcomes')->status_is(200)->content_like(qr/print/i)->success,                'Our outcomes page shows our outcomes.' );
 
-my  $day_object     =   Day->new();
-isa_ok($day_object  ,   ['Day'],                                                                        'Our Day is a Day.'                     );
+my  $time_range_object      =   TimeRange->new();
+isa_ok($time_range_object   ,   ['TimeRange'],                                                          'Our TimeRange is a TimeRange.'         );
 
-my  $entry_object   =   Entry->new();
-isa_ok($entry_object,   ['Entry'],                                                                      'Our Entry is an Entry.'                );
+my  $day_object             =   Day->new();
+isa_ok($day_object          ,   ['Day'],                                                                'Our Day is a Day.'                     );
+
+my  $entry_object           =   Entry->new();
+isa_ok($entry_object        ,   ['Entry'],                                                              'Our Entry is an Entry.'                );
 
 done_testing();
 
