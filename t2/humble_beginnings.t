@@ -57,6 +57,7 @@ or a specific DOM lookup via C<< tx->res->dom->at >> etc.
 =cut
 
 my  $test_object    =   Test::Mojo->new('Management');
+my  $german_test_object    =   Test::Mojo->new('Management',{'default_language' => 'de-DE'});
 
 # Get Tests
 ok($test_object->get_ok('/hello')->status_is(200)->content_like(qr/hello/i)->success,                   'Our Hello World page appears to work.' );
@@ -65,6 +66,8 @@ ok($test_object->get_ok('/dynamic01')->status_is(200)->tx->res->dom->at('canvas#
 ok($test_object->get_ok('/')->status_is(200)->content_like(qr/management/i)->success,                   'Our home page shows our categories.'   );
 ok($test_object->get_ok('/outcomes')->status_is(200)->content_like(qr/print/i)->success,                'Our outcomes page shows our outcomes.' );
 ok($test_object->get_ok('/add_entry')->status_is(200)->content_like(qr/input/i)->success,               'Our add_entry page requests input.'    );
+
+ok($german_test_object->get_ok('/add_entry')->status_is(200)->content_like(qr/Eingabe/i)->success,               'Our add_entry page requests input in German too.'    );
 
 my  $time_range_object      =   TimeRange->new();
 isa_ok($time_range_object   ,   ['TimeRange'],                                                          'Our TimeRange is a TimeRange.'         );

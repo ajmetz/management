@@ -1,6 +1,6 @@
 use     Object::Pad v0.820;
 
-class   Management::Languages::en_gb;
+class   Management::Languages::de_de;
 
 use     Management::Boilerplate::Code;
 inherit Management::Languages;
@@ -12,7 +12,7 @@ my  @tokens = (
 );
 
 my  @phrases = (
-    'Please enter some data as input...' =>	'Please enter some data as input...',
+    'Please enter some data as input...' =>	'Bitte geben Sie einige Daten als Eingabe ein...',
 
 );
 
