@@ -1,0 +1,26 @@
+Last commit of code was 23:55pm.
+
+What I wanted to do now, was outline what is next.
+Essentially, we'll be taking a line of text submitted,
+parsing it to obtain the values we seek,
+then saving those values as an entry in our database.
+
+Then we'll focus on creating a day or time range,
+that consults the database for entries within the timerange
+
+I don't know how we're getting a request to display data.
+
+The way I imagined it,
+was there would be a list of saved time-ranges, and we'd pick one in order to display it.
+If the time range spanned days, then all the various days metadata would be shown.
+If the time range was exactly one day or only encompassed entries from one day,
+then only ne day's metadata would be shown.
+
+
+Okay, it seems we're dealing with time ranges rather than days.
+
+But a day is a container for all of a day's metadata.
+
+Yeah.
+
+Okay, now we understand the difference between the two objects.
