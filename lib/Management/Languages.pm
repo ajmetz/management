@@ -12,7 +12,7 @@ method try_or_die :common ($language = 'en-GB') {
         language    =>  'Trouble finding a language to use.',
     };
 
-    warn 'language is...'.$language;
+    #warn 'language is...'.$language;
 
     return              __PACKAGE__->get_handle($language)
                         || die  $error->{'language'};
