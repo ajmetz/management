@@ -66,10 +66,16 @@ ok($test_object->get_ok('/dynamic01')->status_is(200)->tx->res->dom->at('canvas#
 ok($test_object->get_ok('/')->status_is(200)->content_like(qr/management/i)->success,                   'Our home page shows our categories.'   );
 ok($test_object->get_ok('/outcomes')->status_is(200)->content_like(qr/print/i)->success,                'Our outcomes page shows our outcomes.' );
 ok($test_object->get_ok('/add_entry')->status_is(200)->content_like(qr/input/i)->success,               'Our add_entry page requests input.'    );
+ok($german_test_object->get_ok('/add_entry')->status_is(200)->content_like(qr/Eingabe/i)->success,      'Our add_entry page requests input'.
+                                                                                                        ' in German too.'                       );
+
+# HTML form tests:
+ok($test_object->get_ok('/add_entry')->status_is(200)->tx->res->dom->at('form')
+                                                                    ->matches('form[method=POST]'),     'Has input form with POST method'       ); # Didn't pass without the "at" before "matches". Find could be used, and returns Mojo Collection of find results, so not an assertion of a match.
 ok($test_object->get_ok('/add_entry')->status_is(200)->tx->res->dom->at('textarea#data'),               'Our add_entry page has a textarea'.
                                                                                                         ' for data input.'                      );
-ok($german_test_object->get_ok('/add_entry')->status_is(200)->content_like(qr/Eingabe/i)->success,      'Our add_entry page requests input in German too.'    );
 
+# Object Tests:
 my  $time_range_object      =   TimeRange->new();
 isa_ok($time_range_object   ,   ['TimeRange'],                                                          'Our TimeRange is a TimeRange.'         );
 
