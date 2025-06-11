@@ -35,6 +35,8 @@ method add_entry {
     $self->log_debug('Obtained form input...')->log_dump_values($valid_data) if $valid_data;
     $self->log_debug('No form input.') unless $valid_data;
 
+    $self->log_debug('About to start processing.');
+
     # Processing:
     my  $layout                     =   Template::Nest->new($self->stash->{layout_settings}->@*)->render($layout_data_structure);
 

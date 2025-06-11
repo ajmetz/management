@@ -25,6 +25,7 @@ my  @debug_phrases = (
     'Rendered the layout as text/html.'                             =>  'Rendered the layout as text/html.',
     'No form input.'                                                =>  'No form input.',
     'Obtained form input...'                                        =>  'Obtained form input...',
+    'About to start processing.'                                    =>  'About to start processing.',
 
 );
 
