@@ -25,7 +25,8 @@ my  @debug_phrases = (
     'Set layout data structure as follows:'                         =>  'Set layout data structure as follows:',
     'Created layout using Template Nest, and saved it to variable.' =>  'Created layout using Template Nest, and saved it to variable.',
     'Rendered the layout as text/html.'                             =>  'Rendered the layout as text/html.',
-
+    'No form input.'                                                =>  'No form input.',
+    'Obtained form input...'                                        =>  'Obtained form input...',
 );
 
 our %Lexicon = ( # Shouldn't there be my or our?

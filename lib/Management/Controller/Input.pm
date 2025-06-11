@@ -10,6 +10,7 @@ use     Template::Nest;
 method add_entry {
 
     $self->log_debug('About to set initial values.');
+
     # Initial values:
     my  $layout_data_structure      =   {
         TEMPLATE                    =>  'main.htm',
@@ -24,6 +25,15 @@ method add_entry {
     };
 
     $self->log_debug('Set layout data structure as follows:')->log_dump_values($layout_data_structure);
+
+    my  $valid_data                 =   $self->validation->has_data
+                                        && $self->validation->required('data')->size(1,undef)->is_valid?
+                                            $self->validation->param:
+                                        undef;
+
+
+    $self->log_debug('Obtained form input...')->log_dump_values($valid_data) if $valid_data;
+    $self->log_debug('No form input.') unless $valid_data;
 
     # Processing:
     my  $layout                     =   Template::Nest->new($self->stash->{layout_settings}->@*)->render($layout_data_structure);
