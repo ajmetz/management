@@ -20,7 +20,7 @@ my  @debug_phrases = (
 
     # Management::Controller::Input
     'About to set initial values.'                                  =>  'About to set initial values.',
-    'Set layout data structure as follows: [_1]'                    =>  'Set layout data structure as follows: [_1]',
+    'Set layout data structure as follows:'                         =>  'Set layout data structure as follows:',
     'Created layout using Template Nest, and saved it to variable.' =>  'Created layout using Template Nest, and saved it to variable.',
     'Rendered the layout as text/html.'                             =>  'Rendered the layout as text/html.',
 

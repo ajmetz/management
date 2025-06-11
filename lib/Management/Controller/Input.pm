@@ -5,7 +5,6 @@ class   Management::Controller::Input;
 inherit Mojolicious::Controller;
 use     Management::Boilerplate::Code;
 use     Template::Nest;
-use     Mojo::Util qw(dumper);
 
 
 method add_entry {
@@ -24,7 +23,7 @@ method add_entry {
         },
     };
 
-    $self->log_debug('Set layout data structure as follows: [_1]', dumper($layout_data_structure));
+    $self->log_debug('Set layout data structure as follows:')->log_dump_values($layout_data_structure);
 
     # Processing:
     my  $layout                     =   Template::Nest->new($self->stash->{layout_settings}->@*)->render($layout_data_structure);

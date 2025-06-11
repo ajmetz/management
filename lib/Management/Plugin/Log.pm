@@ -5,14 +5,31 @@ class   Management::Plugin::Log;
 use     Management::Boilerplate::Code;
 inherit Mojolicious::Plugin;
 
+use     Mojo::Util qw(dumper);
+
 method register ($app, $config) {
 
-    my  $helpers    =   {
-        log_debug   =>  sub ($self, @arguments) {
-                            $self->log->debug(
-                                $self->language->localise(@arguments),
-                            );
-                        },
+    my  $helpers        =   {
+
+        log_debug       =>  sub ($self, @arguments) {
+
+                                $self->log->debug(
+                                    $self->language->localise(@arguments),
+                                );
+
+                                return $self;
+
+                            },
+
+        log_dump_values =>  sub ($self, @arguments) {
+
+                                $self->log->debug(
+                                    "-\n".dumper(@arguments)
+                                );
+
+                                return $self;
+
+                            },
     };
 
     for my $current (keys $helpers->%*) {
