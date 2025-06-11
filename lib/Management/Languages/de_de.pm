@@ -16,10 +16,23 @@ my  @phrases = (
 
 );
 
+my  @debug_phrases = (
+
+    # Not yet translated to German:
+
+    # Management::Controller::Input
+    'About to set initial values.'                                  =>  'About to set initial values.',
+    'Set layout data structure as follows: [_1]'                    =>  'Set layout data structure as follows: [_1]',
+    'Created layout using Template Nest, and saved it to variable.' =>  'Created layout using Template Nest, and saved it to variable.',
+    'Rendered the layout as text/html.'                             =>  'Rendered the layout as text/html.',
+
+);
+
 our %Lexicon = ( # Shouldn't there be my or our?
     #'_AUTO' => 1, # Commented out the auto for now.
     @tokens,
     @phrases,
+    @debug_phrases,
 );
 
 # ----------------------------------

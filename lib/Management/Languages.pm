@@ -19,12 +19,12 @@ method try_or_die :common ($language = 'en-GB') {
 
 }
 
-method localise_html ($say) {
+method localise_html (@ARG) {
     encode_entities(
-        $self->localise($say)
+        $self->localise(@ARG)
     );
 }
 
-method localise ($say) {
-    $self->maketext($say);
+method localise (@ARG) {
+    $self->maketext(@ARG);
 }
