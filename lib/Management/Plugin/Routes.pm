@@ -8,8 +8,6 @@ inherit Mojolicious::Plugin;
 method register ($app, $conf) {
 
 
-
-
     # Default at root:
     $app->routes
         ->any('/')              ->to('Root#'.   'homepage'      ); # Dedicated entry for matching simply '/' (root)
@@ -25,7 +23,10 @@ method register ($app, $conf) {
 
     # Input.pm:
     $app->routes
-        ->any('/add_entry')     ->to('Input#'.  'add_entry'     );
+        ->any('/add_entries')     ->to('Input#'.  'add_entries'     );
+    $app->routes
+        ->any('/confirm_entries') ->to('Input#'.  'confirm_entries' );
+
 
 
     # Default / fall back for anything else (other than simply root)...
