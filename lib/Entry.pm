@@ -4,14 +4,14 @@ class   Entry 1.00;
 
 use     Management::Boilerplate::Code;
 
-field   $start_time;
-field   $end_time;
+field   $start_time :param :accessor;
+field   $end_time   :param :accessor;
 field   $start_epoch;
 field   $end_epoch;
-field   $category1;
+field   $category  :param :accessor;
 field   $category2;
-field   $detail;
-field   $duration;
+field   $details     :param :accessor;
+field   $duration   :accessor =   0;
 
 __END__
 

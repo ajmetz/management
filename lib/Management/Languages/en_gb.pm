@@ -12,7 +12,20 @@ my  @tokens = (
 );
 
 my  @phrases = (
-    'Please enter some data as input...' =>	'Please enter some data as input...',
+
+    # Management::Controller::Input::add_entries
+    'Please enter some data as input...'    =>  'Please enter some data as input...',
+
+    # Management::Controller::Input::confirm_entries
+    'Time Range'                            =>  'Time Range',
+    'Duration'                              =>  'Duration',
+    'Category'                              =>  'Category',
+    'Details'                               =>  'Details',
+    'How do you wish to proceed?'           =>  'How do you wish to proceed?',
+    'Save'                                  =>  'Save',
+    'Discard'                               =>  'Discard',
+    'Add Time Logging Entry'                =>  'Add Time Logging Entry',
+    'No Time Logging Entries to confirm.'   =>  'No Time Logging Entries to confirm.',
 
 );
 
