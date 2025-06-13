@@ -29,6 +29,7 @@ method multiple_entries :common ($string) {
 
     return undef unless $string;
 
+    # Only object instances can access fields, so these are variables while :common is in place:
     my  $entry_delimiter                =   "\n";
     my  $matches_and_captures_values    =   qr/
                                                 ^                                       # Start of string
