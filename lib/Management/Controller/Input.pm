@@ -5,6 +5,7 @@ class   Management::Controller::Input;
 inherit Mojolicious::Controller;
 use     Management::Boilerplate::Code;
 use     Template::Nest;
+use     EntryFactory;
 
 
 method add_entries {
@@ -55,11 +56,22 @@ method confirm_entries {
     $self->log_debug('Obtained form input...')->log_dump_values($valid_data) if $valid_data;
     $self->log_debug('No form input.') unless $valid_data;
 
-#    parse_data($valid_data)
-
-
     # Initial values:
-    my  $layout_for_data            =   {
+    my @entries                     =   $valid_data?    EntryFactory->multiple_entries($valid_data):
+                                        ();
+    my  @entries_layout             =   ();
+
+    for my $entry_object (@entries) {
+        push @entries_layout        ,   {
+            TEMPLATE                =>  'entries.htm',
+            'TIME RANGE'            =>  sprintf('%s-%s', $entry_object->start_time, $entry_object->end_time),
+            'DURATION'              =>  $entry_object->duration,
+            'CATEGORY'              =>  $entry_object->category,
+            'DETAILS'               =>  $entry_object->details,
+        };
+    };
+
+    my  $layout_for_entries            =   {
         TEMPLATE                    =>  'confirm_entries/content.htm',
 
         'TIME RANGE LABEL'          =>  $self->language->localise('Time Range'),
@@ -69,11 +81,9 @@ method confirm_entries {
         'QUESTION'                  =>  $self->language->localise('How do you wish to proceed?'),
         'SAVE LABEL'                =>  $self->language->localise('Save'),
         'DISCARD LABEL'             =>  $self->language->localise('Discard'),
-        ENTRIES                     =>  {
-            TEMPLATE                =>  'entries.htm',
-        },
+        ENTRIES                     =>  [@entries_layout],
     };
-    my  $layout_for_no_data           =   {
+    my  $layout_for_no_entries           =   {
         TEMPLATE                    =>  'confirm_entries/no_content.htm',
 
         'INTRO'                     =>  $self->language->localise('No Time Logging Entries to confirm.'),
@@ -87,8 +97,8 @@ method confirm_entries {
         CONTENT                     =>  {
             TEMPLATE                =>  'generic-content.htm',
 
-            'SPECIFIC CONTENT'      =>  $valid_data? $layout_for_data:
-                                        $layout_for_no_data,
+            'SPECIFIC CONTENT'      =>  @entries? $layout_for_entries:
+                                        $layout_for_no_entries,
         },
     };
 
