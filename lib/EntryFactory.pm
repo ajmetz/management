@@ -17,11 +17,9 @@ use     Entry;
 
 Returns an array of entries.
 
-
 =back
 
 =cut
-
 
 # What approach should we have to logging? Should we have a log object or a language object?
 

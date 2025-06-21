@@ -48,8 +48,7 @@ method confirm_entries {
     $self->log_debug('About to set initial values.');
 
     my  $valid_data                 =   $self->validation->has_data
-                                        && $self->validation->required('data')->size(1,undef)->is_valid?
-                                            $self->validation->param:
+                                        && $self->validation->required('data')->size(1,undef)->is_valid?    $self->validation->param:
                                         undef;
 
 
