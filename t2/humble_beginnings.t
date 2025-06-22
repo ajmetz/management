@@ -96,21 +96,23 @@ adjdkjd
 
 # Object Tests:
 my  $time_range_object              =   TimeRange->new();
-isa_ok($time_range_object           ,   ['TimeRange'],                                                          'Our TimeRange is a TimeRange.'         );
+isa_ok($time_range_object           ,   ['TimeRange'],                                                  'Our TimeRange is a TimeRange.'         );
 
 my  $day_object                     =   Day->new();
-isa_ok($day_object                  ,   ['Day'],                                                                'Our Day is a Day.'                     );
+isa_ok($day_object                  ,   ['Day'],                                                        'Our Day is a Day.'                     );
 
 my  $entry_object                   =   Entry->new(@dummy_data_for_entry);
-isa_ok($entry_object                ,   ['Entry'],                                                              'Our Entry is an Entry.'                );
+isa_ok($entry_object                ,   ['Entry'],                                                      'Our Entry is an Entry.'                );
 
 my  $entry_factory_object           =   EntryFactory->new();
-isa_ok($entry_factory_object        ,   ['EntryFactory'],                                                       'Our EntryFactory is an EntryFactory.'  );
+isa_ok($entry_factory_object        ,   ['EntryFactory'],                                               'Our EntryFactory is an EntryFactory.'  );
 
 # Database tests:
 
-ok(defined($test_object->app->config('sqlite_file')),                                                        'Configuration value for location '.
+ok(defined($test_object->app->config('sqlite_file')),                                                   'Configuration value for location '.
                                                                                                         'of database file, is defined.'         );
+ok(defined($test_object->app->config('migrations_file')),                                               'Configuration value for location '.
+                                                                                                        'of migrations file, is defined.'       );
 ok(
     path(
         $test_object->app->home->rel_file(
