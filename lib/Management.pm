@@ -33,13 +33,16 @@ method setup_database {
             $self->config->{'migration_file'}
         )->to_string
     );
-    
+
+    my $db  =    $self->database; # First call might trigger migration.
+
     return $self;
 }
 
 method get_configuration_from_file {
     $self->plugin('NotYAMLConfig');
-    warn join("\n", $self->config->%*);
+    #warn join("\n", $self->config->%*); # Debugging prior to log plugin.
+
     return $self;
 }
 

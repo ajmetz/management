@@ -9,13 +9,13 @@ create table entries (
     start_time text,
     end_time text,
     detail text,
-    foreign key(category_id) references categories(id),
+    category_id integer NOT NULL,
+    foreign key(category_id) references categories(id)
 );
 
 create table categories (
     id integer primary key autoincrement,
-    category_id integer NOT NULL,
-    name text,
+    name text
 );
 
 -- Initial Population of Tables with Default values:
