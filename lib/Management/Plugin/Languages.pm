@@ -20,9 +20,7 @@ method register ($app, $config) {
                         },
     };
 
-    for my $current (keys $helpers->%*) {
-        $app->helper($current    =>  $helpers->{$current});
-    };
+    $app->helper($ARG => $helpers->{$ARG}) for (keys $helpers->%*);
 
     return;
 

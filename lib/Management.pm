@@ -24,6 +24,12 @@ method load_additional_plugins {
 
 }
 
+method setup_database {
+    $self->plugin('Management::Plugin::Database');
+    my  $migrations_folder  =   $self->app->home->rel_file('lib/Management/Files/DatabaseMigration');
+    $self->connection->migrations->from_file($migrations_folder->child('migrations.sql')->to_string);
+}
+
 method get_configuration_from_file {
     $self->plugin('NotYAMLConfig');
     return $self;
@@ -37,6 +43,7 @@ method configure_the_application {
 
     return $self    ->  exclude_author_commands
                     ->  setup_customisation_of_mojolicious_file_paths
+                    ->  setup_database
                     ->  setup_template_nest; # returns $self
 }
 
