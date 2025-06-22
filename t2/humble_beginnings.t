@@ -57,7 +57,8 @@ or a specific DOM lookup via C<< tx->res->dom->at >> etc.
 =cut
 
 my  $test_object    =   Test::Mojo->new('Management');
-my  $german_test_object    =   Test::Mojo->new('Management',{'default_language' => 'de-DE'});
+
+my  $german_test_object    =   Test::Mojo->new('Management', {$test_object->app->config->%*,'default_language' => 'de-DE'});
 
 # Get Tests
 ok($test_object->get_ok('/hello')->status_is(200)->content_like(qr/hello/i)->success,                   'Our Hello World page appears to work.' );
@@ -111,7 +112,7 @@ isa_ok($entry_factory_object        ,   ['EntryFactory'],                       
 
 ok(defined($test_object->app->config('sqlite_file')),                                                   'Configuration value for location '.
                                                                                                         'of database file, is defined.'         );
-ok(defined($test_object->app->config('migrations_file')),                                               'Configuration value for location '.
+ok(defined($test_object->app->config('migration_file')),                                                'Configuration value for location '.
                                                                                                         'of migrations file, is defined.'       );
 ok(
     path(

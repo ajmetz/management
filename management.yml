@@ -3,4 +3,5 @@ secrets:
   - a09852f2b088f9f043a6540cdaa063314d5ecf9a
 default_language: en-GB
 sqlite_file: database/database.db
+migration_file: lib/Management/Files/DatabaseMigration/migration.sql
 ...

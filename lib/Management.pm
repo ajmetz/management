@@ -25,13 +25,21 @@ method load_additional_plugins {
 }
 
 method setup_database {
+
     $self->plugin('Management::Plugin::Database');
-    my  $migrations_folder  =   $self->app->home->rel_file('lib/Management/Files/DatabaseMigration');
-    $self->connection->migrations->from_file($migrations_folder->child('migrations.sql')->to_string);
+
+    $self->connection->migrations->from_file(
+        $self->home->rel_file(
+            $self->config->{'migration_file'}
+        )->to_string
+    );
+    
+    return $self;
 }
 
 method get_configuration_from_file {
     $self->plugin('NotYAMLConfig');
+    warn join("\n", $self->config->%*);
     return $self;
 }
 
