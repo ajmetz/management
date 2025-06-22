@@ -73,18 +73,50 @@ ok($german_test_object->get_ok('/add_entries')->status_is(200)->content_like(qr/
 # HTML form tests:
 ok($test_object->get_ok('/add_entries')->status_is(200)->tx->res->dom->at('form')
                                                                     ->matches('form[method=POST]'),     'Has input form with POST method'       ); # Didn't pass without the "at" before "matches". Find could be used, and returns Mojo Collection of find results, so not an assertion of a match.
-ok($test_object->get_ok('/add_entries')->status_is(200)->tx->res->dom->at('textarea#data'),               'Our add_entry page has a textarea'.
+ok($test_object->get_ok('/add_entries')->status_is(200)->tx->res->dom->at('textarea#data'),             'Our add_entry page has a textarea'.
                                                                                                         ' for data input.'                      );
 
+# Dummy Data for Object Tests:
+
+my  @dummy_data_for_entry           =    (
+                                            start_time  =>  '0:00',
+                                            end_time    =>  '23:59',
+                                            category    =>  'Event',
+                                            details     =>  'Did a day.',
+                                        );
+my  $dummy_data_for_entry_factory   =
+'
+15:02-15:15 - YOUTUBE		- Watched youtube videos.
+15:22-15:26 - PLANNING		- Getting organised.
+hjkdfshflhflaflalh
+adjdkjd
+15:22-cjcxkxl something.
+15:34-15:35 - SOMETHING		- Else.
+';
+
 # Object Tests:
-my  $time_range_object      =   TimeRange->new();
-isa_ok($time_range_object   ,   ['TimeRange'],                                                          'Our TimeRange is a TimeRange.'         );
+my  $time_range_object              =   TimeRange->new();
+isa_ok($time_range_object           ,   ['TimeRange'],                                                          'Our TimeRange is a TimeRange.'         );
 
-my  $day_object             =   Day->new();
-isa_ok($day_object          ,   ['Day'],                                                                'Our Day is a Day.'                     );
+my  $day_object                     =   Day->new();
+isa_ok($day_object                  ,   ['Day'],                                                                'Our Day is a Day.'                     );
 
-my  $entry_object           =   Entry->new();
-isa_ok($entry_object        ,   ['Entry'],                                                              'Our Entry is an Entry.'                );
+my  $entry_object                   =   Entry->new(@dummy_data_for_entry);
+isa_ok($entry_object                ,   ['Entry'],                                                              'Our Entry is an Entry.'                );
+
+my  $entry_factory_object           =   EntryFactory->new();
+isa_ok($entry_factory_object        ,   ['EntryFactory'],                                                       'Our EntryFactory is an EntryFactory.'  );
+
+# Database tests:
+
+ok(defined($test_object->app->config('sqlite_file')),                                                        'Configuration value for location '.
+                                                                                                        'of database file, is defined.'         );
+ok(
+    path(
+        $test_object->app->home->rel_file(
+            $test_object->app->config('sqlite_file')
+        )
+    )->is_file,                                                                                         'Database file found.'                  );
 
 done_testing();
 
