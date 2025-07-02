@@ -4,24 +4,24 @@
 
 PRAGMA foreign_keys = ON;
 
-create table if not exists entry (
-    id integer primary key autoincrement,
-    start_time text,
-    end_time text,
-    detail text
+CREATE TABLE IF NOT EXISTS entry (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    start_time TEXT,
+    end_time TEXT,
+    detail TEXT
 );
 
-create table if not exists category (
-    id integer primary key autoincrement,
-    name text
+CREATE TABLE IF NOT EXISTS category (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT
 );
 
-create table if not exists entry_category (
-    entry_id integer NOT NULL,
-    category_id  integer NOT NULL,
-    primary key (entry_id, category_id),
-    foreign key (entry_id) references entry(id),
-    foreign key (category_id) references category(id)
+CREATE TABLE IF NOT EXISTS entry_category (
+    entry_id INTEGER NOT NULL,
+    category_id  INTEGER NOT NULL,
+    PRIMARY KEY (entry_id, category_id),
+    FOREIGN KEY (entry_id) REFERENCES entry(id),
+    FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
 -- Initial Population of Tables with Default values:
@@ -37,6 +37,6 @@ INSERT INTO
 
 PRAGMA foreign_keys = OFF;
 
-drop table if exists entry;
-drop table if exists category;
-drop table if exists entry_category;
+DROP TABLE IF EXISTS entry;
+DROP TABLE IF EXISTS category;
+DROP TABLE IF EXISTS entry_category;
