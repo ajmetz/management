@@ -7,23 +7,17 @@ use     Management::Boilerplate::Code;
 use     Template::Nest;
 use     EntryFactory;
 
-
-method add_entries {
+method entries {
 
     $self->log_debug('About to set initial values.');
 
-    # Initial values:
-    my  $layout_data_structure      =   {
-        TEMPLATE                    =>  'main.htm',
-        SCRIPTS                     =>  q{},
-        CONTENT                     =>  {
-            TEMPLATE                =>  'generic-content.htm',
-            'SPECIFIC CONTENT'      =>  {
-                TEMPLATE            =>  'add_entries/content.htm',
-                PROMPT              =>  $self->language->localise_html('Please enter some data as input...'),
-            },
-        },
-    };
+    # Initial Values:
+    my  $valid_input                =   $self->get_valid_input;
+
+    my  $layout_data_structure      =   $valid_input?   $valid_input->{'stage'} eq 'confirm'?   $self->confirm_input($valid_input):
+                                                        $valid_input->{'stage'} eq 'save'?      $self->save_input($valid_input):
+                                                        $self->request_input:
+                                        $self->request_input;
 
     $self->log_debug('Set layout data structure as follows:')->log_dump_values($layout_data_structure);
 
@@ -38,25 +32,42 @@ method add_entries {
     $self->render(
         text                        =>  $layout,
     );
-    
+
     $self->log_debug('Rendered the layout as text/html.');
 
 }
 
-method confirm_entries {
+method get_valid_input {
+    # Conditional initial values:
+    return  $self->validation->has_data
+            && $self->validation->required('data')->size(1,undef)->is_valid
+            && $self->validation->required('stage')->in('confirm', 'save')->is_valid?    $self->validation->output:
+            undef;
+
+}
+
+method request_input {
+
+    return {
+        TEMPLATE                    =>  'main.htm',
+        SCRIPTS                     =>  q{},
+        CONTENT                     =>  {
+            TEMPLATE                =>  'generic-content.htm',
+            'SPECIFIC CONTENT'      =>  {
+                TEMPLATE            =>  'add_entries/content.htm',
+                PROMPT              =>  $self->language->localise_html('Please enter some data as input...'),
+            },
+        },
+    };
+
+}
+
+method confirm_input ($valid_input = undef) {
 
     $self->log_debug('About to set initial values.');
 
-    my  $valid_data                 =   $self->validation->has_data
-                                        && $self->validation->required('data')->size(1,undef)->is_valid?    $self->validation->param:
-                                        undef;
-
-
-    $self->log_debug('Obtained form input...')->log_dump_values($valid_data) if $valid_data;
-    $self->log_debug('No form input.') unless $valid_data;
-
     # Initial values:
-    my @entries                     =   $valid_data?    EntryFactory->multiple_entries($valid_data):
+    my @entries                     =   $valid_input->{'data'}?    EntryFactory->multiple_entries($valid_input->{'data'}):
                                         ();
     my  @entries_layout             =   ();
 
@@ -80,6 +91,7 @@ method confirm_entries {
         'QUESTION'                  =>  $self->language->localise('How do you wish to proceed?'),
         'SAVE LABEL'                =>  $self->language->localise('Save'),
         'DISCARD LABEL'             =>  $self->language->localise('Discard'),
+        'DATA'                      =>  $valid_input->{'data'},
         ENTRIES                     =>  [@entries_layout],
     };
     my  $layout_for_no_entries           =   {
@@ -101,24 +113,29 @@ method confirm_entries {
         },
     };
 
-    $self->log_debug('Set layout data structure as follows:')->log_dump_values($layout_data_structure);
+    return $layout_data_structure;
+
+}
+
+method save_input ($valid_input = undef) {
+
+    return  $self->request_input unless $valid_input->{'data'};
+
+    # Code to save put here
+
+    return {
+        TEMPLATE                    =>  'main.htm',
+        SCRIPTS                     =>  q{},
+        CONTENT                     =>  {
+            TEMPLATE                =>  'generic-content.htm',
+            'SPECIFIC CONTENT'      =>  {
+                TEMPLATE            =>  'save_input/content.htm',
+            },
+        },
+    };
 
 
-    $self->log_debug('About to start processing.');
 
-    # Processing:
-    my  $layout                     =   Template::Nest->new($self->stash->{layout_settings}->@*)->render($layout_data_structure);
-
-    $self->log_debug('Created layout using Template Nest, and saved it to variable.');
-
-    # Output:
-    $self->render(
-        text                        =>  $layout,
-    );
-    
-    $self->log_debug('Rendered the layout as text/html.');
-    
-    
 }
 
 __END__
