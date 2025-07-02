@@ -4,24 +4,30 @@
 
 PRAGMA foreign_keys = ON;
 
-create table entries (
+create table if not exists entry (
     id integer primary key autoincrement,
     start_time text,
     end_time text,
-    detail text,
-    category_id integer NOT NULL,
-    foreign key(category_id) references categories(id)
+    detail text
 );
 
-create table categories (
+create table if not exists category (
     id integer primary key autoincrement,
     name text
+);
+
+create table if not exists entry_category (
+    entry_id integer NOT NULL,
+    category_id  integer NOT NULL,
+    primary key (entry_id, category_id),
+    foreign key (entry_id) references entry(id),
+    foreign key (category_id) references category(id)
 );
 
 -- Initial Population of Tables with Default values:
 
 INSERT INTO
-    categories 
+    category
         (name)
     VALUES 
         ('PLANNING'),
@@ -31,5 +37,6 @@ INSERT INTO
 
 PRAGMA foreign_keys = OFF;
 
-drop table if exists entries;
-drop table if exists categories;
+drop table if exists entry;
+drop table if exists category;
+drop table if exists entry_category;
