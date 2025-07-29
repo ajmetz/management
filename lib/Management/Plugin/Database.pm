@@ -3,9 +3,10 @@ use     Object::Pad v0.820;
 class   Management::Plugin::Database;
 use     Management::Boilerplate::Code;
 inherit Mojolicious::Plugin;
-use     Mojo::Util qw(dumper);
+#use     Mojo::Util qw(dumper);
 
 use     Management::Model::Database;
+use     Management::Model::EntriesData;
 
 =pod Name, Version, Synopsis
 
@@ -33,22 +34,36 @@ Registers C<< database >> as a Mojolicious Helper.
 
 method register ($app, $config) {
 
+    # Initial values:
     my  $helpers={
-        connection      =>  sub { $self->connection($app)      },
-        database        =>  sub { $self->connection($app)->db  },
-       #data            =>  sub { data($app)            },
+        connection          =>  sub { $self->connection($app)       },
+        database            =>  sub { $self->connection($app)->db   },
+        entries_data        =>  sub { $self->entries_data($app)     },
     };
 
+    my $registration_order  =   [qw(
+                                    connection
+                                    database
+                                    entries_data
+                                )];
+
+    # Processing:
+
+    # Register helpers in order:
     $app->helper(
         $ARG            =>  $helpers->{$ARG}
-    ) for (keys $helpers->%*);
+    ) for ($registration_order->@*);
 
     return;
 
 }
 
 method connection ($app) {
-    state $connection = Management::Model::Database->new(app => $app)->connection;
+    state $connection = Management::Model::Database->new(app => $app)->connection;  # State means $connection set only once then re-used.
+}
+
+method entries_data ($app) {
+    state   $entries_data   =   Tickets::Model::Data->new(database => $app->database);  # State means $entries_data set only once then re-used.
 }
 
 1; ####

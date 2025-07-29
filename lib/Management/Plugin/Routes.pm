@@ -23,9 +23,7 @@ method register ($app, $conf) {
 
     # Input.pm:
     $app->routes
-        ->any('/add_entries')     ->to('Input#'.  'add_entries'     );
-    $app->routes
-        ->any('/confirm_entries') ->to('Input#'.  'confirm_entries' );
+        ->any('/entries')     ->to('Input#'.  'entries'     );
 
 
 

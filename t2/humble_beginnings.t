@@ -66,16 +66,20 @@ ok($test_object->get_ok('/website01_static.htm')->status_is(200)->tx->res->dom->
 ok($test_object->get_ok('/dynamic01')->status_is(200)->tx->res->dom->at('canvas#myChart'),              'We have a chart on a dynamic page.'    );
 ok($test_object->get_ok('/')->status_is(200)->content_like(qr/management/i)->success,                   'Our home page shows our categories.'   );
 ok($test_object->get_ok('/outcomes')->status_is(200)->content_like(qr/print/i)->success,                'Our outcomes page shows our outcomes.' );
-ok($test_object->get_ok('/add_entries')->status_is(200)->content_like(qr/input/i)->success,               'Our add_entry page requests input.'  );
-ok($german_test_object->get_ok('/add_entries')->status_is(200)->content_like(qr/Eingabe/i)->success,      'Our add_entry page requests input'.
+ok($test_object->get_ok('/entries')->status_is(200)->content_like(qr/input/i)->success,               'Our add_entry page requests input.'  );
+ok($german_test_object->get_ok('/entries')->status_is(200)->content_like(qr/Eingabe/i)->success,      'Our add_entry page requests input'.
                                                                                                         ' in German too.'                       );
 
 
 # HTML form tests:
-ok($test_object->get_ok('/add_entries')->status_is(200)->tx->res->dom->at('form')
+ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('form')
                                                                     ->matches('form[method=POST]'),     'Has input form with POST method'       ); # Didn't pass without the "at" before "matches". Find could be used, and returns Mojo Collection of find results, so not an assertion of a match.
-ok($test_object->get_ok('/add_entries')->status_is(200)->tx->res->dom->at('textarea#data'),             'Our add_entry page has a textarea'.
+ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('textarea#data'),             'Our add_entry page has a textarea'.
                                                                                                         ' for data input.'                      );
+
+ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('textarea#data'),             'Our add_entry page has a textarea'.
+                                                                                                        ' for data input.'                      );
+
 
 # Dummy Data for Object Tests:
 
@@ -107,6 +111,11 @@ isa_ok($entry_object                ,   ['Entry'],                              
 
 my  $entry_factory_object           =   EntryFactory->new();
 isa_ok($entry_factory_object        ,   ['EntryFactory'],                                               'Our EntryFactory is an EntryFactory.'  );
+
+# Input tests:
+#ok($test_object->post_ok('/entries', form => { type => 'confirm' })->status_is(200)->tx->res->dom->at('textarea#data'),             'Our entries page has a textarea'.
+#                                                                                                        ' for data input.'                      );
+
 
 # Database tests:
 

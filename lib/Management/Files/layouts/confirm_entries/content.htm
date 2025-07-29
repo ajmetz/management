@@ -12,6 +12,9 @@ PUT INTRO HERE
     PUT ENTRIES HERE
 </table>
 <BR><BR>
+<form action="/entries" method="POST">
+<input type="hidden" name="stage" value="save">
+<textarea name="data" id="data" readonly>PUT DATA HERE</textarea>
 <table>
     <tr>
         <td>PUT QUESTION HERE</td>
@@ -22,9 +25,11 @@ PUT INTRO HERE
     <tr>
         <table style="width:100%;">
             <tr>
-                <td style="text-align:left;"><form action="/save_entries" method="POST"><input type="submit" value="PUT SAVE LABEL HERE"></form></td>
-                <td style="text-align:right;"><form action="/add_entries" method="POST"><input type="submit" value="PUT DISCARD LABEL HERE"></form></td>
+                <td style="text-align:left;"><input type="submit" value="PUT SAVE LABEL HERE"></td>
+                <td style="text-align:right;"></td>
             </tr>
         </table>
     </tr>
 </table>
+</form>
+<form action="/entries" method="POST"><input type="submit" value="PUT DISCARD LABEL HERE"></form>
