@@ -95,7 +95,6 @@ method setup_template_nest {
         layout_settings     =>   [
 
             template_dir    =>  $self->app->home->rel_file('lib/Management/Files')->child('layouts')->to_string,
-            fixed_indent    =>  1,
             token_delims    =>  ['PUT','HERE'],
             escape_char     =>  '\\',
             name_label      =>  'TEMPLATE',
@@ -103,6 +102,11 @@ method setup_template_nest {
                                     # This will allow me to use htm and html
                                     # or anything else as I wish.
 
+            fixed_indent    =>  0,  # Off (0)
+                                    # - On (1) would be nice for tidy source code,
+                                    # and would mess with white space in substituted multi-line values
+                                    # - i.e. textarea values, or hidden form values -
+                                    # so I've decided to keep this off.
         ],
 
     );
