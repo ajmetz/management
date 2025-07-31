@@ -56,9 +56,9 @@ or a specific DOM lookup via C<< tx->res->dom->at >> etc.
 
 =cut
 
-my  $test_object    =   Test::Mojo->new('Management');
+my  $test_object            =   Test::Mojo->new('Management');
 
-my  $german_test_object    =   Test::Mojo->new('Management', {$test_object->app->config->%*,'default_language' => 'de-DE'});
+my  $german_test_object     =   Test::Mojo->new('Management', {$test_object->app->config->%*,'default_language' => 'de-DE'});
 
 # Get Tests
 ok($test_object->get_ok('/hello')->status_is(200)->content_like(qr/hello/i)->success,                   'Our Hello World page appears to work.' );
@@ -66,18 +66,18 @@ ok($test_object->get_ok('/website01_static.htm')->status_is(200)->tx->res->dom->
 ok($test_object->get_ok('/dynamic01')->status_is(200)->tx->res->dom->at('canvas#myChart'),              'We have a chart on a dynamic page.'    );
 ok($test_object->get_ok('/')->status_is(200)->content_like(qr/management/i)->success,                   'Our home page shows our categories.'   );
 ok($test_object->get_ok('/outcomes')->status_is(200)->content_like(qr/print/i)->success,                'Our outcomes page shows our outcomes.' );
-ok($test_object->get_ok('/entries')->status_is(200)->content_like(qr/input/i)->success,               'Our add_entry page requests input.'  );
-ok($german_test_object->get_ok('/entries')->status_is(200)->content_like(qr/Eingabe/i)->success,      'Our add_entry page requests input'.
-                                                                                                        ' in German too.'                       );
+ok($test_object->get_ok('/entries')->status_is(200)->content_like(qr/input/i)->success,                 'Our entries page requests input.'      );
+ok($german_test_object->get_ok('/entries')->status_is(200)->content_like(qr/Eingabe/i)->success,        'Our german entries page requests input'.
+                                                                                                        ' in German.'                           );
 
 
 # HTML form tests:
 ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('form')
-                                                                    ->matches('form[method=POST]'),     'Has input form with POST method'       ); # Didn't pass without the "at" before "matches". Find could be used, and returns Mojo Collection of find results, so not an assertion of a match.
-ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('textarea#data'),             'Our add_entry page has a textarea'.
-                                                                                                        ' for data input.'                      );
-
-ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('textarea#data'),             'Our add_entry page has a textarea'.
+                                                                    ->matches('form[method=POST]'),     'Has input form with POST method'       ); 
+                                                                    # Didn't pass without the "at" before "matches".
+                                                                    # Find could be used, and returns Mojo Collection of find results,
+                                                                    # so not an assertion of a match.
+ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('textarea#data'),                 'Our entires page has a textarea'       .
                                                                                                         ' for data input.'                      );
 
 
@@ -100,11 +100,11 @@ adjdkjd
 ';
 
 # Object Tests:
-my  $time_range_object              =   TimeRange->new();
-isa_ok($time_range_object           ,   ['TimeRange'],                                                  'Our TimeRange is a TimeRange.'         );
+my          $time_range_object              =   TimeRange->new();
+isa_ok  (   $time_range_object              ,   ['TimeRange'],                                          'Our TimeRange is a TimeRange.'         );
 
-my  $day_object                     =   Day->new();
-isa_ok($day_object                  ,   ['Day'],                                                        'Our Day is a Day.'                     );
+my          $day_object                     =   Day->new();
+isa_ok  (   $day_object                     ,   ['Day'],                                                'Our Day is a Day.'                     );
 
 my          $entry_object                   =   Entry->new(@dummy_data_for_entry);
 isa_ok  (   $entry_object                   ,   ['Entry'],                                              'Our Entry is an Entry.'                );
@@ -118,8 +118,8 @@ like    (   $entry_object->save_data        ,   hash {
                                                 },                                                      'Our Entry save data has an'.
                                                                                                         ' entries key with true values'         );
 
-my  $entry_factory_object           =   EntryFactory->new();
-isa_ok($entry_factory_object        ,   ['EntryFactory'],                                               'Our EntryFactory is an EntryFactory.'  );
+my  $entry_factory_object                   =   EntryFactory->new();
+isa_ok  (   $entry_factory_object           ,   ['EntryFactory'],                                       'Our EntryFactory is an EntryFactory.'  );
 
 # Input tests:
 #ok($test_object->post_ok('/entries', form => { type => 'confirm' })->status_is(200)->tx->res->dom->at('textarea#data'),             'Our entries page has a textarea'.
