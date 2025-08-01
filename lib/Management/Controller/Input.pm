@@ -6,13 +6,14 @@ inherit Mojolicious::Controller;
 use     Management::Boilerplate::Code;
 use     Template::Nest;
 use     EntryFactory;
+use     TimeRange;
 
 method entries {
 
     $self->log_debug('About to set initial values.');
 
     # Initial Values:
-    my  $valid_input                =   $self->get_valid_input;
+    my  $valid_input                =   $self->get_valid_entries_input;
 
     my  $layout_data_structure      =   $valid_input?   $valid_input->{'stage'} eq 'confirm'?   $self->confirm_input($valid_input):
                                                         $valid_input->{'stage'} eq 'save'?      $self->save_input($valid_input):
@@ -37,7 +38,7 @@ method entries {
 
 }
 
-method get_valid_input {
+method get_valid_entries_input {
     # Conditional initial values:
     return  $self->validation->has_data
             && $self->validation->required('data')->size(1,undef)->is_valid
@@ -135,6 +136,52 @@ method save_input ($valid_input = undef) {
     };
 
 
+
+}
+
+method days {
+
+
+    $self->log_trace('About to set initial values.');
+
+    # Initial Values:
+    my  $valid_input                =   $self->get_valid_days_input;
+
+    my  $layout_data_structure      =   $valid_input?   $self->show_days($valid_input):
+                                        $self->ask_days;
+
+    $self->log_trace('Set layout data structure as follows:')->log_dump_values($layout_data_structure);
+
+    $self->log_trace('About to start processing.');
+
+    # Processing:
+    my  $layout                     =   Template::Nest->new($self->stash->{layout_settings}->@*)->render($layout_data_structure);
+
+    $self->log_trace('Created layout using Template Nest, and saved it to variable.');
+
+    # Output:
+    $self->render(
+        text                        =>  $layout,
+    );
+
+    $self->log_trace('Rendered the layout as text/html.');
+
+}
+
+method ask_days {
+    return 'Asking for days';
+}
+
+method show_days {
+    return 'Listing some days';
+}
+
+method get_valid_days_input {
+    # Conditional initial values:
+    return  $self->validation->has_data
+            && $self->validation->required('year')->in(TimeRange::list_of_acceptable_years)->is_valid
+            && $self->validation->required('month')->in(TimeRange::list_of_acceptable_months)->is_valid?    $self->validation->output:
+            undef;
 
 }
 

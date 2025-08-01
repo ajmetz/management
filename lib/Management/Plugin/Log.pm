@@ -21,9 +21,19 @@ method register ($app, $config) {
 
                             },
 
+        log_trace       =>  sub ($self, @arguments) {
+
+                                $self->log->trace(
+                                    $self->language->localise(@arguments),
+                                );
+
+                                return $self;
+
+                            },
+
         log_dump_values =>  sub ($self, @arguments) {
 
-                                $self->log->debug(
+                                $self->log->info(
                                     "-\n".dumper(@arguments)
                                 );
 
