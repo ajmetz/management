@@ -6,8 +6,8 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS entry (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    start_time TEXT,
-    end_time TEXT,
+    start_time_utc_epoch INTEGER,
+    end_time_utc_epoch INTEGER,
     detail TEXT
 );
 

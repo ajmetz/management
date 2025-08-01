@@ -11,7 +11,20 @@ field   $end_epoch;
 field   $category  :param :accessor;
 field   $category2;
 field   $details     :param :accessor;
-field   $duration   :accessor =   0;
+field   $duration   :accessor           =   0;
+
+method save_data {
+    return {
+        entry               =>  {
+                                    start_time_utc_epoch    =>  '???',
+                                     # Okay - to calculate the epoch, we need to know the day, we cannot just use the start time without a day. So our input must include a day.
+                                },
+        category            =>  {
+                                },
+        'entry_category'    =>  {
+                                },
+    };
+}
 
 __END__
 

@@ -112,11 +112,11 @@ can_ok  (   $entry_object                   ,   ['save_data'],                  
 ok      (   $entry_object->save_data->%*    ,                                                           'Our Entry can deliver'.
                                                                                                         ' some kind of save data.'              );
 like    (   $entry_object->save_data        ,   hash {
-                                                    field entries => T();
-                                                    field entries => hash { all_values => T() };
+                                                    #field entries => T();
+                                                    field entry => hash { all_values => T() };
 #                                                   field entries => hash { prop size => '3' };
                                                 },                                                      'Our Entry save data has an'.
-                                                                                                        ' entries key with true values'         );
+                                                                                                        ' entry key with true values'         );
 
 my  $entry_factory_object                   =   EntryFactory->new();
 isa_ok  (   $entry_factory_object           ,   ['EntryFactory'],                                       'Our EntryFactory is an EntryFactory.'  );
