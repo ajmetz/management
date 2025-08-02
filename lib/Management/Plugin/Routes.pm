@@ -7,30 +7,31 @@ inherit Mojolicious::Plugin;
 
 method register ($app, $conf) {
 
+    my  $routes =   $app->routes->under->to('Root#auto');
 
     # Default at root:
-    $app->routes
+    $routes
         ->any('/')              ->to('Root#'.   'homepage'      ); # Dedicated entry for matching simply '/' (root)
 
     # Root.pm:
-    $app->routes
+    $routes
         ->any('/hello')         ->to('Root#'.   'hello_world'   );
-    $app->routes
+    $routes
         ->any('/outcomes')      ->to('Root#'.   'outcomes'      );
-    $app->routes
+    $routes
         ->any('/dynamic01')     ->to('Root#'.   'dynamic01'     );
 
 
     # Input.pm:
-    $app->routes
+    $routes
         ->any('/entries')       ->to('Input#'.  'entries'       );
-    $app->routes
+    $routes
         ->any('/days')          ->to('Input#'.  'days'          );
 
 
 
     # Default / fall back for anything else (other than simply root)...
-    $app->routes
+    $routes
         ->any('/*rest_of_url')  ->to('Root#'.   'homepage'      ); # Does not match '/' and only matches '/some-stuff'
 
     return;

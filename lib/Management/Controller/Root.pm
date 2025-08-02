@@ -6,6 +6,16 @@ inherit Mojolicious::Controller;
 use     Management::Boilerplate::Code;
 use     Template::Nest;
 
+method auto {
+    my  @supported_languages        =   ('en-GB','de-DE'); # TODO - create language class method for this.
+    my  $valid_language_requested   =   $self->validation->has_data
+                                        && $self->validation->required('language')->in(@supported_languages)->is_valid? $self->validation->output:
+                                        undef;
+    return $self;
+    #$self->language->try_or_die($language_requested) if $language_requested;
+                                        
+}
+
 method hello_world {
 
     $self->render(

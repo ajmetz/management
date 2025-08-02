@@ -125,8 +125,17 @@ Phrasen: {
             'Select a Month...'                     =>  'Wählen Sie einen Monat aus...',
             'Select a Year...'                      =>  'Wählen Sie ein Jahr aus...',
 
+            'Month Selection for beginning of Time Range.'
+                =>  'Monatsauswahl für den Beginn des Zeitraums.',
+
+            'Month Selection for end of Time Range.'
+                =>  'Monatsauswahl für das Ende des Zeitraums.',
+
             'Year Selection for beginning of Time Range.'
                 =>  'Jahresauswahl für den Beginn des Zeitraums.',
+
+            'Year Selection for end of Time Range.'
+                =>  'Jahresauswahl für das Ende des Zeitraums.',
 
 
             # Management::Controller::Input::confirm_entries
