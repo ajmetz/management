@@ -206,7 +206,7 @@ method ask_days {
         push $month_options->@*     ,   {
             @option_defaults,
             VALUE                   =>  $value,
-            LABEL                   =>  $self->language->localise_html('options.month.'.$value),
+            LABEL                   =>  $self->language->localise_html('options.abbreviated_month.'.$value),
         };
     };
 
