@@ -4,30 +4,30 @@
 
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS entry (
+CREATE TABLE IF NOT EXISTS entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     start_time_utc_epoch INTEGER,
     end_time_utc_epoch INTEGER,
     detail TEXT
 );
 
-CREATE TABLE IF NOT EXISTS category (
+CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT
 );
 
-CREATE TABLE IF NOT EXISTS entry_category (
-    entry_id INTEGER NOT NULL,
-    category_id  INTEGER NOT NULL,
-    PRIMARY KEY (entry_id, category_id),
-    FOREIGN KEY (entry_id) REFERENCES entry(id),
-    FOREIGN KEY (category_id) REFERENCES category(id)
+CREATE TABLE IF NOT EXISTS entries_categories (
+    entry INTEGER NOT NULL,
+    category  INTEGER NOT NULL,
+    PRIMARY KEY (entry, category),
+    FOREIGN KEY (entry) REFERENCES entries(id),
+    FOREIGN KEY (category) REFERENCES categories(id)
 );
 
 -- Initial Population of Tables with Default values:
 
 INSERT INTO
-    category
+    categories
         (name)
     VALUES 
         ('PLANNING'),
@@ -37,6 +37,6 @@ INSERT INTO
 
 PRAGMA foreign_keys = OFF;
 
-DROP TABLE IF EXISTS entry;
-DROP TABLE IF EXISTS category;
-DROP TABLE IF EXISTS entry_category;
+DROP TABLE IF EXISTS entries;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS entries_categories;
