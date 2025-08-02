@@ -14,18 +14,21 @@ my  @tokens = (
 my  @phrases = (
 
     # Management::Controller::Input::add_entries
-    'Please enter some data as input...' =>	'Bitte geben Sie einige Daten als Eingabe ein...',
+    'Please enter some data as input...'    =>	'Bitte geben Sie einige Daten als Eingabe ein...',
+
+    # Management::Controller::Input::ask_days
+    'Select a Year...'                      =>  'Wählen Sie ein Jahr aus...',
 
     # Management::Controller::Input::confirm_entries
-    'Time Range'                            =>  'Time Range',
-    'Duration'                              =>  'Duration',
-    'Category'                              =>  'Category',
+    'Time Range'                            =>  'Zeitraum',
+    'Duration'                              =>  'Dauer',
+    'Category'                              =>  'Kategorie',
     'Details'                               =>  'Details',
-    'How do you wish to proceed?'           =>  'How do you wish to proceed?',
-    'Save'                                  =>  'Save',
-    'Discard'                               =>  'Discard',
-    'Add Time Logging Entry'                =>  'Add Time Logging Entry',
-    'No Time Logging Entries to confirm.'   =>  'No Time Logging Entries to confirm.',
+    'How do you wish to proceed?'           =>  'Wie möchten Sie weiter vorgehen?',
+    'Save'                                  =>  'Speichern',
+    'Discard'                               =>  'Verwerfen',
+    'Add Time Logging Entry'                =>  'Zeitprotokolleintrag hinzufügen',
+    'No Time Logging Entries to confirm.'   =>  'Keine Zeitprotokolleinträge zur Bestätigung.',
 
 );
 
@@ -34,13 +37,13 @@ my  @debug_phrases = (
     # Not yet translated to German:
 
     # Management::Controller::Input
-    'About to set initial values.'                                  =>  'About to set initial values.',
-    'Set layout data structure as follows:'                         =>  'Set layout data structure as follows:',
-    'Created layout using Template Nest, and saved it to variable.' =>  'Created layout using Template Nest, and saved it to variable.',
-    'Rendered the layout as text/html.'                             =>  'Rendered the layout as text/html.',
-    'No form input.'                                                =>  'No form input.',
-    'Obtained form input...'                                        =>  'Obtained form input...',
-    'About to start processing.'                                    =>  'About to start processing.',
+    'About to set initial values.'                                  =>  'Im Begriff, Anfangswerte festzulegen.',
+    'Set layout data structure as follows:'                         =>  'Die Layoutdatenstruktur wurde wie folgt festgelegt:',
+    'Created layout using Template Nest, and saved it to variable.' =>  'Layout mit Template Nest erstellt und in Variable gespeichert.',
+    'Rendered the layout as text/html.'                             =>  'Das Layout wurde als text/html gerendert.',
+    'No form input.'                                                =>  'Keine Formulareingabe.',
+    'Obtained form input...'                                        =>  'Formulareingabe erhalten...',
+    'About to start processing.'                                    =>  'Jetzt am Anfang der Verarbeitung.',
 );
 
 our %Lexicon = ( # Shouldn't there be my or our?

@@ -169,7 +169,82 @@ method days {
 }
 
 method ask_days {
-    return 'Asking for days';
+
+    my  @option_defaults = (
+            TEMPLATE                =>  'ask_days/options.htm',
+            VALUE                   =>  q{},
+            LABEL                   =>  q{}, # can be overriden.
+    );
+    my  $blank_option               =   { @option_defaults };
+    
+    my  $year_options = [
+        {
+            @option_defaults,
+            LABEL                   =>  $self->language->localise_html('Select a Year...'),
+        },
+        $blank_option,
+    ];
+
+    my  $month_options = [
+        {
+            @option_defaults,
+            LABEL                   =>  $self->language->localise_html('Select a Month...'),
+        },
+        $blank_option,
+    ];
+
+
+    for my $value (TimeRange::list_of_acceptable_years) {
+        push $year_options->@*      ,   {
+            @option_defaults,
+            VALUE                   =>  $value,
+            LABEL                   =>  $value,
+        };
+    };
+
+    for my $value (TimeRange::list_of_acceptable_months) {
+        push $month_options->@*     ,   {
+            @option_defaults,
+            VALUE                   =>  $value,
+            LABEL                   =>  $self->language->localise_html('options.month.'.$value),
+        };
+    };
+
+    return {
+        TEMPLATE                    =>  'main.htm',
+        SCRIPTS                     =>  q{},
+        CONTENT                     =>  {
+            TEMPLATE                =>  'generic-content.htm',
+            'SPECIFIC CONTENT'      =>  {
+                TEMPLATE            =>  'ask_days/content.htm',
+                'START YEAR SELECT' =>  {
+                    TEMPLATE        =>  'ask_days/selects.htm',
+                    TITLE           =>  $self->language->localise_html('Year Selection for beginning of Time Range.'),
+                    NAME            =>  'time_range_start_year',
+                    OPTIONS         =>  $year_options,
+                },
+                'START MONTH SELECT'=>  {
+                    TEMPLATE        =>  'ask_days/selects.htm',
+                    TITLE           =>  $self->language->localise_html('Month Selection for beginning of Time Range.'),
+                    NAME            =>  'time_range_start_month',
+                    OPTIONS         =>  $month_options,
+                },
+                'END YEAR SELECT' =>  {
+                    TEMPLATE        =>  'ask_days/selects.htm',
+                    TITLE           =>  $self->language->localise_html('Year Selection for end of Time Range.'),
+                    NAME            =>  'time_range_end_year',
+                    OPTIONS         =>  $year_options,
+                },
+                'END MONTH SELECT'=>  {
+                    TEMPLATE        =>  'ask_days/selects.htm',
+                    TITLE           =>  $self->language->localise_html('Month Selection for end of Time Range.'),
+                    NAME            =>  'time_range_end_month',
+                    OPTIONS         =>  $month_options,
+                },
+            }, # end specific content
+        },
+    };
+
 }
 
 method show_days {

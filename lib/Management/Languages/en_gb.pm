@@ -13,8 +13,13 @@ my  @tokens = (
 
 my  @phrases = (
 
+
+
     # Management::Controller::Input::add_entries
     'Please enter some data as input...'    =>  'Please enter some data as input...',
+
+    # Management::Controller::Input::ask_days
+    'Select a Year...'                      =>  'Select a Year...',
 
     # Management::Controller::Input::confirm_entries
     'Time Range'                            =>  'Time Range',
