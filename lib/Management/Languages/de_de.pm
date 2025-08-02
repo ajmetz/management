@@ -18,6 +18,7 @@ my  @phrases = (
 
     # Management::Controller::Input::ask_days
     'Select a Year...'                      =>  'Wählen Sie ein Jahr aus...',
+    'Select a Month...'                     =>  'Wählen Sie einen Monat aus...',
 
     # Management::Controller::Input::confirm_entries
     'Time Range'                            =>  'Zeitraum',

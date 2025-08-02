@@ -20,6 +20,7 @@ my  @phrases = (
 
     # Management::Controller::Input::ask_days
     'Select a Year...'                      =>  'Select a Year...',
+    'Select a Month...'                     =>  'Select a Month...',
 
     # Management::Controller::Input::confirm_entries
     'Time Range'                            =>  'Time Range',

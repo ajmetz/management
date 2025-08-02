@@ -15,13 +15,13 @@ field   $duration   :accessor           =   0;
 
 method save_data {
     return {
-        entry               =>  {
+        entries               =>  {
                                     start_time_utc_epoch    =>  '???',
                                      # Okay - to calculate the epoch, we need to know the day, we cannot just use the start time without a day. So our input must include a day.
                                 },
-        category            =>  {
+        categories            =>  {
                                 },
-        'entry_category'    =>  {
+        'entries_categories'    =>  {
                                 },
     };
 }
