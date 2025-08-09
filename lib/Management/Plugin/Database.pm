@@ -6,7 +6,7 @@ inherit Mojolicious::Plugin;
 #use     Mojo::Util qw(dumper);
 
 use     Management::Model::Database;
-use     Management::Model::EntriesData;
+use     Management::Model::Data;
 
 =pod Name, Version, Synopsis
 
@@ -38,7 +38,7 @@ method register ($app, $config) {
     my  $helpers={
         connection          =>  sub { $self->connection($app)       },
         database            =>  sub { $self->connection($app)->db   },
-        entries_data        =>  sub { $self->entries_data($app)     },
+        data                =>  sub { $self->data($app)             },
     };
 
     my $registration_order  =   [qw(
@@ -62,8 +62,8 @@ method connection ($app) {
     state $connection = Management::Model::Database->new(app => $app)->connection;  # State means $connection set only once then re-used.
 }
 
-method entries_data ($app) {
-    state   $entries_data   =   Tickets::Model::Data->new(database => $app->database);  # State means $entries_data set only once then re-used.
+method data ($app) {
+    state   $data   =   Management::Model::Data->new(database => $app->database);  # State means $data set only once then re-used.
 }
 
 1; ####

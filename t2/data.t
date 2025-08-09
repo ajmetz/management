@@ -62,8 +62,10 @@ Then we begin testing our Management::Model::Data Object...
 =cut
 
 # Object Tests:
-my          $data              =   Management::Model::Data->new();
-isa_ok  (   $data              ,   ['Management::Model::Data'],                             'Our Management::Model::Data object is '.
+my          $data               =   Management::Model::Data->new(
+                                        database    =>  Test::Mojo->new('Management')->app->database,
+                                    );
+isa_ok  (   $data               ,   ['Management::Model::Data'],                            'Our Management::Model::Data object is '.
                                                                                             'of Management::Model::Data class.'     );
 
 
