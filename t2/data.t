@@ -67,7 +67,16 @@ my          $data               =   Management::Model::Data->new(
                                     );
 isa_ok  (   $data               ,   ['Management::Model::Data'],                            'Our Management::Model::Data object is '.
                                                                                             'of Management::Model::Data class.'     );
-
+like    (   $data->retrieve     ,   hash {
+                                                    #field entries => T();
+                                                    #field entries => hash { all_values => T() };
+                                                    field categories => hash { all_values => T() };
+                                                    field top_categories => hash { all_values => T() };
+                                                    field entries_categories => hash { all_values => T() };
+#                                                   field entries => hash { prop size => '3' };
+                                                },                                                  'Our Entry, Category, '.
+                                                                                                    'and Top Categories data '.
+                                                                                                    'can be retrieved'              );
 
 done_testing();
 
