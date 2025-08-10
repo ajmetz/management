@@ -30,13 +30,24 @@ method retrieve {
                                         $                   # End
                                     /x;
     
-    warn dumper $database->tables;
+    #warn dumper $database->tables;
     
     my  @short_table_names      =   map {($ARG =~ $captures_table_name)? $+{'table_name'}:()} $database->tables->@*;
     
-    warn "Short table names:".join("\n", @short_table_names);
+    #warn "Short table names:".join("\n", @short_table_names);
     
-    die "That'll do.";
+    
+    
+    my $data =  {};
+    for my $current_table (@short_table_names) {
+        $data->{$current_table} = $database->select($current_table)->hashes->to_array;
+    };
+    
+    #warn "Our data:".dumper($data);
+    
+    #die "That'll do.";
+    
+    return $data;
 }
 
 method save {
