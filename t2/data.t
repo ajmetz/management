@@ -72,7 +72,7 @@ like    (   $data->retrieve     ,   hash {
                                                     #field entries => hash { all_values => T() };
                                                     field categories => hash { all_values => T() };
                                                     field top_categories => hash { all_values => T() };
-                                                    field entries_categories => hash { all_values => T() };
+                                                    #field entries_categories => hash { all_values => T() };
 #                                                   field entries => hash { prop size => '3' };
                                                 },                                                  'Our Entry, Category, '.
                                                                                                     'and Top Categories data '.

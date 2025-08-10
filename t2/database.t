@@ -64,10 +64,16 @@ Then we begin testing our Management::Model::Data Object...
 my          $database    =  Test::Mojo->new('Management')->app->database;
 
 ok      (   $database->ping,    'Can ping the database okay.');
-warn "Table Names:\n".join("\n", $database->tables->@*);
+#warn "Table Names:\n".join("\n", $database->tables->@*);
 like    (   $database->tables     ,   array {
-                                                    item '"main"."categories"';
-                                                    etc();
+                                                    item '"main"."categories"';                     
+                                                    item '"main"."entries"';
+                                                    item '"main"."entries_categories"';
+                                                    item '"main"."mojo_migrations"';
+                                                    item '"main"."sqlite_sequence"';
+                                                    item '"main"."top_categories"';
+                                                    end();
+                                                    #etc();
                                                     #field entries => T();
                                                     #field entries => hash { all_values => T() };
                                                     #field categories => hash { all_values => T() };
