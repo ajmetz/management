@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     start_time_utc_epoch INTEGER,
     end_time_utc_epoch INTEGER,
-    detail TEXT,
+    details TEXT,
     top_category_id INTEGER,
     foreign key(top_category_id) references top_categories(id)
 );
