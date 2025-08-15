@@ -6,15 +6,42 @@ use     Management::Boilerplate::Code;
 
 field   $start_time     :param  :reader;
 field   $end_time       :param  :reader;
-field   $start_year     :param;
-field   $start_month    :param;
-field   $start_day      :param;
-field   $start_epoch;
-field   $end_epoch;
-field   $category       :param  :accessor;
-field   $category2                          =   undef;
-field   $details        :param  :accessor;
-field   $duration               :accessor   =   0;
+
+field   $start_year     :param  :reader;
+field   $start_month    :param  :reader;
+field   $start_day      :param  :reader;
+
+field   $end_year       :param  :reader;
+field   $end_month      :param  :reader;
+field   $end_day        :param  :reader;
+
+field   $start_epoch    :param  :accessor   =   undef;
+field   $end_epoch      :param  :accessor   =   undef;
+
+field   $categories     :param  :accessor   =   [{'Misc',1}];
+field   $top_category   :param  :accessor;
+field   $details        :param  :accessor;  # Later we could code a subroutine to pick a specific index number that serves as the default.
+field   $duration               :reader     =   0;
+
+ADJUST :params ( $ ) {
+    
+    my  @created_epochs =   $self->create_epochs_from_input(
+
+        # Start time input params:
+        [   $start_year,   $start_month,   $start_day, $start_time ],
+
+        # End time input params:
+        [   $end_year,     $end_month,     $end_day,   $end_time   ],
+
+    );
+    
+    $self->valid_epochs_or_die(@created_epochs);
+    
+    
+    
+
+ 
+}
 
 method save_data {
 
