@@ -23,9 +23,14 @@ field   $top_category   :param  :accessor;
 field   $details        :param  :accessor;  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   0;
 
-ADJUST :params ( $ ) {
+method $create_epochs_from_input ($start,$end) {
+    warn 'Testing private method called from ADJUST block';
+    #return $self;
+}
+
+ADJUST {
     
-    my  @created_epochs =   $self->create_epochs_from_input(
+    $self->$create_epochs_from_input(
 
         # Start time input params:
         [   $start_year,   $start_month,   $start_day, $start_time ],
@@ -35,35 +40,29 @@ ADJUST :params ( $ ) {
 
     );
     
-    $self->valid_epochs_or_die(@created_epochs);
-    
-    
-    
-
+    #$self->valid_epochs_or_die(@created_epochs);
  
 }
 
 method save_data {
 
     my  $save_data = [
-        entries =>  {
-            'start_time_utc_epoch'  =>  $start_epoch,
-            'end_time_utc_epoch'    =>  $end_epoch,
-            'top_category_id'       =>  1, #retrieve a top category id?.
-            'details'               =>  $details,
-        },
-        categories  =>  {
-            name                    =>  $category,
-            level                   =>  1,
-        },
-        
-        cateories   =>  {
-            name                    =>  $category2,
-            level                   =>  2,
-        },
+        entries         =>  {
+                                'start_time_utc_epoch'  =>  $start_epoch,
+                                'end_time_utc_epoch'    =>  $end_epoch,
+                                #'top_category_id'       =>  1, #retrieve a top category id?. UPDATE: NO. Commented out. Database retrieval happens in the model folder, not in the object class.
+                                'top_category'          =>  $top_category,
+                                'details'               =>  $details,
+                            },
+        categories      =>  $categories,
+        top_categories  =>  {
+                                name                    =>  'Other',
+                            }
     ];
 
 }
+
+
 
 __END__
 

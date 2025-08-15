@@ -84,10 +84,19 @@ ok($test_object->get_ok('/entries')->status_is(200)->tx->res->dom->at('textarea#
 # Dummy Data for Object Tests:
 
 my  @dummy_data_for_entry           =    (
-                                            start_time  =>  '0:00',
-                                            end_time    =>  '23:59',
-                                            category    =>  'Event',
-                                            details     =>  'Did a day.',
+                                            start_year      =>  '2025',
+                                            start_month     =>  '1',
+                                            start_day       =>  '1',
+                                            start_time      =>  '0:00',
+
+                                            end_year        =>  undef,      # Should be capable of assuming the same year/month/day as start if not stated.
+                                            end_month       =>  undef,
+                                            end_day         =>  undef,
+                                            end_time        =>  '23:59',
+
+                                            top_category    =>  'Other',
+                                            category        =>  'Event',
+                                            details         =>  'Did a day.',
                                         );
 my  $dummy_data_for_entry_factory   =
 '
@@ -109,9 +118,9 @@ isa_ok  (   $day_object                     ,   ['Day'],                        
 my          $entry_object                   =   Entry->new(@dummy_data_for_entry);
 isa_ok  (   $entry_object                   ,   ['Entry'],                                              'Our Entry is an Entry.'                );
 can_ok  (   $entry_object                   ,   ['save_data'],                                          'Our Entry has a save_data method.'     );
-ok      (   $entry_object->save_data->%*    ,                                                           'Our Entry can deliver'.
+ok      (   $entry_object->save_data->@*    ,                                                           'Our Entry can deliver'.
                                                                                                         ' some kind of save data.'              );
-like    (   $entry_object->save_data        ,   hash {
+like    (   {$entry_object->save_data->@*}  ,   hash {
                                                     #field entries => T();
                                                     field entries => hash { all_values => T() };
 #                                                   field entries => hash { prop size => '3' };

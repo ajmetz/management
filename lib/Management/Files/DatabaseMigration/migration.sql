@@ -6,12 +6,12 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS top_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT
+    top_category TEXT
 );
 
 CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
+    category TEXT,
     level INTEGER
 );
 
@@ -25,11 +25,11 @@ CREATE TABLE IF NOT EXISTS entries (
 );
 
 CREATE TABLE IF NOT EXISTS entries_categories (
-    entry INTEGER NOT NULL,
-    category  INTEGER NOT NULL,
-    PRIMARY KEY (entry, category),
-    FOREIGN KEY (entry) REFERENCES entries(id),
-    FOREIGN KEY (category) REFERENCES categories(id)
+    entry_id INTEGER NOT NULL,
+    category_id  INTEGER NOT NULL,
+    PRIMARY KEY (entry_id, category_id),
+    FOREIGN KEY (entry_id) REFERENCES entries(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 
@@ -37,20 +37,20 @@ CREATE TABLE IF NOT EXISTS entries_categories (
 
 INSERT INTO
     categories
-        (name, level)
+        (category, level)
     VALUES 
         ('PLANNING','1'),
         ('YOUTUBE','1');
 
 INSERT INTO
     top_categories
-        (name)
+        (top_category)
     VALUES
+        ('OTHER'),
         ('MANAGEMENT'),
         ('COMMUNICATION'),
         ('ROUTINE'),
-        ('ACTION'),
-        ('OTHER');
+        ('ACTION');
 
 -- 1 down
 
