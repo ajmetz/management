@@ -4,6 +4,7 @@ class   Entry 1.00;
 
 use     Management::Boilerplate::Code;
 use     DateTime;
+use     DateTime::Duration;
 use     Time::Piece;
 
 field   $start_time     :param  :reader;
@@ -17,16 +18,15 @@ field   $end_year       :param  :reader;
 field   $end_month      :param  :reader;
 field   $end_day        :param  :reader;
 
-field   $start_epoch    :param  :accessor   =   undef;
+field   $start_epoch    :param  :accessor   =   undef; # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
 field   $end_epoch      :param  :accessor   =   undef;
 
 field   $categories     :param  :accessor   =   [{'Misc',1}];
 field   $top_category   :param  :accessor;
 field   $details        :param  :accessor;  # Later we could code a subroutine to pick a specific index number that serves as the default.
-field   $duration               :reader     =   0;
+field   $duration               :reader     =   undef; # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 
-method $create_epochs_from_input ($start,$end) {
-    warn 'Testing private method called from ADJUST block';
+method $create_epochs {
 
     $start_epoch    =           DateTime->new(
                                     year    =>  $start_year,
@@ -46,17 +46,22 @@ method $create_epochs_from_input ($start,$end) {
     return $self;
 }
 
+method $create_duration {
+    $duration       =   sprintf(
+                            '%dhr %dmins', # i.e. 1hr 30mins
+                            DateTime->from_epoch($end_epoch)
+                            ->subtract_datetime_absolute(
+                                DateTime->from_epoch($start_epoch)
+                            )
+                            ->in_units('hours','minutes'),
+                        ); # This should be localised at some point?
+
+    #DateTime->from_epoch($end_epoch) - DateTime->from_epoch($end_epoch)
+}
+
 ADJUST {
     
-    $self->$create_epochs_from_input(
-
-        # Start time input params:
-        [   $start_year,   $start_month,   $start_day, $start_time ],
-
-        # End time input params:
-        [   $end_year,     $end_month,     $end_day,   $end_time   ],
-
-    );
+    $self->$create_epochs->$create_duration;
     
     #$self->valid_epochs_or_die(@created_epochs);
  
