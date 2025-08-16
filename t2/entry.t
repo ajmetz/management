@@ -89,8 +89,11 @@ like    (   {$entry_object->save_data->@*}  ,   hash {
                                                                                                         ' entries key with true values'         );
 like    (   $entry_object->start_epoch      ,   qr/^\p{Digit}+$/,                                       'Start Epoch is one or more digits'     );
 like    (   $entry_object->end_epoch        ,   qr/^\p{Digit}+$/,                                       'End Epoch is one or more digits'       );
-ok      (   $entry_object->start_epoch <= $entry_object->end_epoch,                                   'Start Epoch is less or equal to End Epoch');
-ok      (   $entry_object->end_epoch >= $entry_object->start_epoch,                                   'End Epoch is less or equal to Start Epoch');
+ok      (   $entry_object->start_epoch <= $entry_object->end_epoch,                                     'Start Epoch is less '.
+                                                                                                        'or equal to End Epoch'                 );
+ok      (   $entry_object->end_epoch >= $entry_object->start_epoch,                                     'End Epoch is less '.
+                                                                                                        'or equal to Start Epoch'               );
+like    (   $entry_object->duration         ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string'  );
 =head2 Done.
 
 Finally, we finish with C<done_testing();>.
