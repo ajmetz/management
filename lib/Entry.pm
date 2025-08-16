@@ -3,6 +3,8 @@ use     Object::Pad v0.820;
 class   Entry 1.00;
 
 use     Management::Boilerplate::Code;
+use     DateTime;
+use     Time::Piece;
 
 field   $start_time     :param  :reader;
 field   $end_time       :param  :reader;
@@ -25,7 +27,23 @@ field   $duration               :reader     =   0;
 
 method $create_epochs_from_input ($start,$end) {
     warn 'Testing private method called from ADJUST block';
-    #return $self;
+
+    $start_epoch    =           DateTime->new(
+                                    year    =>  $start_year,
+                                    month   =>  $start_month,
+                                    day     =>  $start_day,
+                                    hour    =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
+                                    minute  =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
+                                )->epoch;
+
+    $end_epoch      =           DateTime->new(
+                                    year    =>  $end_year // $start_year,
+                                    month   =>  $end_month // $start_month,
+                                    day     =>  $end_day // $start_day,
+                                    hour    =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
+                                    minute  =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
+                                )->epoch;
+    return $self;
 }
 
 ADJUST {
@@ -108,3 +126,11 @@ as an accessor and constructor param.
 As regards validation - we should have dedicated validation methods that are common,
 and thus can be called from methods, called from construction, or called from outside.
 
+======
+
+What's involved in creating and populating the epochs?
+
+    Is input valid?
+        If so, make an epoch from it.
+        Is the resultant epoch valid?
+        If so, make
