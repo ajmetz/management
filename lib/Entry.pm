@@ -21,7 +21,12 @@ field   $end_day        :param  :reader;
 field   $start_epoch    :param  :accessor   =   undef; # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
 field   $end_epoch      :param  :accessor   =   undef;
 
-field   $categories     :param  :accessor   =   [{'Misc',1}];
+field   $categories     :param  :accessor   =   [
+                                                    {
+                                                        category    =>  'Misc',
+                                                        level       =>  1,
+                                                    },
+                                                ];   # TODO: Add validation to the accessor/setter.
 field   $top_category   :param  :accessor;
 field   $details        :param  :accessor;  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef; # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
@@ -69,7 +74,7 @@ ADJUST {
 
 method save_data {
 
-    my  $save_data = [
+    return {
         entries         =>  {
                                 'start_time_utc_epoch'  =>  $start_epoch,
                                 'end_time_utc_epoch'    =>  $end_epoch,
@@ -81,7 +86,7 @@ method save_data {
         top_categories  =>  {
                                 name                    =>  'Other',
                             }
-    ];
+    };
 
 }
 
