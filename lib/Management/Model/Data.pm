@@ -6,7 +6,8 @@ use     Management::Languages;
 use     Mojo::Util qw(dumper);
 use     English;
 
-field $database :accessor :param;
+field   $database               :param  :accessor;
+field   $insertion_id_lookup    :reader             =   {}
 
 #ADJUST {
 #    die "Database object should be a" $database
@@ -21,7 +22,8 @@ field $database :accessor :param;
 #    return $this;
 #}
 
-method retrieve {
+method $fetch_table_names {
+
     my  $captures_table_name    =   qr/
                                         ^                   # Start
                                         \"main\"\.\"        # main in speechmarks followed by a dot followed by an opening speechmark
@@ -32,14 +34,18 @@ method retrieve {
     
     #warn dumper $database->tables;
     
-    my  @short_table_names      =   map {($ARG =~ $captures_table_name)? $+{'table_name'}:()} $database->tables->@*;
-    
+    return (
+        map {($ARG =~ $captures_table_name)? $+{'table_name'}:()} $database->tables->@*
+    );
+
+}
+
+method retrieve {
+
     #warn "Short table names:".join("\n", @short_table_names);
-    
-    
-    
+        
     my $data =  {};
-    for my $current_table (@short_table_names) {
+    for my $current_table ($self->$fetch_table_names) {
         $data->{$current_table} = $database->select($current_table)->hashes->to_array;
     };
     
@@ -50,10 +56,40 @@ method retrieve {
     return $data;
 }
 
-method save {
+method save ($what_to_save) {
 
+    foreach my ($table_name, $table_data) ($what_to_save->%*) {
+        
+        # Definitions:
+        my  $multiple_rows_of_data          =   reftype($table_data) eq 'ARRAY';
+
+        # Processing:        
+        $insertion_id_lookup->{$table_name} =   $multiple_rows_of_data? [ map { $data->database->insert($table_name => $ARG)->last_insert_id } $table_data->@* ]:
+                                                $data->database->insert($table_name => $table_data)->last_insert_id;
+
+    }
+    return  $self;
 }
 
 
 
 __END__
+
+
+method save ($what_to_save) {
+    my  @tables_to_save_to  =   keys $what_to_save->%*;
+
+    foreach $table_name (@tables_to_save_to) {
+        
+        # Definitions:
+
+        my  $multiple_rows  =   reftype() eq 'ARRAY';
+        
+        if ($multiple_rows) {
+            $data->database->insert($what_to_save->{$table_name})->last_insert_id
+        }
+        else {
+            $data->database->insert($what_to_save->{$table_name})->last_insert_id
+        };
+    }
+}
