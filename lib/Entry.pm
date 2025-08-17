@@ -75,17 +75,17 @@ ADJUST {
 method save_data {
 
     return {
-        entries         =>  {
+        entries         =>  [{
                                 'start_time_utc_epoch'  =>  $start_epoch,
                                 'end_time_utc_epoch'    =>  $end_epoch,
                                 #'top_category_id'       =>  1, #retrieve a top category id?. UPDATE: NO. Commented out. Database retrieval happens in the model folder, not in the object class.
                                 'top_category'          =>  $top_category,
                                 'details'               =>  $details,
-                            },
+                            }],
         categories      =>  $categories,
-        top_categories  =>  {
+        top_categories  =>  [{
                                 name                    =>  'Other',
-                            }
+                            }],
     };
 
 }

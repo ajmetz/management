@@ -7,7 +7,7 @@ use     Mojo::Util qw(dumper);
 use     English;
 
 field   $database               :param  :accessor;
-field   $insertion_id_lookup    :reader             =   {}
+field   $last_insert_id_lookup  :reader             =   {};
 
 #ADJUST {
 #    die "Database object should be a" $database
@@ -59,16 +59,13 @@ method retrieve {
 method save ($what_to_save) {
 
     foreach my ($table_name, $table_data) ($what_to_save->%*) {
-        
-        # Definitions:
-        my  $multiple_rows_of_data          =   reftype($table_data) eq 'ARRAY';
 
-        # Processing:        
-        $insertion_id_lookup->{$table_name} =   $multiple_rows_of_data? [ map { $data->database->insert($table_name => $ARG)->last_insert_id } $table_data->@* ]:
-                                                $data->database->insert($table_name => $table_data)->last_insert_id;
+        $last_insert_id_lookup->{$table_name} =   [ map { $database->insert($table_name => $ARG)->last_insert_id } $table_data->@* ];
 
     }
+
     return  $self;
+
 }
 
 
