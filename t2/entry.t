@@ -79,9 +79,9 @@ Then we begin testing our Entry Object...
 my          $entry_object                   =   Entry->new(@dummy_data_for_entry);
 isa_ok  (   $entry_object                   ,   ['Entry'],                                              'Our Entry is an Entry.'                );
 can_ok  (   $entry_object                   ,   ['save_data'],                                          'Our Entry has a save_data method.'     );
-ok      (   $entry_object->save_data->@*    ,                                                           'Our Entry can deliver'.
+ok      (   $entry_object->save_data->%*    ,                                                           'Our Entry can deliver'.
                                                                                                         ' some kind of save data.'              );
-like    (   {$entry_object->save_data->@*}  ,   hash {
+like    (   $entry_object->save_data        ,   hash {
                                                         #field entries => T();
                                                         field entries => hash { all_values => T() };
                                                         #field entries => hash { prop size => '3' };
