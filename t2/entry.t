@@ -65,7 +65,16 @@ my  @dummy_data_for_entry           =    (
                                             end_time        =>  '23:59',
 
                                             top_category    =>  'Other',
-                                            category        =>  'Event',
+                                            #category        =>  'Event',
+                                            categories      =>  [
+                                                                    {
+                                                                        category    =>  'Event',
+                                                                        level       =>  1,
+                                                                    },
+                                                                    {   category    =>  'Silliness',
+                                                                        level       =>  2,
+                                                                    },
+                                                                ],
                                             details         =>  'Did a day.',
                                         );
 
@@ -94,6 +103,11 @@ ok      (   $entry_object->start_epoch <= $entry_object->end_epoch,             
 ok      (   $entry_object->end_epoch >= $entry_object->start_epoch,                                     'End Epoch is less '.
                                                                                                         'or equal to Start Epoch'               );
 like    (   $entry_object->duration         ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string'  );
+
+my  $test_object            =   Test::Mojo->new('Management');
+
+$test_object->app->entry->create(@dummy_data_for_entry)->retrieve_last;
+
 =head2 Done.
 
 Finally, we finish with C<done_testing();>.

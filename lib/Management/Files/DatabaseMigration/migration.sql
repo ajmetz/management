@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS entries (
 CREATE TABLE IF NOT EXISTS entries_categories (
     entry_id INTEGER NOT NULL,
     category_id  INTEGER NOT NULL,
-    PRIMARY KEY (entry_id, category_id),
+    CONSTRAINT PK_entry_category PRIMARY KEY (entry_id, category_id),
     FOREIGN KEY (entry_id) REFERENCES entries(id),
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );

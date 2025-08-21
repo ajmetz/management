@@ -7,6 +7,7 @@ inherit Mojolicious::Plugin;
 
 use     Management::Model::Database;
 use     Management::Model::Data;
+use     Management::Model::Entry;
 
 =pod Name, Version, Synopsis
 
@@ -39,12 +40,14 @@ method register ($app, $config) {
         connection          =>  sub { $self->connection($app)       },
         database            =>  sub { $self->connection($app)->db   },
         data                =>  sub { $self->data($app)             },
+        entry               =>  sub { $self->entry($app)            },
     };
 
     my $registration_order  =   [qw(
                                     connection
                                     database
-                                    entries_data
+                                    data
+                                    entry
                                 )];
 
     # Processing:
@@ -64,6 +67,10 @@ method connection ($app) {
 
 method data ($app) {
     state   $data   =   Management::Model::Data->new(database => $app->database);  # State means $data set only once then re-used.
+}
+
+method entry ($app) {
+    state   $entry   =   Management::Model::Entry->new(data => $app->data);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
 }
 
 1; ####
