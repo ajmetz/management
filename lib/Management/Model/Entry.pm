@@ -8,9 +8,68 @@ use     English;
 use     Entry;
 
 field   $data                   :param  :accessor;
-#field   $last_insert_id_lookup  :reader             =   {};
-field   $last_entry_id          :reader             =   undef;
+field   $last_saved_entry_id    :reader                         =   undef;
+field   $entries_table_name                                     =   'entries';
+field   $top_categories_table_name                                     =   'top_categories';
+field   $fields                                                 =   {
+                                                                        all                     =>  undef,
+                                                                        entries_fields_renamed  =>  [
+                                                                                            
+                                                                                                        qw(
+                                                                                                            details
+                                                                                                            top_category_id
+                                                                                                        ),
+                                                                                            
+                                                                                                        # Fields AS ...
+                                                                                                        [start_time_utc_epoch   =>  'start_epoch'],
+                                                                                                        [end_time_utc_epoch     =>  'end_epoch'],
+                                                                                            
+                                                                                                    ],
+                                                                        categories_fields_without_id=>  ['category','level'],
+                                                                        top_categories_top_category =>  ['top_category'],
 
+                                                                    };
+field   $entries_categories_table_joined_with_categories_table  =   [
+                                                                        'entries_categories'    =>  [
+                                                                                                        'categories',
+                                                                                                            # Column in categories table    =>  Column in entries_categories table
+                                                                                                            'id'                            =>  'category_id',
+                                                                                                    ],
+                                                                    ];
+field   $entries_table_joined_with_top_categories_table         =   [
+                                                                        'entries'               =>  [
+                                                                                                       'top_categories',
+                                                                                                             # Column in top_categories table   =>  Column in entries table
+                                                                                                             'category'                         =>  'top_categories_id',
+                                                                                                    ],
+                                                                    ];
+field   $matches_valid_digit                                    =   qr/^\p{Digit}+$/;
+
+method  $top_category_from_id($id) {
+
+    my  $where  =   {
+        'id_is_id'  =>  {   id    =>  $id   },
+    };
+
+    $data->database->select(
+        $top_categories_table_name,
+        $fields->{'all'},
+        $where->{'id_is_id'},
+    )->hash->{'top_category'};
+
+}
+
+method $top_categories_table_row_id ($top_category) {
+    my  $where  =   {
+        'top_category_equals_top_category'  =>  {   top_category    =>  $top_category   },
+    };
+
+    $data->database->select(
+        $top_categories_table_name,
+        $fields->{'all'},
+        $where->{'category_equals_category'},
+    )->hash->{'id'};
+}
 
 method create (%object_construction_params) {
 
@@ -19,15 +78,18 @@ method create (%object_construction_params) {
     my  $valid_data     =   $entry
                             && blessed($entry)
                             && $entry->can('save_data')
-                            && $entry->save_data; # Should also add validation for data structure too, and table names too, most likely.
-
+                            && $entry->save_data?   $entry:
+                            undef; # Should also add validation for data structure too, and table names too, most likely.
+    my  $top_category_id=   $self->$top_categories_table_row_id($valid_data->{$entries_table_name}->[0]->{'top_category_id'});
+    $valid_data->{$entries_table_name}->[0]->{'top_category_id'} = $top_category_id;
+    
     warn                    $valid_data?    'Valid data to save.':
                             'Invalid data to save.';
 
     if ($valid_data) {
         my  $last_insert_id_lookup    =   $data->save($valid_data)->last_insert_id_lookup;
         warn 'last insert data is....'.dumper($last_insert_id_lookup);
-        $last_entry_id  =   $last_insert_id_lookup->{entries};
+        $last_saved_entry_id  =   $last_insert_id_lookup->{entries};
         my  $junction_table_save_data   =   {
             entries_categories  =>  [
                                         map {
@@ -45,12 +107,101 @@ method create (%object_construction_params) {
 
 }
 
-method retrieve_last {
-    return  $last_entry_id? $self->retrieve($last_entry_id):
+method retrieve_last_saved {
+    return  $last_saved_entry_id? $self->retrieve($last_saved_entry_id):
             undef;
 }
 
 method retrieve ($id) {
+
+    $data->app->log_fatal('Invalid digit provided.') unless $id =~ $matches_valid_digit;
+
+    #Grab from db
+    my  $where  =   {
+        'id_is_id'                      =>  {   id          =>  $id },
+        'entry_id_is_id'                =>  {   'entry_id'  =>  $id },
+    };
+
+    my  $entries_params                 =   $data->database->select(
+                                                $entries_table_name,
+                                                $fields->{'entries_fields_renamed'},
+                                                $where->{'id_is_id'},
+                                            )->hash;
+                                            
+    $where->{'top_categories_id_is_top_category_id'}    =  {   'id'  =>  $entries_params->{top_category_id},  };
+    $entries_params->{categories}       =   $data->database->select(
+                                                $entries_categories_table_joined_with_categories_table,
+                                                $fields->{'categories_fields'},
+                                                $where->{'entry_id_is_id'},
+                                            )->hashes->to_array; # Validation?
+    $entries_params->{top_category}   =   $self->top_category_from_id($entries_params->{top_category_id});
+
+
+    #die "That will do for now.".dumper($entries_params); # Let's learn how category gets retrieved, since it is expected to be a value that's an array ref of hashrefs.
+    warn "Entries_params:".dumper($entries_params); # Let's learn how category gets retrieved, since it is expected to be a value that's an array ref of hashrefs.
+    
+    # Create object with values
+    my  $entry  =   Entry->new(
+        $entries_params->%*,
+    );
+    
+    return $entry;
+    
+
+}
+
+method update {
+}
+
+method delete {
+
+}
+
+
+__END__
+
+# "SELECT * FROM a JOIN b ON (b.a_id = a.id) JOIN c ON (c.a_id = a.id)"
+$abstract->select(['a', ['b', a_id => 'id'], ['c', a_id => 'id']]);
+
+
+FIRST APPROACH:
+
+    #Grab from db
+    
+    #$data->database->select(['entries', ['categories', category_id => 'category_id']]
+    my  $retrieved                  =   $data->database->select(
+        # Source:
+        [
+            'entries_categories'    =>  ['entries',
+                                            'id '   =>  'entries_categories.entry_id',
+                                        ],
+                                        ['categories',
+                                            'categories.id' => 'entries_categories.category_id',
+                                        ],
+        ],
+        # Fields:
+        [
+
+            qw(
+                details
+                top_category_id
+            ),
+
+            # Fields AS ...
+            [start_time_utc_epoch   =>  'start_epoch'],
+            [end_time_utc_epoch     =>  'end_epoch'],
+
+        ],
+
+        # Where:
+        {
+            'entries.id'            =>  $id,   
+        }
+
+    )->hash;
+
+
+SECOND APPROACH:
 
     #Grab from db
     
@@ -87,41 +238,23 @@ method retrieve ($id) {
 
     )->hashes;
 
-    die "That will do for now.".dumper($retrieved); # Let's learn how category gets retrieved, since it is expected to be a value that's an array ref of hashrefs.
+....good, but two resultsets for two entries_catagories rows, creating too many.
 
-    # Create object with values
-    my  $entry  =   Entry->new(
-        $retrieved->%*,
-    );
-    
+ATTEMPTING A ROUGH THIRD APPROACH:
 
-}
-
-method update {
-}
-
-method delete {
-
-}
-
-
-__END__
-
-# "SELECT * FROM a JOIN b ON (b.a_id = a.id) JOIN c ON (c.a_id = a.id)"
-$abstract->select(['a', ['b', a_id => 'id'], ['c', a_id => 'id']]);
-
+Due to lack of group_concat on SQLite, we'll 
 
     #Grab from db
     
-    #$data->database->select(['entries', ['categories', category_id => 'category_id']]
+    my$data->database->select(['entries', ['categories' category_id => 'category_id']]
     my  $retrieved                  =   $data->database->select(
         # Source:
         [
             'entries_categories'    =>  ['entries',
-                                            'id '   =>  'entries_categories.entry_id',
+                                            'id'   =>  'entry_id',
                                         ],
                                         ['categories',
-                                            'categories.id' => 'entries_categories.category_id',
+                                            'id' => 'category_id',
                                         ],
         ],
         # Fields:
@@ -130,6 +263,7 @@ $abstract->select(['a', ['b', a_id => 'id'], ['c', a_id => 'id']]);
             qw(
                 details
                 top_category_id
+                categories.category
             ),
 
             # Fields AS ...
@@ -141,6 +275,76 @@ $abstract->select(['a', ['b', a_id => 'id'], ['c', a_id => 'id']]);
         # Where:
         {
             'entries.id'            =>  $id,   
-        }
+        },
 
+    )->hashes;
+
+FOURTH:
+
+    $data->app->log_fatal('Invalid digit provided.') unless $id =~ $matches_valid_digit;
+
+    #Grab from db
+    my  $where  =   {
+        'id_is_id'                      =>  {   id          =>  $id },
+        'entry_id_is_id'                =>  {   'entry_id'  =>  $id },
+    };
+
+    my  $entries_params                 =   $data->database->select(
+                                                $entries_table_name,
+                                                $fields->{'entries_fields_renamed'},
+                                                $where->{'id_is_id'},
+                                            )->hash;
+                                            
+    $where->{'top_categories_id_is_top_category_id'}    =  {   'id'  =>  $entries_params->{top_category_id},  };
+    $entries_params->{categories}       =   $data->database->select(
+                                                $entries_categories_table_joined_with_categories_table,
+                                                $fields->{'categories_fields'},
+                                                $where->{'entry_id_is_id'},
+                                            )->hashes->to_array; # Validation?
+    $entries_params->{top_category}   =   $data->database->select(
+                                                $top_categories_table_name,
+                                                $fields->{'top_categories_top_category'},
+                                                $where->{'top_categories_id_is_top_category_id'},
+                                            )->hash;
+
+
+    #die "That will do for now.".dumper($entries_params); # Let's learn how category gets retrieved, since it is expected to be a value that's an array ref of hashrefs.
+    warn "Entries_params:".dumper($entries_params); # Let's learn how category gets retrieved, since it is expected to be a value that's an array ref of hashrefs.
+    
+    # Create object with values
+    my  $entry  =   Entry->new(
+        $entries_params->%*,
+    );
+    
+    return $entry;
+    
+method  category_and_level(@params) {
+    category_and_level_from_categories_table_id(@params);
+    
+}
+
+method  category_and_level_from_categories_table_id ($id) {
+
+    my  $where  =   {
+        'id_is_id'  =>  {   id    =>  $id   },
+    };
+
+    $data->database->select(
+        $categories_table_name,
+        $fields->{'categories_fields_without_id'},
+        $where->{'id_is_id'},
     )->hash;
+
+}
+
+method categories_table_row_id ($category) {
+    my  $where  =   {
+        'category_equals_category'  =>  {   category    =>  $category   },
+    };
+
+    $data->database->select(
+        $categories_table_name,
+        $fields->{'all'},
+        $where->{'category_equals_category'},
+    )->hash->{'id'};
+}

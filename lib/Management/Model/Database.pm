@@ -4,7 +4,7 @@ class   Management::Model::Database;
 use     Management::Boilerplate::Code;
 use     Management::Model::Database::SQLite;
 
-field $app :param;
+field $app :param :reader;
 
 method database {
     $self->connection->db;

@@ -10,11 +10,15 @@ field   $app    :param;
 
 method connection {
 
-    state   $sql    =   Mojo::SQLite->new->from_filename(
-                            $app->home->rel_file(
-                                $app->config->{'sqlite_file'}
-                            )->to_string
-                        )->auto_migrate(1);
+    my  $file_name          =   $app->home->rel_file(
+                                    $app->config->{'sqlite_file'}
+                                )->to_string;
+
+    my  $options            =   {
+                                    no_wal  =>  1,
+                                };
+
+    return  state   $sql    =   Mojo::SQLite->new->from_filename($file_name, $options)->auto_migrate(1);
 
 }
 

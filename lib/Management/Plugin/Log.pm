@@ -31,6 +31,26 @@ method register ($app, $config) {
 
                             },
 
+        log_error       =>  sub ($self, @arguments) {
+
+                                $self->log->error(
+                                    $self->language->localise(@arguments),
+                                );
+
+                                return $self;
+
+                            },
+
+        log_fatal       =>  sub ($self, @arguments) {
+
+                                $self->log->fatal(
+                                    $self->language->localise(@arguments),
+                                );
+                                # Will the next line execute, if this is fatal?
+                                return $self;
+
+                            },
+
         log_dump_values =>  sub ($self, @arguments) {
 
                                 $self->log->info(

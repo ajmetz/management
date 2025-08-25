@@ -6,7 +6,8 @@ use     Management::Languages;
 use     Mojo::Util qw(dumper);
 use     English;
 
-field   $database               :param  :accessor;
+field   $database               :param  :reader;
+field   $app                    :param  :reader;
 field   $last_insert_id_lookup  :reader             =   {};
 
 #ADJUST {

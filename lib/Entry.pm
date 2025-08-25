@@ -7,16 +7,16 @@ use     DateTime;
 use     DateTime::Duration;
 use     Time::Piece;
 
-field   $start_time     :param  :reader;
-field   $end_time       :param  :reader;
+field   $start_time     :param  :reader     =   undef;
+field   $end_time       :param  :reader     =   undef;
 
-field   $start_year     :param  :reader;
-field   $start_month    :param  :reader;
-field   $start_day      :param  :reader;
+field   $start_year     :param  :reader     =   undef;
+field   $start_month    :param  :reader     =   undef;
+field   $start_day      :param  :reader     =   undef;
 
-field   $end_year       :param  :reader;
-field   $end_month      :param  :reader;
-field   $end_day        :param  :reader;
+field   $end_year       :param  :reader     =   undef;
+field   $end_month      :param  :reader     =   undef;
+field   $end_day        :param  :reader     =   undef;
 
 field   $start_epoch    :param  :accessor   =   undef; # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
 field   $end_epoch      :param  :accessor   =   undef;
@@ -32,14 +32,16 @@ field   $details        :param  :accessor;  # Later we could code a subroutine t
 field   $duration               :reader     =   undef; # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 
 method $create_epochs {
-
-    $start_epoch    =           DateTime->new(
-                                    year    =>  $start_year,
-                                    month   =>  $start_month,
-                                    day     =>  $start_day,
-                                    hour    =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
-                                    minute  =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
-                                )->epoch;
+#    if ($start_year && $start_month && $start_day && $start_time)
+ #       {
+    return $self if $start_epoch && $end_epoch;
+            $start_epoch    =           DateTime->new(
+                                            year    =>  $start_year,
+                                            month   =>  $start_month,
+                                            day     =>  $start_day,
+                                            hour    =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
+                                            minute  =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
+                                        )->epoch;
 
     $end_epoch      =           DateTime->new(
                                     year    =>  $end_year // $start_year,

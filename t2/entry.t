@@ -106,7 +106,7 @@ like    (   $entry_object->duration         ,   qr/^\p{Digit}+hr \p{Digit}+mins$
 
 my  $test_object            =   Test::Mojo->new('Management');
 
-$test_object->app->entry->create(@dummy_data_for_entry)->retrieve_last;
+$test_object->app->entry->create(@dummy_data_for_entry)->retrieve_last_saved;
 
 =head2 Done.
 

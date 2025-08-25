@@ -173,6 +173,11 @@ Phrasen: {
             'Set layout data structure as follows:'                         =>  'Die Layoutdatenstruktur wurde wie folgt festgelegt:',
 
 
+            # Management::Model::Entry
+
+            'Invalid digit provided.'                                       =>  'Ungültige Ziffer angegeben.',
+
+
         );
 
     } #dedbug

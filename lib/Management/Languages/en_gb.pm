@@ -174,6 +174,11 @@ Phrases: {
             'Set layout data structure as follows:'                         =>  'Set layout data structure as follows:',
 
 
+            # Management::Model::Entry
+
+            'Invalid digit provided.'                                       =>  'Invalid digit provided.',
+
+
         );
 
     } #dedbug

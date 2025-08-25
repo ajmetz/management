@@ -66,11 +66,11 @@ method connection ($app) {
 }
 
 method data ($app) {
-    state   $data   =   Management::Model::Data->new(database => $app->database);  # State means $data set only once then re-used.
+    state   $data   =   Management::Model::Data->new(database => $app->database, app => $app);  # State means $data set only once then re-used.
 }
 
 method entry ($app) {
-    state   $entry   =   Management::Model::Entry->new(data => $app->data);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
+    state   $entry   =   Management::Model::Entry->new(data => $app->data, app => $app);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
 }
 
 1; ####
