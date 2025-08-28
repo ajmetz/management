@@ -71,52 +71,73 @@ method  $top_category_from_id($id) {
 
 }
 
-method $top_categories_table_row_id ($top_category) {
+method $top_categories_table_row_id ($sought_top_category) {
 
     my  $where  =   {
-        'top_category_equals_top_category'  =>  {   top_category    =>  $top_category   },
+        'top_category_equals_sought_top_category'  =>  {   top_category    =>  $sought_top_category   },
     };
 
     $data->database->select(
         $table_name->{'top_categories'},
         $fields->{'all'},
-        $where->{'category_equals_category'},
+        $where->{'top_category_equals_sought_top_category'},
     )->hash->{'id'};
 }
 
 method create (%object_construction_params) {
 
     # Initial Values:
-    my  $entry          =   Entry->new(%object_construction_params);
-    my  $valid_data     =   $entry
-                            && blessed($entry)
-                            && $entry->can('save_data')
-                            && $entry->save_data?   $entry:
-                            undef; # Should also add validation for data structure too, and table names too, most likely.
-    my  $top_category_id=   $self->$top_categories_table_row_id($valid_data->{$table_name->{'entries'}}->[0]->{'top_category_id'});
-    $valid_data->{$table_name->{'entries'}}->[0]->{'top_category_id'} = $top_category_id;
+    my  $entry              =   Entry->new(%object_construction_params);
+    my  $valid_save_data    =   $entry
+                                && blessed($entry)
+                                && $entry->can('save_data')
+                                && $entry->save_data?   $entry->save_data:
+                                undef; # Should also add validation for data structure too, and table names too, most likely.
+
+    warn "Valid save data: ".dumper($valid_save_data);
+
+    $valid_save_data->{"$table_name->{'entries'}"}->[0]->{'top_category_id'}    =   $self->$top_categories_table_row_id(
+                                                                                        $valid_save_data->{"$table_name->{'entries'}"}->[0]->{'top_category_id'} # assuming top category name that needs converting to an id.
+                                                                                    );
     
-    warn                    $valid_data?    'Valid data to save.':
+    warn                    $valid_save_data?    'Valid data to save.':
                             'Invalid data to save.';
 
-    if ($valid_data) {
-        my  $last_insert_id_lookup    =   $data->save($valid_data)->last_insert_id_lookup;
+    if ($valid_save_data) {
+
+        my  $last_insert_id_lookup  =   $data->save($valid_save_data)->last_insert_id_lookup;
+
         warn 'last insert data is....'.dumper($last_insert_id_lookup);
-        $last_saved_entry_id  =   $last_insert_id_lookup->{entries};
-        my  $junction_table_save_data   =   {
-            entries_categories  =>  [
-                                        map {
-                                            {
-                                                entry_id            =>  $last_insert_id_lookup->{entries},
-                                                category_id         =>  $ARG,
-                                            }
-                                        } $last_insert_id_lookup->{categories}->@*,
-                                    ],
-        };
-        $data->save($junction_table_save_data);
+
+        $last_saved_entry_id        =   $last_insert_id_lookup->{entries};
+
+        $self->save_to_entries_categories_junction_table(
+            $last_insert_id_lookup->{entries},
+            $last_insert_id_lookup->{categories}->@*
+        );
+        
     };
     
     return $self;
+
+}
+
+method save_to_entries_categories_junction_table ($entry_id, @categories) {
+
+        my  $junction_table_save_data   =   {
+            entries_categories          =>  [
+                                                map {
+                                                        {
+                                                            entry_id    =>  $entry_id,
+                                                            category_id =>  $ARG,
+                                                        }
+                                                } @categories,
+                                            ],                                    
+        };
+
+        $data->save($junction_table_save_data);
+
+        return $self;
 
 }
 
@@ -142,12 +163,13 @@ method retrieve ($id) {
                                             )->hash;
                                             
     $where->{'top_categories_id_is_top_category_id'}    =  {   'id'  =>  $entries_params->{top_category_id},  };
+
     $entries_params->{categories}       =   $data->database->select(
                                                 $entries_categories_table_joined_with_categories_table,
                                                 $fields->{'categories_fields'},
                                                 $where->{'entry_id_is_id'},
                                             )->hashes->to_array; # Validation?
-    $entries_params->{top_category}   =   $self->top_category_from_id($entries_params->{top_category_id});
+    $entries_params->{top_category}   =   $self->$top_category_from_id($entries_params->{top_category_id});
 
 
     #die "That will do for now.".dumper($entries_params); # Let's learn how category gets retrieved, since it is expected to be a value that's an array ref of hashrefs.
