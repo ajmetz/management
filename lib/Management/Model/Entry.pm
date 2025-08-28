@@ -7,43 +7,55 @@ use     Mojo::Util qw(dumper);
 use     English;
 use     Entry;
 
+# Define once during class declaration:
+
+my  $table_name =   {
+                        entries             =>  'entries',
+                        top_categories      =>  'top_categories',
+                        categories          =>  'categories',
+                        entries_categories  =>  'entries_categories',
+                    };
+
+my  $fields     =   {
+                        all                     =>  undef,
+                        entries_fields_renamed  =>  [
+                                            
+                                                        qw(
+                                                            details
+                                                            top_category_id
+                                                        ),
+                                            
+                                                        # Fields AS ...
+                                                        [start_time_utc_epoch   =>  'start_epoch'],
+                                                        [end_time_utc_epoch     =>  'end_epoch'],
+                                            
+                                                    ],
+                        categories_fields_without_id    =>  ['category','level'],
+                        top_categories_top_category     =>  ['top_category'],
+                    };
+
+# When the defined once during class declaration stuff is used in fields below, it is a constant accessible as per the field declaration, in each instance:
+
 field   $data                   :param  :accessor;
 field   $last_saved_entry_id    :reader                         =   undef;
-field   $entries_table_name                                     =   'entries';
-field   $top_categories_table_name                                     =   'top_categories';
-field   $fields                                                 =   {
-                                                                        all                     =>  undef,
-                                                                        entries_fields_renamed  =>  [
-                                                                                            
-                                                                                                        qw(
-                                                                                                            details
-                                                                                                            top_category_id
-                                                                                                        ),
-                                                                                            
-                                                                                                        # Fields AS ...
-                                                                                                        [start_time_utc_epoch   =>  'start_epoch'],
-                                                                                                        [end_time_utc_epoch     =>  'end_epoch'],
-                                                                                            
-                                                                                                    ],
-                                                                        categories_fields_without_id=>  ['category','level'],
-                                                                        top_categories_top_category =>  ['top_category'],
 
-                                                                    };
+field   $table_name                                             =   $table_name;
+field   $fields                                                 =   $fields;
+field   $matches_valid_digit                                    =   qr/^\p{Digit}+$/;
 field   $entries_categories_table_joined_with_categories_table  =   [
-                                                                        'entries_categories'    =>  [
-                                                                                                        'categories',
-                                                                                                            # Column in categories table    =>  Column in entries_categories table
-                                                                                                            'id'                            =>  'category_id',
-                                                                                                    ],
+                                                                        $table_name->{'entries_categories'} =>  [
+                                                                                                                    $table_name->{'categories'},
+                                                                                                                        # Column in categories table    =>  Column in entries_categories table
+                                                                                                                        'id'                            =>  'category_id',
+                                                                                                                ],
                                                                     ];
 field   $entries_table_joined_with_top_categories_table         =   [
-                                                                        'entries'               =>  [
-                                                                                                       'top_categories',
-                                                                                                             # Column in top_categories table   =>  Column in entries table
-                                                                                                             'category'                         =>  'top_categories_id',
-                                                                                                    ],
+                                                                        $table_name->{'entries'}            =>  [
+                                                                                                                   $table_name->{'top_categories'},
+                                                                                                                         # Column in top_categories table   =>  Column in entries table
+                                                                                                                         'category'                         =>  'top_categories_id',
+                                                                                                                ],
                                                                     ];
-field   $matches_valid_digit                                    =   qr/^\p{Digit}+$/;
 
 method  $top_category_from_id($id) {
 
@@ -52,7 +64,7 @@ method  $top_category_from_id($id) {
     };
 
     $data->database->select(
-        $top_categories_table_name,
+        $table_name->{'top_categories'},
         $fields->{'all'},
         $where->{'id_is_id'},
     )->hash->{'top_category'};
@@ -60,12 +72,13 @@ method  $top_category_from_id($id) {
 }
 
 method $top_categories_table_row_id ($top_category) {
+
     my  $where  =   {
         'top_category_equals_top_category'  =>  {   top_category    =>  $top_category   },
     };
 
     $data->database->select(
-        $top_categories_table_name,
+        $table_name->{'top_categories'},
         $fields->{'all'},
         $where->{'category_equals_category'},
     )->hash->{'id'};
@@ -80,8 +93,8 @@ method create (%object_construction_params) {
                             && $entry->can('save_data')
                             && $entry->save_data?   $entry:
                             undef; # Should also add validation for data structure too, and table names too, most likely.
-    my  $top_category_id=   $self->$top_categories_table_row_id($valid_data->{$entries_table_name}->[0]->{'top_category_id'});
-    $valid_data->{$entries_table_name}->[0]->{'top_category_id'} = $top_category_id;
+    my  $top_category_id=   $self->$top_categories_table_row_id($valid_data->{$table_name->{'entries'}}->[0]->{'top_category_id'});
+    $valid_data->{$table_name->{'entries'}}->[0]->{'top_category_id'} = $top_category_id;
     
     warn                    $valid_data?    'Valid data to save.':
                             'Invalid data to save.';
@@ -123,7 +136,7 @@ method retrieve ($id) {
     };
 
     my  $entries_params                 =   $data->database->select(
-                                                $entries_table_name,
+                                                $table_name->{'entries'},
                                                 $fields->{'entries_fields_renamed'},
                                                 $where->{'id_is_id'},
                                             )->hash;
