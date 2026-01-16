@@ -1,0 +1,78 @@
+Text from:
+Unsaved TextEdit Document 7.txt
+Last modified: 7th Sep 15:56pm
+
+
+Okay - so it seems that the code presently...
+
+saves via save_data - and we wish to change that.
+
+=====
+
+Right - what do we have at the moment?
+
+And what are we trying to do?
+
+Okay - what I want is to:
+
+	Create an object from params.
+	Be able to retrieve the params from the object
+	Be able to convert those params to data to save.
+	To save that data to the database.
+	Be able to retrieve data from the database.
+	To be able to convert that data into params
+
+
+data_to_object_params
+
+object_params_to_data
+
+=====
+
+15:07 - Right! So this seems as simple as - grab the save_data method and bring it out of the Entry class, and into the Model class.
+
+Right. But the complication you are raising is with top_categories.
+
+What happens here is a database check.
+
+What you'd need is a top_categories in your model.
+And then do a top_categories_retrieve
+Unless you have the ability to do a general data retrieve.
+
+The simplest way forwards of course, is to make top_categories a unique constraint and id,
+so there's only ever one list of items to get.
+
+Of course, I'd like to know how to do it with a seperate id field, because I'll likely need to do that in future, and it will useful to know how.
+
+Okay, let's go to toilet, then think about the problem, and how we solve it.
+
+======
+
+So we've got two things.
+
+1) 15:10 - go to toilet.
+
+Venture Institute early deadline is tomorrow.
+
+15:24
+
+Okay - two things:
+
+1) Move save data to our model class.
+Think about ramifications.
+
+2) Think how we'll get top categories data.
+
+Now - we are only
+
+====
+
+15:26 - Okay, so what we'd do probably is, take our current top_category, and search database for where it is, and return an id number. If it's not found anywhere / we get no id number, then we are doing an insert. If we 
+
+15:33 - We can implement a unique constraint on the column, and it won't solve our problem, because an attempt to then insert a non-unique will then raise a Perl exception, according to documentation
+
+15:55 - I want to know what action we'll take.
+
+Here's what I'm thinking:
+
+1) move the code.
