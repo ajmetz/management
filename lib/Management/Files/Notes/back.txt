@@ -1,0 +1,17 @@
+So coming back to this project after some time - I've no idea why levels for categories exist. 
+I understand you may want multiple levels between the bottom level of showing the text description, 
+and the top level of showing the top categories,
+however, for that you'd more likely want subcategories and parent categories - or child and parent - rather than level numbers.
+
+That is to say, whether a category is on level 1 or 2 doesn't matter. What matters is - is there a category heirarchy, 
+and if so, for any given category - what is above it, and what if anything, is below it?
+
+For now we don't have child categories, and we only wish to show:
+Top level pie chart
+Mid level pie chart.
+There is no bottom pie chart.
+The bottom value is the detail, and the detail is shown when you click an entry in the mid-level pie chart.
+
+Unless only categories are shown, rather than entries?
+Even if so, you'd show all details for that category wouldn't you?
+
