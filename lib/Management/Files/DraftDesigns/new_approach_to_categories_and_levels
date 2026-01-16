@@ -1,0 +1,16 @@
+So - the best way in our case to do categories is to have a table listing all available categories, but to store category heirarchies as a list at the entry level.
+
+Therefore, the levels are indicated by how many items are in the list.
+
+and the list can contain any number of items in the categories table, including duplicates.
+
+This gives the most flexibility for how we wish to arrange our entries and our drilling down or having overarching umbrella categories, in our pie charts.
+
+So that would be the best multi level approach.
+
+So we only ever store top_category for each category, and never level.
+
+=====
+
+Okay! Our plan arrived at!
+
