@@ -32,38 +32,52 @@ field   $details        :param  :accessor;  # Later we could code a subroutine t
 field   $duration               :reader     =   undef; # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 
 method $create_epochs {
-#    if ($start_year && $start_month && $start_day && $start_time)
- #       {
-    return $self if $start_epoch && $end_epoch;
-            $start_epoch    =           DateTime->new(
-                                            year    =>  $start_year,
-                                            month   =>  $start_month,
-                                            day     =>  $start_day,
-                                            hour    =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
-                                            minute  =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
-                                        )->epoch;
 
-    $end_epoch      =           DateTime->new(
-                                    year    =>  $end_year // $start_year,
-                                    month   =>  $end_month // $start_month,
-                                    day     =>  $end_day // $start_day,
-                                    hour    =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
-                                    minute  =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
-                                )->epoch;
+    # Premature exit if already set - this presumably needs more validation:
+    return $self if $start_epoch && $end_epoch;
+    
+    $start_epoch    =   DateTime->new(
+
+                            year    =>  $start_year,
+                            month   =>  $start_month,
+                            day     =>  $start_day,
+
+                            hour    =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
+                            minute  =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
+
+                        )->epoch;
+
+    $end_epoch      =   DateTime->new(
+
+                            # Assume same year/month/day as start time, unless end year/month/day given:
+                            year    =>  $end_year // $start_year,
+                            month   =>  $end_month // $start_month,
+                            day     =>  $end_day // $start_day,
+
+                            hour    =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
+                            minute  =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
+
+                        )->epoch;
+
     return $self;
+
 }
 
 method $create_duration {
+
     $duration       =   sprintf(
                             '%dhr %dmins', # i.e. 1hr 30mins
-                            DateTime->from_epoch($end_epoch)
-                            ->subtract_datetime_absolute(
-                                DateTime->from_epoch($start_epoch)
-                            )
-                            ->in_units('hours','minutes'),
+                            DateTime
+                                ->from_epoch($end_epoch)
+                                ->subtract_datetime_absolute(
+                                    DateTime->from_epoch($start_epoch)
+                                )
+                                ->in_units('hours','minutes')
+                            ,
                         ); # This should be localised at some point?
 
-    #DateTime->from_epoch($end_epoch) - DateTime->from_epoch($end_epoch)
+    return $self;
+
 }
 
 ADJUST {
@@ -72,24 +86,6 @@ ADJUST {
     
     #$self->valid_epochs_or_die(@created_epochs);
  
-}
-
-method save_data {
-
-    return {
-        entries         =>  [{
-                                'start_time_utc_epoch'  =>  $start_epoch,
-                                'end_time_utc_epoch'    =>  $end_epoch,
-                                #'top_category_id'       =>  1, #retrieve a top category id?. UPDATE: NO. Commented out. Database retrieval happens in the model folder, not in the object class.
-                                'top_category_id'          =>  $top_category,
-                                'details'               =>  $details,
-                            }],
-        categories      =>  $categories,
-        top_categories  =>  [{
-                                top_category            =>  'Other',
-                            }],
-    };
-
 }
 
 
@@ -146,3 +142,26 @@ What's involved in creating and populating the epochs?
         If so, make an epoch from it.
         Is the resultant epoch valid?
         If so, make
+        
+        
+=======
+
+Removed save data:
+
+method save_data {
+
+    return {
+        entries         =>  [{
+                                'start_time_utc_epoch'  =>  $start_epoch,
+                                'end_time_utc_epoch'    =>  $end_epoch,
+                                #'top_category_id'       =>  1, #retrieve a top category id?. UPDATE: NO. Commented out. Database retrieval happens in the model folder, not in the object class.
+                                'top_category_id'          =>  $top_category,
+                                'details'               =>  $details,
+                            }],
+        categories      =>  $categories,
+        top_categories  =>  [{
+                                top_category            =>  'Other',
+                            }],
+    };
+
+}
