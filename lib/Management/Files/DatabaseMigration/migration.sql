@@ -5,14 +5,13 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS top_categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    top_category TEXT
+    top_category TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category TEXT,
-    level INTEGER
+    category TEXT PRIMARY KEY,
+    top_category TEXT,
+    FOREIGN KEY (top_category) REFERENCES top_categories(top_category)
 );
 
 CREATE TABLE IF NOT EXISTS entries (
@@ -20,16 +19,16 @@ CREATE TABLE IF NOT EXISTS entries (
     start_time_utc_epoch INTEGER,
     end_time_utc_epoch INTEGER,
     details TEXT,
-    top_category_id INTEGER,
-    foreign key(top_category_id) references top_categories(id)
+    category TEXT,
+    foreign key(category) references categories(category)
 );
 
 CREATE TABLE IF NOT EXISTS entries_categories (
     entry_id INTEGER NOT NULL,
-    category_id  INTEGER NOT NULL,
-    CONSTRAINT PK_entry_category PRIMARY KEY (entry_id, category_id),
+    category TEXT NOT NULL,
+    CONSTRAINT PK_entry_category PRIMARY KEY (entry_id, category),
     FOREIGN KEY (entry_id) REFERENCES entries(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (category) REFERENCES categories(category)
 );
 
 
@@ -37,10 +36,10 @@ CREATE TABLE IF NOT EXISTS entries_categories (
 
 INSERT INTO
     categories
-        (category, level)
+        (category, top_category)
     VALUES 
-        ('PLANNING','1'),
-        ('YOUTUBE','1');
+        ('PLANNING','MANAGEMENT'),
+        ('YOUTUBE','ACTION');
 
 INSERT INTO
     top_categories
