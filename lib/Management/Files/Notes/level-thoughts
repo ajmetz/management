@@ -1,0 +1,40 @@
+Okay - so how would levels work?
+
+Let's use the example of leisure and work.
+
+In that case,
+we'd have an entry - watched youtube.
+It would be considered an action, as something was done.
+
+So:
+Detail: Watched Youtube.
+category: YOUTUBE
+top_category: ACTION
+
+So now when we go to generate a dynamic page, we're using a TimeRange, and that object encompanies a list of entries that fall within the time range, and a list of Days whose metadata fall within that time range.
+
+Okay - so now we have our template.
+Our template first has to know how many levels of pie chart and details, it is doing.
+It knows there will always be top categories which form the top level.
+It knows there will always be at least one category layer, which forms the mid level.
+How does it determine if there are more levels?
+
+It would collate all categories for each entry.
+It doesn't have to do this with database look ups.
+Because all entry objects, already have their category param populated.
+
+So we can have a method that loops over all entries,
+and returns the list of categories.
+Here's the problem.
+If we then loop over the list of categories, to see if any have a parent,
+we're then creating our levels.
+We would then need to loop over the parents, to see if any of those also had parents, and keep doing this 
+
+So basically, via iteration, we would be checking 
+
+12:30 - a loud fart noise coming from some kind of drill that sounds like a whoopee cushion. 
+12:30 - now silenced. Geez.
+
+Okay, let's put white noise back on.
+
+UPDATE: Conclusions were reached in lib/Management/Files/DraftDesigns/new_approach_to_categories_and_levels
