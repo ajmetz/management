@@ -1,6 +1,6 @@
 use     Object::Pad v0.820;
 
-class   Entry 1.00;
+class   Entry 2.00;
 
 use     Management::Boilerplate::Code;
 use     DateTime;
@@ -18,18 +18,18 @@ field   $end_year       :param  :reader     =   undef;
 field   $end_month      :param  :reader     =   undef;
 field   $end_day        :param  :reader     =   undef;
 
-field   $start_epoch    :param  :accessor   =   undef; # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
-field   $end_epoch      :param  :accessor   =   undef;
+field   $start_epoch    :param  :accessor   =   undef;  # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
+field   $end_epoch      :param  :accessor   =   undef;  # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
 
 field   $categories     :param  :accessor   =   [
                                                     {
                                                         category    =>  'Misc',
-                                                        level       =>  1,
+                                                        top_category=>  'OTHER',
                                                     },
-                                                ];   # TODO: Add validation to the accessor/setter.
-field   $top_category   :param  :accessor;
-field   $details        :param  :accessor;  # Later we could code a subroutine to pick a specific index number that serves as the default.
-field   $duration               :reader     =   undef; # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
+                                                ];      # TODO: Add validation to the accessor/setter. UPDATE: Validation can be done before saving.
+field   $top_category   :param  :accessor   =   undef;  # Can be calculated by database look up during save to database via Model/Entry.pm
+field   $details        :param  :accessor;              # Later we could code a subroutine to pick a specific index number that serves as the default.
+field   $duration               :reader     =   undef;  # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 
 method $create_epochs {
 
