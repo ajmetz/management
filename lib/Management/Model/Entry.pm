@@ -57,6 +57,24 @@ field   $entries_table_joined_with_top_categories_table         =   [
                                                                                                                 ],
                                                                     ];
 
+method object_params_to_data ($entry) {
+
+    return {
+        entries         =>  [{
+                                'start_time_utc_epoch'  =>  $entry->start_epoch,
+                                'end_time_utc_epoch'    =>  $entry->end_epoch,
+                                #'top_category_id'       =>  1, #retrieve a top category id?. UPDATE: NO. Commented out. Database retrieval happens in the model folder, not in the object class.
+                                'top_category_id'          =>  $entry->top_category,
+                                'details'               =>  $entry->details,
+                            }],
+        categories      =>  $entry->categories,
+        top_categories  =>  [{
+                                top_category            =>  $entry->top_category,
+                            }],
+    };
+
+}
+
 method  $top_category_from_id($id) {
 
     my  $where  =   {
