@@ -84,13 +84,13 @@ my          $entry_object                   =   Entry->new(@dummy_data_for_entry
 isa_ok  (   $entry_object                   ,   ['Entry'],                                              'Our Entry is an Entry.'                );
 #can_ok  (   $entry_object                   ,   ['save_data'],                                          'Our Entry has a save_data method.'     );
 #ok      (   $entry_object->save_data->%*    ,                                                           'Our Entry can deliver'.
-                                                                                                        ' some kind of save data.'              );
+#                                                                                                        ' some kind of save data.'              );
 #like    (   $entry_object->save_data        ,   hash {
                                                         #field entries => T();
 #                                                        field entries => array { item 0 => hash { all_values => T() } };
                                                         #field entries => hash { prop size => '3' };
 #                                                },                                                      'Our Entry save data has an'.
-                                                                                                        ' entries key with true values'         );
+#                                                                                                        ' entries key with true values'         );
 like    (   $entry_object->start_epoch      ,   qr/^\p{Digit}+$/,                                       'Start Epoch is one or more digits'     );
 like    (   $entry_object->end_epoch        ,   qr/^\p{Digit}+$/,                                       'End Epoch is one or more digits'       );
 ok      (   $entry_object->start_epoch <= $entry_object->end_epoch,                                     'Start Epoch is less '.
