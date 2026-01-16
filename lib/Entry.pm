@@ -18,18 +18,16 @@ field   $end_year       :param  :reader     =   undef;
 field   $end_month      :param  :reader     =   undef;
 field   $end_day        :param  :reader     =   undef;
 
-field   $start_epoch    :param  :accessor   =   undef;  # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
-field   $end_epoch      :param  :accessor   =   undef;  # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
+field   $start_epoch    :param  :accessor   =   undef;      # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
+field   $end_epoch      :param  :accessor   =   undef;      # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
 
-field   $categories     :param  :accessor   =   [
-                                                    {
-                                                        category    =>  'Misc',
-                                                        top_category=>  'OTHER',
-                                                    },
-                                                ];      # TODO: Add validation to the accessor/setter. UPDATE: Validation can be done before saving.
-field   $top_category   :param  :accessor   =   undef;  # Can be calculated by database look up during save to database via Model/Entry.pm
-field   $details        :param  :accessor;              # Later we could code a subroutine to pick a specific index number that serves as the default.
-field   $duration               :reader     =   undef;  # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
+field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validation to the accessor/setter.
+                                                            # UPDATE: Validation can be done before saving. 
+                                                            # LEVELS: Can tell number of levels by number of items in arrayref.
+
+field   $top_category   :param  :accessor   =   undef;      # Can be calculated by database look up during save to database via Model/Entry.pm
+field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
+field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 
 method $create_epochs {
 
