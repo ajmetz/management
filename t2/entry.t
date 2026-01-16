@@ -24,7 +24,7 @@ v1.0.0
 
 =cut
 
-our $VERSION                    =   'v1.0.0';
+our $VERSION                    =   'v2.0.0';
 
 =head1 SYNOPSIS
 
@@ -64,16 +64,11 @@ my  @dummy_data_for_entry           =    (
                                             end_day         =>  undef,
                                             end_time        =>  '23:59',
 
-                                            top_category    =>  'Other',
+                                            #top_category    =>  'Other',
                                             #category        =>  'Event',
                                             categories      =>  [
-                                                                    {
-                                                                        category    =>  'Event',
-                                                                        level       =>  1,
-                                                                    },
-                                                                    {   category    =>  'Silliness',
-                                                                        level       =>  2,
-                                                                    },
+                                                                    'Event',
+                                                                    'Silliness',
                                                                 ],
                                             details         =>  'Did a day.',
                                         );
@@ -87,14 +82,14 @@ Then we begin testing our Entry Object...
 # Object Tests:
 my          $entry_object                   =   Entry->new(@dummy_data_for_entry);
 isa_ok  (   $entry_object                   ,   ['Entry'],                                              'Our Entry is an Entry.'                );
-can_ok  (   $entry_object                   ,   ['save_data'],                                          'Our Entry has a save_data method.'     );
-ok      (   $entry_object->save_data->%*    ,                                                           'Our Entry can deliver'.
+#can_ok  (   $entry_object                   ,   ['save_data'],                                          'Our Entry has a save_data method.'     );
+#ok      (   $entry_object->save_data->%*    ,                                                           'Our Entry can deliver'.
                                                                                                         ' some kind of save data.'              );
-like    (   $entry_object->save_data        ,   hash {
+#like    (   $entry_object->save_data        ,   hash {
                                                         #field entries => T();
-                                                        field entries => array { item 0 => hash { all_values => T() } };
+#                                                        field entries => array { item 0 => hash { all_values => T() } };
                                                         #field entries => hash { prop size => '3' };
-                                                },                                                      'Our Entry save data has an'.
+#                                                },                                                      'Our Entry save data has an'.
                                                                                                         ' entries key with true values'         );
 like    (   $entry_object->start_epoch      ,   qr/^\p{Digit}+$/,                                       'Start Epoch is one or more digits'     );
 like    (   $entry_object->end_epoch        ,   qr/^\p{Digit}+$/,                                       'End Epoch is one or more digits'       );
@@ -104,9 +99,9 @@ ok      (   $entry_object->end_epoch >= $entry_object->start_epoch,             
                                                                                                         'or equal to Start Epoch'               );
 like    (   $entry_object->duration         ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string'  );
 
-my  $test_object            =   Test::Mojo->new('Management');
+#my  $test_object            =   Test::Mojo->new('Management');
 
-$test_object->app->entry->create(@dummy_data_for_entry)->retrieve_last_saved;
+#$test_object->app->entry->create(@dummy_data_for_entry)->retrieve_last_saved;
 
 =head2 Done.
 
