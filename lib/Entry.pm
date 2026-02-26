@@ -94,7 +94,13 @@ Value ideas:
 start time
 end time
 category1 # default misc
-category2 # default action
+category2 # default action <--- What's this? Are category1 and category2 independent, 
+                                as in one entry spanning two categories (repeating?).
+                                In the latest version we prefer to have an entry only appearing in one category,
+                                but that category can be under other categories as a subcategory.
+                                This determined at the Perl level by what categories are listed in categories,
+                                with the top category determined by the top category database association with
+                                the final child category for this specific entry.
 detail
 duration
 (calculated: totals)
