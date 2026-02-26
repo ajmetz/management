@@ -1,4 +1,6 @@
-So - the best way in our case to do categories is to have a table listing all available categories, but to store category heirarchies as a list at the entry level.
+So - the best way in our case to do categories
+is to have a table listing all available categories,
+but to store category heirarchies as a list at the entry level.
 
 Therefore, the levels are indicated by how many items are in the list.
 

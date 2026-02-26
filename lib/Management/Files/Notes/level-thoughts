@@ -11,7 +11,11 @@ Detail: Watched Youtube.
 category: YOUTUBE
 top_category: ACTION
 
-So now when we go to generate a dynamic page, we're using a TimeRange, and that object encompanies a list of entries that fall within the time range, and a list of Days whose metadata fall within that time range.
+So now when we go to generate a dynamic page,
+we're using a TimeRange,
+and that object encompasses 
+a list of entries that fall within the time range,
+and a list of Days whose metadata fall within that time range.
 
 Okay - so now we have our template.
 Our template first has to know how many levels of pie chart and details, it is doing.

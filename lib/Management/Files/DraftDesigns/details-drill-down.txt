@@ -13,7 +13,12 @@ Detail  =   Show time ranges and top levels
 PIE     =   MID LEVEL
 Detail  =   Show time ranges for all under MID LEVEL category
             ...but under mid-level, there's only bottom so wtf!?
-
-PIE     =   BOTTOM
+            UPDATE: Presumably, you have a pie chart of all mid levels and have not selected one yet,
+            so you would show the entries for all under the TOP LEVEL you selected to display mid levels for.
+            Then when you select a mid level, the pie will change to all under that category, and your detail will change to all entries under that mid level.
+            When you next select a specific entry in the pie, you'll be at the bottom, and the detail will be the specific time tracking entry for that entry.
+            I presume.
+            
+PIE     =   BOTTOM 
 Detail  =   Show time tracking entry.
 
