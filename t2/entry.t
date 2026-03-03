@@ -64,8 +64,6 @@ my  @dummy_data_for_entry           =    (
                                             end_day         =>  undef,
                                             end_time        =>  '23:59',
 
-                                            #top_category    =>  'Other',
-                                            #category        =>  'Event',
                                             categories      =>  [
                                                                     'Event',
                                                                     'Silliness',

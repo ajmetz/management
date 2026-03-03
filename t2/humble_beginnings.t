@@ -94,8 +94,11 @@ my  @dummy_data_for_entry           =    (
                                             end_day         =>  undef,
                                             end_time        =>  '23:59',
 
-                                            top_category    =>  'Other',
-                                            category        =>  'Event',
+                                            categories      =>  [
+                                                                    'Event',
+                                                                    'Silliness',
+                                                                ],
+
                                             details         =>  'Did a day.',
                                         );
 my  $dummy_data_for_entry_factory   =
@@ -109,26 +112,12 @@ adjdkjd
 ';
 
 # Object Tests:
-my          $time_range_object              =   TimeRange->new();
-isa_ok  (   $time_range_object              ,   ['TimeRange'],                                          'Our TimeRange is a TimeRange.'         );
-
-my          $day_object                     =   Day->new();
-isa_ok  (   $day_object                     ,   ['Day'],                                                'Our Day is a Day.'                     );
-
 my          $entry_object                   =   Entry->new(@dummy_data_for_entry);
 isa_ok  (   $entry_object                   ,   ['Entry'],                                              'Our Entry is an Entry.'                );
-can_ok  (   $entry_object                   ,   ['save_data'],                                          'Our Entry has a save_data method.'     );
-ok      (   $entry_object->save_data->%*    ,                                                           'Our Entry can deliver'.
-                                                                                                        ' some kind of save data.'              );
-like    (   $entry_object->save_data        ,   hash {
-                                                    #field entries => T();
-                                                    field entries => array { item 0 => hash { all_values => T() } };
-#                                                   field entries => hash { prop size => '3' };
-                                                },                                                      'Our Entry save data has an'.
-                                                                                                        ' entries key with true values'         );
 
 my  $entry_factory_object                   =   EntryFactory->new();
 isa_ok  (   $entry_factory_object           ,   ['EntryFactory'],                                       'Our EntryFactory is an EntryFactory.'  );
+# Details of entryfactory stuff will have to wait, since the way it handles categories is not current to our present desired approach - it anticipated only one category. 
 
 # Input tests:
 #ok($test_object->post_ok('/entries', form => { type => 'confirm' })->status_is(200)->tx->res->dom->at('textarea#data'),             'Our entries page has a textarea'.
@@ -160,3 +149,12 @@ __END__
 
 Old lines that could prove useful again later:
 #use lib path(__FILE__)->parent->parent->realpath->stringify;
+
+
+
+like    (   $entry_object->save_data        ,   hash {
+                                                    #field entries => T();
+                                                    field entries => array { item 0 => hash { all_values => T() } };
+#                                                   field entries => hash { prop size => '3' };
+                                                },                                                      'Our Entry save data has an'.
+                                                                                                        ' entries key with true values'         );

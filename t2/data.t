@@ -77,9 +77,11 @@ like    (   $data->retrieve     ,   hash {
                                                     field top_categories => array { all_values => T() };
                                                     #field entries_categories => hash { all_values => T() };
 #                                                   field entries => hash { prop size => '3' };
-                                                },                                                  'Our Entry, Category, '.
+                                                },                                                  'Our '.
+                                                                                                    #'Entry, '.
+                                                                                                    'Category '.
                                                                                                     'and Top Categories data '.
-                                                                                                    'can be retrieved'              );
+                                                                                                    'can be retrieved.'              );
 
 done_testing();
 
