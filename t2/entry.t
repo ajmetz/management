@@ -56,16 +56,8 @@ Then we create Dummy Data we will need...
 
 my  @dummy_data_for_entry   =   (
     
-    start_year      =>  '2025',
-    start_month     =>  '1',
-    start_day       =>  '1',
-    start_time      =>  '0:00',
-    
-    end_year        =>  undef,      # Should be capable of assuming the same year/month/day as start if not stated.
-    end_month       =>  undef,
-    end_day         =>  undef,
-    end_time        =>  '23:59',
-    
+    start           =>  '01/01/2026 00:00',
+    end             =>  '23:59', # Should be capable of assuming the same year/month/day as start if not stated.
     categories      =>  [
                             'Event',
                             'Silliness',
