@@ -6,20 +6,23 @@ use     Management::Boilerplate::Code;
 use     DateTime;
 use     DateTime::Duration;
 use     Time::Piece;
+use     English;
 
-field   $start_time     :param  :reader     =   undef;
-field   $end_time       :param  :reader     =   undef;
+field   $start          :param              =   undef;
+field   $end            :param              =   undef;
 
-field   $start_year     :param  :reader     =   undef;
-field   $start_month    :param  :reader     =   undef;
-field   $start_day      :param  :reader     =   undef;
+field   $start_year             :reader     =   undef;
+field   $start_month            :reader     =   undef;
+field   $start_day              :reader     =   undef;
+field   $start_time             :reader     =   undef;
 
-field   $end_year       :param  :reader     =   undef;
-field   $end_month      :param  :reader     =   undef;
-field   $end_day        :param  :reader     =   undef;
+field   $end_year               :reader     =   undef;
+field   $end_month              :reader     =   undef;
+field   $end_day                :reader     =   undef;
+field   $end_time               :reader     =   undef;
 
-field   $start_epoch    :param  :accessor   =   undef;      # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
-field   $end_epoch      :param  :accessor   =   undef;      # We'll need ellaborated accessor methods to provide validation at some stage, or at least a dedicated epoch validation method.
+field   $start_epoch    :param              =   undef;
+field   $end_epoch      :param              =   undef;
 
 field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validation to the accessor/setter.
                                                             # UPDATE: Validation can be done before saving. 
@@ -28,6 +31,93 @@ field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validati
 field   $top_category   :param  :accessor   =   undef;      # Can be calculated by database look up during save to database via Model/Entry.pm
 field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
+field   $app            :param;
+
+field   $matches_and_captures_date_and_time =   qr/
+                                                    ^                                     # Start of string
+                                                    (?<year>\p{Digit}{4})                 # Year - four consecutive digits
+                                                    \/                                    # Slash
+                                                    (?<month>\p{Digit}{2})                # Month - two consecutive digits
+                                                    \/                                    # Slash
+                                                    (?<day>\p{Digit}{2})                  # Day - two consecutive digits
+                                                    \s+                                   # One or more characters that are spaces
+                                                    (?<time>\p{Digit}{2}:\p{Digit}{2})    # Time - two digits, colon, two digits
+                                                    $                                     # End of string.
+                                                /x;
+
+field   $matches_and_captures_time          =   qr/
+                                                    ^                                     # Start of string
+                                                    (?<time>\p{Digit}{2}:\p{Digit}{2})    # Time - two digits, colon, two digits
+                                                    $                                     # End of string.
+                                                /x;
+
+field   $matches_and_captures_epoch         =   qr/
+                                                    ^                                     # Start of string
+                                                    (?<epoch>\p{Digit}+)                  # Epoch - one or more consecutive digits
+                                                    $                                     # End of string.
+                                                /x;
+
+
+
+method $start_or_end_from_epoch_to_string ($start_or_end, $epoch) {
+
+    my  $datetime   =   DateTime->from_epoch($epoch);
+    my  $string     =   $datetime->ymd('/').' '.$sprintf("%02d:%02d", $datetime->hour, $datetime->minute);
+    $start          =   $string
+                        if $start_or_end eq 'start';
+    $end            =   $string
+                        if $start_or_end eq 'end';
+
+    return $self;
+
+}
+
+method $set_year_month_day_time {
+
+
+        if 
+
+        # Definitions:
+        $
+        my  $valid_start_values =   $start  =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
+                                    $start  =~  $matches_and_captures_epoch?            {%LAST_PAREN_MATCH}:
+                                    undef;
+
+        my  $valid_end_values   =   $end    =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
+                                    $end    =~  $matches_and_captures_time?             {%LAST_PAREN_MATCH}:
+                                    $end    =~  $matches_and_captures_epoch?            {%LAST_PAREN_MATCH}:
+                                    undef;
+
+        # Premature Exit:
+        die $app->log_fatal('object.entry.error.invalid_start_values'   ) unless $valid_start_values;
+        die $app->log_fatal('object.entry.error.invalid_end_values'     ) unless $valid_end_values;
+
+        # Processing:
+        if ($valid_start_values->{epoch}) {
+            my $datetime                            =   DateTime->from_epoch($valid_start_values->{epoch});
+            ($start_year, $start_month, $start_day) =   split(
+                                                            '/',
+                                                            $datetime->ymd('/'),
+                                                        );
+            $start_time                             =   ;
+        }
+        else {        
+            $start_year             =   $valid_start_values->{year};
+            $start_month            =   $valid_start_values->{month};
+            $start_day              =   $valid_start_values->{day};
+            $start_time             =   $valid_start_values->{time};
+        };
+        
+            
+        $end_year               =   $valid_end_values->{year};
+        $end_month              =   $valid_end_values->{month};
+        $end_day                =   $valid_end_values->{day};
+        $end_time               =   $valid_end_values->{time};
+
+        # Output:
+        return $self;                
+      
+}
 
 method $create_epochs {
 
@@ -78,9 +168,19 @@ method $create_duration {
 
 }
 
+method $instance_setup {
+
+    $self
+    #->$set_logger
+    ->$set_year_month_day_time
+    ->$set_epochs
+    ->$set_duration;
+
+}
+
 ADJUST {
     
-    $self->$create_epochs->$create_duration;
+    $self->$instance_setup;
     
     #$self->valid_epochs_or_die(@created_epochs);
  
