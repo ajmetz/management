@@ -21,8 +21,8 @@ field   $end_month              :reader     =   undef;
 field   $end_day                :reader     =   undef;
 field   $end_time               :reader     =   undef;
 
-field   $start_epoch    :param              =   undef;
-field   $end_epoch      :param              =   undef;
+field   $start_epoch            :reader     =   undef;
+field   $end_epoch              :reader     =   undef;
 
 field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validation to the accessor/setter.
                                                             # UPDATE: Validation can be done before saving. 
@@ -35,11 +35,11 @@ field   $app            :param;
 
 field   $matches_and_captures_date_and_time =   qr/
                                                     ^                                     # Start of string
-                                                    (?<year>\p{Digit}{4})                 # Year - four consecutive digits
+                                                    (?<day>\p{Digit}{2})                  # Day - two consecutive digits
                                                     \/                                    # Slash
                                                     (?<month>\p{Digit}{2})                # Month - two consecutive digits
                                                     \/                                    # Slash
-                                                    (?<day>\p{Digit}{2})                  # Day - two consecutive digits
+                                                    (?<year>\p{Digit}{4})                 # Year - four consecutive digits
                                                     \s+                                   # One or more characters that are spaces
                                                     (?<time>\p{Digit}{2}:\p{Digit}{2})    # Time - two digits, colon, two digits
                                                     $                                     # End of string.
@@ -59,14 +59,10 @@ field   $matches_and_captures_epoch         =   qr/
 
 
 
-method $start_or_end_from_epoch_to_string ($start_or_end, $epoch) {
+method $epoch_to_string ($epoch) {
 
     my  $datetime   =   DateTime->from_epoch($epoch);
-    my  $string     =   $datetime->ymd('/').' '.$sprintf("%02d:%02d", $datetime->hour, $datetime->minute);
-    $start          =   $string
-                        if $start_or_end eq 'start';
-    $end            =   $string
-                        if $start_or_end eq 'end';
+    my  $string     =   sprintf("%s %02d:%02d", $datetime->dmy('/'), $datetime->hour, $datetime->minute);
 
     return $self;
 
@@ -75,17 +71,19 @@ method $start_or_end_from_epoch_to_string ($start_or_end, $epoch) {
 method $set_year_month_day_time {
 
 
-        if 
+        # Initial Values:        
+        $start  =   $self->$epoch_to_string(%LAST_PAREN_MATCH{epoch})
+                    if ($start  =~  $matches_and_captures_epoch);
+                    
+        $end    =   $self->$epoch_to_string(%LAST_PAREN_MATCH{epoch})
+                    if ($end    =~  $matches_and_captures_epoch);
 
         # Definitions:
-        $
         my  $valid_start_values =   $start  =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
-                                    $start  =~  $matches_and_captures_epoch?            {%LAST_PAREN_MATCH}:
                                     undef;
 
         my  $valid_end_values   =   $end    =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
                                     $end    =~  $matches_and_captures_time?             {%LAST_PAREN_MATCH}:
-                                    $end    =~  $matches_and_captures_epoch?            {%LAST_PAREN_MATCH}:
                                     undef;
 
         # Premature Exit:
@@ -93,22 +91,11 @@ method $set_year_month_day_time {
         die $app->log_fatal('object.entry.error.invalid_end_values'     ) unless $valid_end_values;
 
         # Processing:
-        if ($valid_start_values->{epoch}) {
-            my $datetime                            =   DateTime->from_epoch($valid_start_values->{epoch});
-            ($start_year, $start_month, $start_day) =   split(
-                                                            '/',
-                                                            $datetime->ymd('/'),
-                                                        );
-            $start_time                             =   ;
-        }
-        else {        
-            $start_year             =   $valid_start_values->{year};
-            $start_month            =   $valid_start_values->{month};
-            $start_day              =   $valid_start_values->{day};
-            $start_time             =   $valid_start_values->{time};
-        };
-        
-            
+        $start_year             =   $valid_start_values->{year};
+        $start_month            =   $valid_start_values->{month};
+        $start_day              =   $valid_start_values->{day};
+        $start_time             =   $valid_start_values->{time};
+    
         $end_year               =   $valid_end_values->{year};
         $end_month              =   $valid_end_values->{month};
         $end_day                =   $valid_end_values->{day};
@@ -119,7 +106,7 @@ method $set_year_month_day_time {
       
 }
 
-method $create_epochs {
+method $set_epochs {
 
     # Premature exit if already set - this presumably needs more validation:
     return $self if $start_epoch && $end_epoch;
@@ -151,7 +138,7 @@ method $create_epochs {
 
 }
 
-method $create_duration {
+method $set_duration {
 
     $duration       =   sprintf(
                             '%dhr %dmins', # i.e. 1hr 30mins

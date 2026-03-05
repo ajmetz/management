@@ -7,6 +7,7 @@ use lib path(__FILE__)->parent->sibling('lib')->realpath->stringify;
 use Management::Boilerplate::Test;
 
 # Specific Modules used:
+use Test::Mojo;
 use Entry;
 
 =pod Name, Version, Synopsis, Description
@@ -53,9 +54,9 @@ Then we create Dummy Data we will need...
 =cut
 
 # Dummy Data for Object Tests:
-
 my  @dummy_data_for_entry   =   (
     
+    app             =>  Test::Mojo->new('Management')->app,     #   Created app object.
     start           =>  '01/01/2026 00:00',
     end             =>  '23:59', # Should be capable of assuming the same year/month/day as start if not stated.
     categories      =>  [

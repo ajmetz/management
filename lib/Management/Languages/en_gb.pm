@@ -68,6 +68,9 @@ Tokens: {
 
         @tokens_long = (
 
+            'object.entry.error.invalid_start_values'
+                =>  'Could not obtain values from start string. Please use the format "yyyy/mm/dd hh:mm" or an epoch number.',
+
             # Nothing yet.
         );
     } #long
