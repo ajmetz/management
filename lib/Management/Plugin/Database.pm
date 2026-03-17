@@ -41,6 +41,7 @@ method register ($app, $config) {
         database            =>  sub { $self->connection($app)->db   },
         data                =>  sub { $self->data($app)             },
         entry               =>  sub { $self->entry($app)            },
+        category            =>  sub { $self->category($app)            },
     };
 
     my $registration_order  =   [qw(
@@ -71,6 +72,10 @@ method data ($app) {
 
 method entry ($app) {
     state   $entry   =   Management::Model::Entry->new(data => $app->data, app => $app);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
+}
+
+method category ($app) {
+    state   $category=   Management::Model::Category->new(data => $app->data, app => $app);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
 }
 
 1; ####

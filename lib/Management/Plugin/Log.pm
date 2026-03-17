@@ -47,6 +47,7 @@ method register ($app, $config) {
                                     $self->language->localise(@arguments),
                                 );
                                 # Will the next line execute, if this is fatal?
+                                # It appears to be a message only, and would need to be paired with a die.
                                 return $self;
 
                             },

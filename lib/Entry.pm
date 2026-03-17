@@ -7,7 +7,7 @@ use     DateTime;
 use     DateTime::Duration;
 use     Time::Piece;
 use     English;
-
+#bob
 field   $start          :param              =   undef;
 field   $end            :param              =   undef;
 
@@ -32,6 +32,7 @@ field   $top_category   :param  :accessor   =   undef;      # Can be calculated 
 field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $app            :param;
+field   $id                     :accessor   =   undef;
 
 field   $matches_and_captures_date_and_time =   qr/
                                                     ^                                     # Start of string

@@ -1,0 +1,44 @@
+Entry Model:
+
+	* build what to save for top categories table
+		do we have a top category?
+				compare against list of known top categories
+					if it's a new top category
+						is it valid?
+							set is as one to save
+
+	* build what to save for catagories table
+			compare against list of known (prevalidated) categories.
+			if it's a new category,
+				is it valid?
+					set it as one to save
+						and is it the last category, and do we have a valid top_category?
+							set valid top category to include alongside it
+
+	* build what to save for junction table:
+		not necessary - by this stage we know all categories are valid.
+			As long as new valid categories are saved successfully first 
+			The hash still needs building of course
+				entries_categories => [entry_id, category]
+					so perhaps you could build it as a string with %s as a placeholder, and then populate it later, with sprintf, and then turn it into a hash with eval? No. Lol.
+
+
+	* Check Entry has valid start_epoch, end_epoch and details. Potentially via validator.
+
+	* Save any new top categories set to be saved.
+	* Check valid last top_category inserted, else complain there's a problem with top_category save.
+	* Save any new categories set to be saved.
+	* Check valid last category saved, else complain there's a problem.
+	* Save entry details to the entries table, and obtain a last entry inserted id.
+	* Check valid last entry inserted id
+			add to entry_id
+		else complain there's a problem with entry save.
+	* Build what to save for junction table
+		for each @category
+			push to $what to save
+				entries_catagories => [entry_id, $current_category]
+	* save to junction table
+		Check the last_updated_entry_id isn't already present in the junction table.
+		If it is, we'll need a remove procedure before an insert procedure,
+			and the user should be consulted for approval for such an overwrite.
+		$self->data->save($what_to_save)->get last id;
