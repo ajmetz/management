@@ -7,6 +7,7 @@ use     Mojo::Util qw(dumper);
 use     English;
 use     Entry;
 use     Data::Util;
+use     List::Util qw(none);
 
 field   $data                   :param  :accessor   ;
 field   $app                    :param  :accessor   ;
@@ -82,15 +83,15 @@ method save ($entry) {
                                         && $entry->can('start_epoch')
                                         && $entry->can('end_epoch')
                                         && $entry->can('details')
-                                        && $entry->start_epoch  =~ $matches_digit
-                                        && $entry->end_epoch    =~ $matches_digit
+                                        && $entry->start_epoch  =~ $matches_valid_digit
+                                        && $entry->end_epoch    =~ $matches_valid_digit
                                         && $entry->details # not blank/false/untrue. We may wish to add further validation later.
                                         ;
     my  $valid_top_category         =   $valid_entry->top_category
                                         && ($valid_entry->top_category =~ $matches_allowed_characters)? $valid_entry->top_category:
                                         undef;
     my  $existing_top_categories    =   $data->database->select($table_name->{top_categories} => $fields->{top_categories_fields})->arrays->to_array;
-    my  $valid_new_top_category     =   $is_new($valid_top_category, $existing_top_categories)? $valid_top_category:
+    my  $valid_new_top_category     =   $self->$is_new($valid_top_category, $existing_top_categories)? $valid_top_category:
                                         undef;
     $save->{top_categories}         =   [$valid_new_top_category]
                                         if $valid_new_top_category;
@@ -103,7 +104,7 @@ method save ($entry) {
                                                     && ($current_category =~ $matches_allowed_characters)?  $current_category:
                                                     undef;
         push    @valid_categories               ,   $valid_category; # This is silly. All categories in the entry should be valid already. Either validated on object construction, or via setters.
-        my      $valid_new_category             =   $is_new($valid_category, $existing_categories)?         $valid_category:
+        my      $valid_new_category             =   $self->$is_new($valid_category, $existing_categories)?         $valid_category:
                                                     undef;
         my      $is_new_and_is_last_category    =   fc $valid_new_category eq fc $valid_entry->categories->[-1];
         my      @with_optional_top_category     =   $is_new_and_is_last_category && $valid_top_category?    $valid_top_category:
@@ -156,7 +157,7 @@ method save ($entry) {
                                     )
                                     ->last_insert_id_lookup->{$table_name->{entries}};
     die $app->log_fatal('model.entry.save.error.save_entry') unless $saved->{entry};
-    my  $valid_entry_id         =   $saved->{entry} =~ $matches_digit; # Again - silly - the object should validate within its setter.
+    my  $valid_entry_id         =   $saved->{entry} =~ $matches_valid_digit; # Again - silly - the object should validate within its setter.
     die $app->log_fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
     $valid_entry->id($saved->{entry});
 
