@@ -37,11 +37,12 @@ method register ($app, $config) {
 
     # Initial values:
     my  $helpers={
+        # When adding new lines, remember to also update the registration order below this.
         connection          =>  sub { $self->connection($app)       },
         database            =>  sub { $self->connection($app)->db   },
         data                =>  sub { $self->data($app)             },
         entry               =>  sub { $self->entry($app)            },
-        category            =>  sub { $self->category($app)            },
+        category            =>  sub { $self->category($app)         },
     };
 
     my $registration_order  =   [qw(
@@ -49,6 +50,7 @@ method register ($app, $config) {
                                     database
                                     data
                                     entry
+                                    category
                                 )];
 
     # Processing:
