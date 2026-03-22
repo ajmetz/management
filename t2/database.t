@@ -63,18 +63,18 @@ Then we begin testing our Database configuration...
 
 # Database App Config Tests:
 
-my  $app                =   Test::Mojo->new('Management')->app;     #   Created app object.
+my  $app                                    =   Test::Mojo->new('Management')->app;     # Created app object.
 ok( defined(
         $app->config('sqlite_file')
-    )                                                               ,   'Configuration value for location '.
-                                                                        'of database file, is defined.',
+    )                                       ,   'Configuration value for location '.
+                                                'of database file, is defined.',
 );
 
 ok(
     defined(
         $app->config('migration_file')
-    )                                                               ,   'Configuration value for location '.
-                                                                        'of migrations file, is defined.',
+    )                                       ,   'Configuration value for location '.
+                                                'of migrations file, is defined.',
 );
 
 ok(
@@ -83,7 +83,7 @@ ok(
             $app->config('sqlite_file')
         )
     )
-    ->is_file                                                       ,   'Database file found.',
+    ->is_file                               ,   'Database file found.',
 );
 
 ok(
@@ -92,7 +92,7 @@ ok(
             $app->config('migration_file')
         )
     )
-    ->is_file                                                       ,   'Database Migration file found.',
+    ->is_file                               ,   'Database Migration file found.',
 );
 
 =head2 Database Tests.
@@ -102,23 +102,24 @@ Then we begin testing our Database itself...
 =cut
 
 # Database Tests:
-my  $database           =   $app->database;                         #   Created database object.
+my  $database                               =   $app->database; # Created database object.
 
 ok(
-    $database->ping                                                 ,   'Can ping the database okay.',
+    $database->handle->ping                 ,   'Can ping the database okay.',
 );
 #warn "Table Names:\n".join("\n", $database->tables->@*);
 
 like(
-    $database->tables   ,   array {
-                                item '"main"."categories"';                     
-                                item '"main"."entries"';
-                                item '"main"."entries_categories"';
-                                item '"main"."mojo_migrations"';
-                                item '"main"."sqlite_sequence"';
-                                item '"main"."top_categories"';
-                                end();
-                            }                                       ,   'Table names as expected.',
+    $database->handle->tables,
+    array {
+        item '"main"."categories"';                     
+        item '"main"."entries"';
+        item '"main"."entries_categories"';
+        item '"main"."mojo_migrations"';
+        item '"main"."sqlite_sequence"';
+        item '"main"."top_categories"';
+        end();
+    }                                       ,   'Table names as expected.',
 );
                                                 
 
