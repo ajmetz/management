@@ -6,13 +6,9 @@ use     Mojo::SQLite;
 #use     Data::Dumper;
 
 
-field   $app    :param;
+field   $file_name  :param;
 
 method connection {
-
-    my  $file_name          =   $app->home->rel_file(
-                                    $app->config->{'sqlite_file'}
-                                )->to_string;
 
     my  $options            =   {
                                     no_wal  =>  1,

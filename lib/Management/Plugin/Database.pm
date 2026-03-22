@@ -35,9 +35,15 @@ Registers C<< database >> as a Mojolicious Helper.
 method register ($app, $config) {
 
     # Initial values:
+    my  $database_params =   [
+        file_name   =>  $app->home->rel_file(
+                            $app->config->{'sqlite_file'}
+                        )->to_string,
+    ];
+
     my  $helpers={
         # When adding new lines, remember to also update the registration order below this.
-        database            =>  sub { $self->database($app) },
+        database            =>  sub { $self->database($database_params) },
     };
 
     my $registration_order  =   [qw(
@@ -55,8 +61,8 @@ method register ($app, $config) {
 
 }
 
-method database ($app) {
-    state $database = Management::Model::Database->new(app => $app);  # State means $database set only once then re-used.
+method database ($database_params) {
+    state $database = Management::Model::Database->new(database_params => $database_params);  # State means $database set only once then re-used.
 }
 
 1; ####

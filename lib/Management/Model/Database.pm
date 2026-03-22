@@ -7,7 +7,9 @@ class   Management::Model::Database;
 use     Management::Boilerplate::Code;
 use     Management::Model::Database::SQLite;
 
-field $app              :param  :reader ;
+field $database_params  :param  :reader ;   # Array ref of params, to pass to the database type class on construction.
+                                            # As they may vary depending on the class,
+                                            # am avoiding simply welcoming a filename string for this particular sqlite class.
 field $database_type            :reader =   'Management::Model::Database::SQLite'; # Change the type here if required.
 
 method handle {
@@ -17,7 +19,11 @@ method handle {
 }
 
 method connection {
-    state   $connection         =   $database_type->new(app => $app)->connection;
+    state   $connection         =   $database_type->new($database_params->@*)->connection;  # This object only has connection and no other methods. 
+                                                                                            # We are not giving access to Mojo::SQLite instance easily.
+                                                                                            # We have replicated db (via handle) and connection (via connection) here in this class,
+                                                                                            # so are only losing from filename and from string methods,
+                                                                                            # and our database_type class will handle those.
 }
 
 method fetch_main_table_names {
