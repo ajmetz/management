@@ -1,17 +1,23 @@
 use     Object::Pad v0.820;
 
 class   Management::Model::Database;
+# As I learn how classes interoperate, I may be repeating stuff already done within the framework.
+# This class for example, attempts to be a parent database class, when Mojo::SQLite::Database may already be one.
+
 use     Management::Boilerplate::Code;
 use     Management::Model::Database::SQLite;
 
-field $app :param :reader;
+field $app              :param  :reader ;
+field $database_type            :reader =   'Management::Model::Database::SQLite'; # Change the type here if required.
 
-method database {
-    $self->connection->db;
+method handle {
+    state   $handle             =   $self->connection->db;  # I presently believe the handle should always be the same one
+                                                            # and if I'm wrong feel free to lose the state $handle part 
+                                                            # and revert to this method simply returning: $self->connection->db;
 }
 
 method connection {
-    state   $connection   =   Management::Model::Database::SQLite->new(app => $app)->connection;
+    state   $connection         =   $database_type->new(app => $app)->connection;
 }
 
 method fetch_main_table_names {
@@ -27,7 +33,7 @@ method fetch_main_table_names {
     #warn dumper $database->tables;
     
     return (
-        map {($ARG =~ $captures_table_name)? $+{'table_name'}:()} $self->database->tables->@*
+        map {($ARG =~ $captures_table_name)? $+{'table_name'}:()} $self->handle->tables->@*
     );
 
 }
