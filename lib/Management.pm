@@ -28,13 +28,13 @@ method setup_database {
 
     $self->plugin('Management::Plugin::Database');
 
-    $self->connection->migrations->from_file(
+    $self->database->connection->migrations->from_file(
         $self->home->rel_file(
             $self->config->{'migration_file'}
         )->to_string
     );
 
-    my $db  =    $self->database; # First call might trigger migration.
+    my $db  =    $self->database->handle; # First call might trigger migration.
 
     return $self;
 }
@@ -98,7 +98,7 @@ method setup_template_nest {
             token_delims    =>  ['PUT','HERE'],
             escape_char     =>  '\\',
             name_label      =>  'TEMPLATE',
-            template_ext    =>  '', # Blank so can declare extension under the NAME key.
+            template_ext    =>  '', # Blank so can declare extension under the NAME key (labelled TEMPLATE).
                                     # This will allow me to use htm and html
                                     # or anything else as I wish.
 
