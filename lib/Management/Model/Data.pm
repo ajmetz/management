@@ -5,6 +5,7 @@ use     Management::Boilerplate::Code;
 use     Management::Languages;
 use     Mojo::Util qw(dumper);
 use     English;
+use     Data::Util qw(is_hash_ref);
 
 field   $database               :param  :reader;
 field   $app                    :param  :reader;
@@ -25,6 +26,33 @@ method save ($what_to_save) {
     }
 
     return  $self;
+
+}
+
+method retrieve ($what_to_retrieve ||= undef) {
+
+
+    my $data =  {};
+    my  $valid_input    =   $what_to_retrieve
+                            && is_array_ref($what_to_retrieve)
+                            && scalar $what_to_retrieve->@*?    $what_to_retrieve:
+                            undef;
+
+    if ($valid_input) {
+        for my ($table_name, $query) ($valid_input->%*) {   # Please check query is sane perhaps before execution? Or will SQL Abstract handle that for us?
+
+            $data->{$table_name}   =   $database->select($table_name, $query->@*)->hashes->to_array;
+
+        }
+    }
+    else {
+        for my $current_table ($database->fetch_main_table_names) {
+            # Key                       # Value
+            $data->{$current_table} =   $database->select($current_table)->hashes->to_array; # Array ref.
+        };
+    };
+
+    return $data->%*? $data:undef;
 
 }
 

@@ -70,6 +70,7 @@ my          $data               =   Management::Model::Data->new(
 isa_ok  (   $data               ,   ['Management::Model::Data'],                            'Our Management::Model::Data object is '.
                                                                                             'of Management::Model::Data class.'     );
 #warn "Table Names:\n".join("\n", keys $data->table_list->%*);
+
 like    (   $data->retrieve     ,   hash {
                                                     #field entries => T();
                                                     #field entries => hash { all_values => T() };
@@ -95,3 +96,6 @@ __END__
 
 Old lines that could prove useful again later:
 #use lib path(__FILE__)->parent->parent->realpath->stringify;
+
+
+

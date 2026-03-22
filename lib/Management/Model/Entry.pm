@@ -79,6 +79,7 @@ method save ($entry) {
     my  $save                       =   {};
     my  $saved                      =   {};
     my  $where                      =   {};
+    my  @valid_categories           =   @nothing;
     my  $valid_entry                =   instance($entry, $input_class)
                                         && $entry->can('start_epoch')
                                         && $entry->can('end_epoch')
