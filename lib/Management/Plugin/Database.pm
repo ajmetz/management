@@ -42,16 +42,11 @@ method register ($app, $config) {
                                 )->to_string,
     ];
 
-    my  $model_params = [
-        data                =>  $app->data,
-        app                 =>  $app,
-    ];
-
     my  $helpers={
         # When adding new lines, remember to also update the registration order below this.
         database            =>  sub { $self->database   ($database_params)  },
-        entry               =>  sub { $self->entry      ($model_params)     },
-        category            =>  sub { $self->category   ($model_params)     },
+        entry               =>  sub { $self->entry      ($app)              },
+        category            =>  sub { $self->category   ($app)              },
     };
 
     my $registration_order  =   [qw(
@@ -75,11 +70,18 @@ method database ($database_params) {
     state $database = Management::Model::Database->new(database_params => $database_params);  # State means $database set only once then re-used.
 }
 
-method entry ($model_params) {
+method entry ($app) {
+    my  $model_params = [
+        data                =>  $app->data,
+        app                 =>  $app,
+    ];
     state   $entry   =   Management::Model::Entry->new($model_params->@*);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
 }
 
-method category ($model_params) {
+method category ($app) {
+    my  $model_params = [
+        data                =>  $app->database->data,
+    ];
     state   $category=   Management::Model::Category->new($model_params->@*);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
 }
 
