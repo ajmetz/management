@@ -6,8 +6,7 @@ inherit Mojolicious::Plugin;
 #use     Mojo::Util qw(dumper);
 
 use     Management::Model::Database;
-use     Management::Model::Data;
-use     Management::Model::Entry;
+
 
 =pod Name, Version, Synopsis
 
@@ -15,7 +14,7 @@ use     Management::Model::Entry;
 
 =head1 NAME
 
-Database - Simple Database helper.
+Database - Simple helper that acts as glue to the Model Database class.
 
 =head1 VERSION
 
@@ -38,19 +37,11 @@ method register ($app, $config) {
     # Initial values:
     my  $helpers={
         # When adding new lines, remember to also update the registration order below this.
-        connection          =>  sub { $self->connection($app)       },
-        database            =>  sub { $self->connection($app)->db   },
-        data                =>  sub { $self->data($app)             },
-        entry               =>  sub { $self->entry($app)            },
-        category            =>  sub { $self->category($app)         },
+        database            =>  sub { $self->database($app) },
     };
 
     my $registration_order  =   [qw(
-                                    connection
                                     database
-                                    data
-                                    entry
-                                    category
                                 )];
 
     # Processing:
@@ -64,20 +55,8 @@ method register ($app, $config) {
 
 }
 
-method connection ($app) {
-    state $connection = Management::Model::Database->new(app => $app)->connection;  # State means $connection set only once then re-used.
-}
-
-method data ($app) {
-    state   $data   =   Management::Model::Data->new(database => $app->database, app => $app);  # State means $data set only once then re-used.
-}
-
-method entry ($app) {
-    state   $entry   =   Management::Model::Entry->new(data => $app->data, app => $app);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
-}
-
-method category ($app) {
-    state   $category=   Management::Model::Category->new(data => $app->data, app => $app);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
+method database ($app) {
+    state $database = Management::Model::Database->new(app => $app);  # State means $database set only once then re-used.
 }
 
 1; ####
@@ -98,3 +77,22 @@ This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
+
+__END__
+
+Old code we removed:
+
+use     Management::Model::Data;
+use     Management::Model::Entry;
+
+method data ($app) {
+    state   $data   =   Management::Model::Data->new(database => $app->database, app => $app);  # State means $data set only once then re-used.
+}
+
+method entry ($app) {
+    state   $entry   =   Management::Model::Entry->new(data => $app->data, app => $app);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
+}
+
+method category ($app) {
+    state   $category=   Management::Model::Category->new(data => $app->data, app => $app);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
+}
