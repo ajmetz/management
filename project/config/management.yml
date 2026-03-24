@@ -1,0 +1,7 @@
+---
+secrets:
+  - a09852f2b088f9f043a6540cdaa063314d5ecf9a
+default_language: en-GB
+sqlite_file: ../../data/database/database.db
+migration_file: lib/Management/SQL/database_migration.sql
+...

@@ -1,6 +1,6 @@
 log.txt
 pid.txt
-/*local.conf
+*local.conf
 renametoreload*.*
 *.*-shm
 *.*-wal
