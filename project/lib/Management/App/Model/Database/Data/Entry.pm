@@ -126,7 +126,7 @@ method save ($entry) {
                                         }
                                     )
                                     ->last_insert_id_lookup->{$table_name->{top_categories}};
-        die                         $app->log_fatal('model.entry.save.error.save_top_categories_data')
+        die                         $app->logger->fatal('model.entry.save.error.save_top_categories_data')
                                     unless $saved->{top_category};
     };
     
@@ -140,7 +140,7 @@ method save ($entry) {
                                     ->save($current_category_fields_to_save->@*)
                                     ->last_saved_category;
         # Verify:
-        die                         $app->log_fatal('model.entry.save.error.save_category')
+        die                         $app->logger->fatal('model.entry.save.error.save_category')
                                     unless $saved->{category};
 
     };
@@ -156,9 +156,9 @@ method save ($entry) {
                                         }
                                     )
                                     ->last_insert_id_lookup->{$table_name->{entries}};
-    die $app->log_fatal('model.entry.save.error.save_entry') unless $saved->{entry};
+    die $app->logger->fatal('model.entry.save.error.save_entry') unless $saved->{entry};
     my  $valid_entry_id         =   $saved->{entry} =~ $matches_valid_digit; # Again - silly - the object should validate within its setter.
-    die $app->log_fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
+    die $app->logger->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
     $valid_entry->id($saved->{entry});
 
     # Check entry is not already in junction table:
@@ -171,12 +171,12 @@ method save ($entry) {
                                             )
                                             ->arrays->to_array->@*; # Later, this need not be a die, and can simply prompt for confirmation before overwrite - which will be a removal, before an insert.
 
-    die                                     $app->log_fatal('model.entry.save.error.existing_record_found')
+    die                                     $app->logger->fatal('model.entry.save.error.existing_record_found')
                                             if $existing_record_found;
 
     foreach my $current_valid_category (@valid_categories) {
         $saved->{entries_categories}    =   $data->save($table_name->{entries_categories} => [$valid_entry->id, $current_valid_category])->last_insert_id_lookup->{$table_name->{entries_categories}};
-        die                                 $app->log_fatal('model.entry.save.error.save_entries_categories')
+        die                                 $app->logger->fatal('model.entry.save.error.save_entries_categories')
                                             unless $saved->{entries_categories};
     }
     

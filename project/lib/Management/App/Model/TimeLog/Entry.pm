@@ -88,8 +88,8 @@ method $set_year_month_day_time {
                                     undef;
 
         # Premature Exit:
-        die $app->log_fatal('object.entry.error.invalid_start_values'   ) unless $valid_start_values;
-        die $app->log_fatal('object.entry.error.invalid_end_values'     ) unless $valid_end_values;
+        die $app->logger->fatal('object.entry.error.invalid_start_values'   ) unless $valid_start_values;
+        die $app->logger->fatal('object.entry.error.invalid_end_values'     ) unless $valid_end_values;
 
         # Processing:
         $start_year             =   $valid_start_values->{year};

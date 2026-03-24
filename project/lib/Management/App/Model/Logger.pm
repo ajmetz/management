@@ -1,30 +1,52 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Plugin::Log;
-
+class   Management::App::Model::Logger;
 use     Management::App::Boilerplate::Code;
-inherit Mojolicious::Plugin;
-use     Management::App::Model::Logger;
 
-method register ($app, $config) {
+use     Mojo::Util qw(dumper);
 
-    my  $helpers        =   {
-        logger          =>  sub { $self->logger($app->log, $app->language) }
-    };
+field   $log        :param;
+field   $language   :param;
+field   $new_line           =   "\n";
 
-    for my $current (keys $helpers->%*) {
-        $app->helper($current    =>  $helpers->{$current});
-    };
-
-    return;
-
+method  debug (@arguments) {
+    $log->debug(
+        $language->localise(@arguments),
+    );
+    return $self;
 }
 
-method logger ($log, $language){
-    state $logger = Management::App::Model::Logger->new(log => $log, language => $language);  # State means $database set only once then re-used.
+method  trace (@arguments) {
+    $log->trace(
+        $language->localise(@arguments),
+    );
+    return $self;
 }
+
+method  error (@arguments) {
+    $log->error(
+        $language->localise(@arguments),
+    );
+    return $self;
+}
+
+method  fatal (@arguments) {
+    $log->fatal(
+        $language->localise(@arguments),
+    );
+    return $self;
+}
+
+method dump_values (@arguments) {
+    $log->info(
+        '-'.$new_line.dumper(@arguments)
+    );
+    return $self;
+}
+
 
 __END__
+
 
         log_debug       =>  sub ($self, @arguments) {
 

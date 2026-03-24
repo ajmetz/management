@@ -12,7 +12,7 @@ my $time_range_class    =   'Management::App::Model::TimeLog::TimeRange';
 
 method entries {
 
-    $self->log_debug('About to set initial values.');
+    $self->logger->debug('About to set initial values.');
 
     # Initial Values:
     my  $valid_input                =   $self->get_valid_entries_input;
@@ -22,21 +22,21 @@ method entries {
                                                         $self->request_input:
                                         $self->request_input;
 
-    $self->log_debug('Set layout data structure as follows:')->log_dump_values($layout_data_structure);
+    $self->logger->debug('Set layout data structure as follows:')->dump_values($layout_data_structure);
 
-    $self->log_debug('About to start processing.');
+    $self->logger->debug('About to start processing.');
 
     # Processing:
     my  $layout                     =   Template::Nest->new($self->stash->{layout_settings}->@*)->render($layout_data_structure);
 
-    $self->log_debug('Created layout using Template Nest, and saved it to variable.');
+    $self->logger->debug('Created layout using Template Nest, and saved it to variable.');
 
     # Output:
     $self->render(
         text                        =>  $layout,
     );
 
-    $self->log_debug('Rendered the layout as text/html.');
+    $self->logger->debug('Rendered the layout as text/html.');
 
 }
 
@@ -67,7 +67,7 @@ method request_input {
 
 method confirm_input ($valid_input = undef) {
 
-    $self->log_debug('About to set initial values.');
+    $self->logger->debug('About to set initial values.');
 
     # Initial values:
     my @entries                     =   $valid_input->{'data'}?    Management::App::Model::TimeLog::EntryFactory->multiple_entries($valid_input->{'data'}):
@@ -144,7 +144,7 @@ method save_input ($valid_input = undef) {
 method days {
 
 
-    $self->log_trace('About to set initial values.');
+    $self->logger->trace('About to set initial values.');
 
     # Initial Values:
     my  $valid_input                =   $self->get_valid_days_input;
@@ -152,21 +152,21 @@ method days {
     my  $layout_data_structure      =   $valid_input?   $self->show_days($valid_input):
                                         $self->ask_days;
 
-    $self->log_trace('Set layout data structure as follows:')->log_dump_values($layout_data_structure);
+    $self->logger->trace('Set layout data structure as follows:')->dump_values($layout_data_structure);
 
-    $self->log_trace('About to start processing.');
+    $self->logger->trace('About to start processing.');
 
     # Processing:
     my  $layout                     =   Template::Nest->new($self->stash->{layout_settings}->@*)->render($layout_data_structure);
 
-    $self->log_trace('Created layout using Template Nest, and saved it to variable.');
+    $self->logger->trace('Created layout using Template Nest, and saved it to variable.');
 
     # Output:
     $self->render(
         text                        =>  $layout,
     );
 
-    $self->log_trace('Rendered the layout as text/html.');
+    $self->logger->trace('Rendered the layout as text/html.');
 
 }
 
