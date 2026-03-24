@@ -72,7 +72,7 @@ method database ($database_params) {
 
 method entry ($app) {
     my  $model_params = [
-        data                =>  $app->data,
+        data                =>  $app->database->data,
         app                 =>  $app,
     ];
     state   $entry   =   Management::App::Model::Database::Data::Entry->new($model_params->@*);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
