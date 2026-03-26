@@ -11,14 +11,14 @@ field   $logger                 :param  :reader;
 field   $last_insert_id_lookup          :reader     =   {};
 
 method save ($what_to_save) {
+    my  $log    =   $logger->context('Management::App::Model::Database::Data::save');
+
+    $log->trace('This is what we have been asked to save...')->dump_values($what_to_save);
 
     foreach my ($table_name, $table_data) ($what_to_save->%*) {
-
-        $last_insert_id_lookup->{$table_name}       =   [
-                                                            map {
-                                                                $database->handle->insert($table_name => $ARG)->last_insert_id
-                                                            } $table_data->@*,
-                                                        ];
+        $log->trace('Beginning with the following data...')->dump_values($table_data);
+        $log->trace('To be saved to the following table...')->dump_values($table_name);
+        $last_insert_id_lookup->{$table_name}       =   $database->handle->insert($table_name => $table_data)->last_insert_id;
 
     }
 

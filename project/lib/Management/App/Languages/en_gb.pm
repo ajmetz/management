@@ -161,11 +161,39 @@ Phrases: {
     Trace: {
         @trace_phrases = (
         
-            # Management::App::Model::Database::Data::Entry:save
+            # Management::App::Model::Database::Data::Entry::save
 
+            'Beginning the process of actually saving to database...'       =>  'Beginning the process of actually saving to database...',
             'Checking our Entry Object is valid.'                           =>  'Checking our Entry Object is valid.',
+            'Checking our top category is new...'                           =>  'Checking our top category is new...',
             'Checking our top category is valid.'                           =>  'Checking our top category is valid.',
+            'Decided to save these categories:'                             =>  'Decided to save these categories:',
+            'Decided we do not have a valid and new top category to save.'  =>  'Decided we do not have a valid and new top category to save.',
+            'Detected we have something to save to categories table...'     =>  'Detected we have something to save to categories table...',
+            'Fetching existing categories from database.'                   =>  'Fetching existing categories from database.',
+            'Intending to save the following category...'                   =>  'Intending to save the following category...',
             'Our top category is invalid.'                                  =>  'Our top category is invalid.',
+            "Processing our Entry Object's categories."                     =>  "Processing our Entry Object's categories.",
+            'Successfully saved category with the following id...'          =>  'Successfully saved category with the following id...',
+            'Successfully saved entry with the following id...'             =>  'Successfully saved entry with the following id...',
+            'These are the arguments we are sending to select...'           =>  'These are the arguments we are sending to select...',
+
+            'Because we checked for a valid entry earlier, we are assuming we can proceed to save to the entry table...'
+                =>  'Because we checked for a valid entry earlier, we are assuming we can proceed to save to the entry table...',
+
+            'Checking to see if this entry id already exists in the entries_categories table...'
+                =>  'Checking to see if this entry id already exists in the entries_categories table...',
+                
+            'This entry id is not yet in the entries_categories table, so we will now proceed to saving it there...'
+                =>  'This entry id is not yet in the entries_categories table, so we will now proceed to saving it there...',
+
+
+
+            # Management::App::Model::Database::Data::save
+        
+            'This is what we have been asked to save...'                    =>  'This is what we have been asked to save...',
+            'Beginning with the following data...'                          =>  'Beginning with the following data...',
+            'To be saved to the following table...'                         =>  'To be saved to the following table...',
         
         );
     } #trace

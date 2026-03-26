@@ -39,7 +39,7 @@ method  fatal (@arguments) {
 }
 
 method dump_values (@arguments) {
-    $log->info(
+    $log->debug(
         '-'.$new_line.dumper(@arguments)
     );
     return $self;

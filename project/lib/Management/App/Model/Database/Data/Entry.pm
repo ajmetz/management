@@ -160,16 +160,17 @@ method save ($entry) {
         $log->trace('Successfully saved top category with the following id...')->dump_values($saved->{top_category});
     };
     
-    foreach my $current_category_fields_to_save ($save->{categories}->@*) {
+    foreach my $current_category_to_save ($save->{categories}->@*) {
 
-        $log->trace('Detected we have something to save to categories table...');
+        $log->trace('Detected we have something to save to categories table...')->dump_values($save->{categories});
 
         # Initial Values:
         $saved->{category}      =   undef; # Reset to undef for each loop.
         
         # Processing
+        $log->trace('Intending to save the following category...')->dump_values($current_category_to_save);
         $saved->{category}      =   $data->category
-                                    ->save($current_category_fields_to_save->@*)
+                                    ->save($current_category_to_save->@*)
                                     ->last_saved_category;
         # Verify:
         die                         $log->fatal('model.entry.save.error.save_category')
@@ -196,21 +197,38 @@ method save ($entry) {
     my  $valid_entry_id         =   $saved->{entry} =~ $matches_valid_digit; # Again - silly - the object should validate within its setter.
     die $log->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
     $valid_entry->id($saved->{entry});
+    $log->trace('Successfully saved entry with the following id...')->dump_values($valid_entry->id);
 
     # Check entry is not already in junction table:
-    $where->{matches_valid_entry_id}    =   { $fields->{entry_id} =>  $valid_entry->id };
-    my  $existing_record_found          =   scalar $data->database->handle
+    $where->{matches_valid_entry_id}    =   { $fields->{entry_id}->[0] =>  $valid_entry->id }; # entry_id has to be dereferenced for a where clause. 
+    $log->trace('Checking to see if this entry id already exists in the entries_categories table...');
+    $log->trace('These are the arguments we are sending to select...')->dump_values(
+                                                (
+                                                    $table_name->{entries_categories},
+                                                    $fields->{entry_id},
+                                                    $where->{matches_valid_entry_id},
+                                                )
+    );
+    my  $existing_record_found          =   scalar ($data->database->handle
                                             ->select(
                                                 $table_name->{entries_categories},
                                                 $fields->{entry_id},
                                                 $where->{matches_valid_entry_id},
                                             )
-                                            ->arrays->to_array->@*; # Later, this need not be a die, and can simply prompt for confirmation before overwrite - which will be a removal, before an insert.
+                                            ->arrays->to_array->@*); # Later, this need not be a die, and can simply prompt for confirmation before overwrite - which will be a removal, before an insert.
 
     die                                     $log->fatal('model.entry.save.error.existing_record_found')
                                             if $existing_record_found;
 
+    $log
+    ->trace('This entry id is not yet in the entries_categories table, so we will now proceed to saving it there...')
+    ->trace('We will be associating the following entry id...')
+    ->dump_values($valid_entry->id)
+    ->trace('...with this list of categories...')
+    ->dump_values(@valid_categories);
+
     foreach my $current_valid_category (@valid_categories) {
+        $log->trace('For category...')->dump_values($current_valid_category);
         $saved->{entries_categories}    =   $data->save($table_name->{entries_categories} => [$valid_entry->id, $current_valid_category])->last_insert_id_lookup->{$table_name->{entries_categories}};
         die                                 $log->fatal('model.entry.save.error.save_entries_categories')
                                             unless $saved->{entries_categories};
