@@ -36,12 +36,12 @@ method register ($app, $config) {
 
     # Initial values:
 
-    my  $database_params = [
+    my  $database_params = {
         file_name           =>  $app->home->rel_file(
                                     $app->config->{'sqlite_file'}
                                 )->to_string,
         logger              =>  $app->logger,
-    ];
+    };
 
     my  $helpers={
         # When adding new lines, remember to also update the registration order below this.
@@ -64,7 +64,7 @@ method register ($app, $config) {
 }
 
 method database ($database_params) {
-    state $database = Management::App::Model::Database->new(database_params => $database_params);  # State means $database set only once then re-used.
+    state $database = Management::App::Model::Database->new($database_params->%*);  # State means $database set only once then re-used.
 }
 
 1; ####

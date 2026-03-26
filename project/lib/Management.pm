@@ -9,24 +9,23 @@ inherit Mojolicious;
 method startup {
 
     $self
-    ->get_configuration_from_file
-    ->configure_the_application
-    ->load_additional_plugins;
+    ->load_config_plugin_and_get_configuration_from_file
+    ->load_additional_plugins
+    ->configure_the_application;
 
 }
 
 method load_additional_plugins {
 
-    $self->plugin('Management::App::Plugin::Routes');
     $self->plugin('Management::App::Plugin::Languages');
-    $self->plugin('Management::App::Plugin::Log');
+    $self->plugin('Management::App::Plugin::Log'); # Uses Languages
+    $self->plugin('Management::App::Plugin::Database'); # Uses Log
+    $self->plugin('Management::App::Plugin::Routes');
     return $self;
 
 }
 
 method setup_database {
-
-    $self->plugin('Management::App::Plugin::Database');
 
     $self->database->connection->migrations->from_file(
         $self->home->rel_file(
@@ -39,7 +38,7 @@ method setup_database {
     return $self;
 }
 
-method get_configuration_from_file {
+method load_config_plugin_and_get_configuration_from_file {
     $self->plugin(
         'NotYAMLConfig',
         {
