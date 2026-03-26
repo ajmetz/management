@@ -32,7 +32,6 @@ method load_plugins {
 
 }
 
-
 method exclude_author_commands {
 
     # Exclude author commands...
@@ -92,16 +91,5 @@ method setup_template_nest {
 
 __END__
 
-method setup_database {
 
-    $self->database->connection->migrations->from_file(
-        $self->home->rel_file(
-            $self->config->{'migration_file'}
-        )->to_string
-    );
-
-    my $db  =    $self->database->handle; # First call might trigger migration.
-
-    return $self;
-}
 
