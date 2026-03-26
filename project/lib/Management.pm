@@ -9,14 +9,21 @@ inherit Mojolicious;
 method startup {
 
     $self
-    ->load_config_plugin_and_get_configuration_from_file
-    ->load_additional_plugins
-    ->configure_the_application;
+    ->load_plugins
+    ->secrets( $self->config->{secrets} )
+    ->exclude_author_commands
+    ->setup_customisation_of_mojolicious_file_paths
+    ->setup_template_nest;
 
 }
 
-method load_additional_plugins {
+method load_plugins {
 
+    my  $config_params = {
+        file    =>  $self->home->rel_file('config/management.yml')->to_string,
+    };
+
+    $self->plugin('NotYAMLConfig', $config_params);
     $self->plugin('Management::App::Plugin::Languages');
     $self->plugin('Management::App::Plugin::Log'); # Uses Languages
     $self->plugin('Management::App::Plugin::Database'); # Uses Log
@@ -25,42 +32,6 @@ method load_additional_plugins {
 
 }
 
-method setup_database {
-
-    $self->database->connection->migrations->from_file(
-        $self->home->rel_file(
-            $self->config->{'migration_file'}
-        )->to_string
-    );
-
-    my $db  =    $self->database->handle; # First call might trigger migration.
-
-    return $self;
-}
-
-method load_config_plugin_and_get_configuration_from_file {
-    $self->plugin(
-        'NotYAMLConfig',
-        {
-            file    =>  $self->home->rel_file('config/management.yml')->to_string,
-        },
-    );
-    #warn join("\n", $self->config->%*); # Debugging prior to log plugin.
-
-    return $self;
-}
-
-method configure_the_application {
-
-    $self           ->  secrets(
-                            $self->config->{secrets}
-                        );
-
-    return $self    ->  exclude_author_commands
-                    ->  setup_customisation_of_mojolicious_file_paths
-                    ->  setup_database
-                    ->  setup_template_nest; # returns $self
-}
 
 method exclude_author_commands {
 
@@ -120,3 +91,17 @@ method setup_template_nest {
 }
 
 __END__
+
+method setup_database {
+
+    $self->database->connection->migrations->from_file(
+        $self->home->rel_file(
+            $self->config->{'migration_file'}
+        )->to_string
+    );
+
+    my $db  =    $self->database->handle; # First call might trigger migration.
+
+    return $self;
+}
+

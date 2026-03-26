@@ -59,13 +59,29 @@ method register ($app, $config) {
         $ARG            =>  $helpers->{$ARG}
     ) for ($registration_order->@*);
 
-    return;
+    $self->setup_database_migration($app);
+
+    return $app;
 
 }
 
 method database ($database_params) {
     state $database = Management::App::Model::Database->new($database_params->%*);  # State means $database set only once then re-used.
 }
+
+method setup_database_migration ($app) {
+
+    $app->database->connection->migrations->from_file(
+        $app->home->rel_file(
+            $app->config->{'migration_file'}
+        )->to_string
+    );
+
+    my $db  =    $app->database->handle; # First call might trigger migration.
+
+    return $self;
+}
+
 
 1; ####
 
