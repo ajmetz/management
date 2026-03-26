@@ -54,7 +54,13 @@ Then we create Dummy Data we will need...
 =cut
 
 # Dummy Data for Object Tests:
-my  $test_app               =   Test::Mojo->new('Management')->app;
+my  $test_app_config        =   {
+                                    secrets             =>  ['wakkawakka'],
+                                    default_language    =>   'en-GB',
+                                    sqlite_file         =>  '../../data/database/database.db',
+                                    migration_file      =>  'lib/Management/SQL/database_migration.sql',
+                                };
+my  $test_app               =   Test::Mojo->new('Management',$test_app_config)->app;
 my  @dummy_data_for_entry   =   (
     
     logger          =>  $test_app->logger,
@@ -87,6 +93,7 @@ ok      (   $entry_object->start_epoch      <=  $entry_object->end_epoch,       
 ok      (   $entry_object->end_epoch        >=  $entry_object->start_epoch,                             'End Epoch is less '.
                                                                                                         'or equal to Start Epoch'               );
 
+#ok ( $test_app->database->data->entry($entry_object),   'Entry can be saved to database');
 
 #my  $test_object            =   Test::Mojo->new('Management');
 

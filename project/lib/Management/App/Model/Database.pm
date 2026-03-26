@@ -35,7 +35,7 @@ method data {
                                                 database => $self,
                                                 logger   => $self->logger
                                             );
-    state   $data                       =   Management::App::Model::Database::Data->new();  # State means $data set only once then re-used.
+    state   $data                       =   Management::App::Model::Database::Data->new(@params);  # State means $data set only once then re-used.
 }
 
 method fetch_main_table_names {
