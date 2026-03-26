@@ -91,14 +91,14 @@ method save ($entry) {
     my  $valid_top_category         =   $valid_entry->top_category
                                         && ($valid_entry->top_category =~ $matches_allowed_characters)? $valid_entry->top_category:
                                         undef;
-    my  $existing_top_categories    =   $data->database->select($table_name->{top_categories} => $fields->{top_categories_fields})->arrays->to_array;
+    my  $existing_top_categories    =   $data->database->handle->select($table_name->{top_categories} => $fields->{top_categories_fields})->arrays->to_array;
     my  $valid_new_top_category     =   $self->$is_new($valid_top_category, $existing_top_categories)? $valid_top_category:
                                         undef;
     $save->{top_categories}         =   [$valid_new_top_category]
                                         if $valid_new_top_category;
     
     # Build what to save for categories table:
-    my  $existing_categories        =   $data->database->select($table_name->{categories} => $fields->{category})->arrays->to_array; # Can we not just category->retrieve_list?
+    my  $existing_categories        =   $data->database->handle->select($table_name->{categories} => $fields->{category})->arrays->to_array; # Can we not just category->retrieve_list?
     $save->{categories}             =   [];
     foreach my $current_category ($valid_entry->categories->@*) {
         my      $valid_category                 =   $current_category
@@ -164,7 +164,7 @@ method save ($entry) {
 
     # Check entry is not already in junction table:
     $where->{matches_valid_entry_id}    =   { $fields->{entry_id} =>  $valid_entry->id };
-    my  $existing_record_found          =   scalar $data->database
+    my  $existing_record_found          =   scalar $data->database->handle
                                             ->select(
                                                 $table_name->{entries_categories},
                                                 $fields->{entry_id},
