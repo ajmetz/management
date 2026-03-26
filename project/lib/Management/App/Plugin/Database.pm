@@ -40,19 +40,16 @@ method register ($app, $config) {
         file_name           =>  $app->home->rel_file(
                                     $app->config->{'sqlite_file'}
                                 )->to_string,
+        logger              =>  $app->logger,
     ];
 
     my  $helpers={
         # When adding new lines, remember to also update the registration order below this.
         database            =>  sub { $self->database   ($database_params)  },
-        entry               =>  sub { $self->entry      ($app)              },
-        category            =>  sub { $self->category   ($app)              },
     };
 
     my $registration_order  =   [qw(
                                     database
-                                    category
-                                    entry
                                 )];
 
     # Processing:
@@ -68,21 +65,6 @@ method register ($app, $config) {
 
 method database ($database_params) {
     state $database = Management::App::Model::Database->new(database_params => $database_params);  # State means $database set only once then re-used.
-}
-
-method entry ($app) {
-    my  $model_params = [
-        data                =>  $app->database->data,
-        app                 =>  $app,
-    ];
-    state   $entry   =   Management::App::Model::Database::Data::Entry->new($model_params->@*);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
-}
-
-method category ($app) {
-    my  $model_params = [
-        data                =>  $app->database->data,
-    ];
-    state   $category=   Management::App::Model::Database::Data::Category->new($model_params->@*);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
 }
 
 1; ####

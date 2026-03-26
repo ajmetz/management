@@ -9,7 +9,7 @@ use     List::Util qw(none);
 use     Entry;
 
 field   $data                   :param  :accessor   ;
-field   $app                    :param  :accessor   ;
+field   $logger                 :param  :accessor   ;
 field   $last_saved_entry_id    :reader             =   undef;
 field   $matches_valid_digit                        =   qr/^\p{Digit}+$/;
 field   $matches_allowed_characters                 =   qr/\p{Identifier_Status: Allowed}+/;
@@ -126,7 +126,7 @@ method save ($entry) {
                                         }
                                     )
                                     ->last_insert_id_lookup->{$table_name->{top_categories}};
-        die                         $app->logger->fatal('model.entry.save.error.save_top_categories_data')
+        die                         $logger->fatal('model.entry.save.error.save_top_categories_data')
                                     unless $saved->{top_category};
     };
     
@@ -136,11 +136,11 @@ method save ($entry) {
         $saved->{category}      =   undef; # Reset to undef for each loop.
         
         # Processing
-        $saved->{category}      =   $app->category
+        $saved->{category}      =   $data->category
                                     ->save($current_category_fields_to_save->@*)
                                     ->last_saved_category;
         # Verify:
-        die                         $app->logger->fatal('model.entry.save.error.save_category')
+        die                         $logger->fatal('model.entry.save.error.save_category')
                                     unless $saved->{category};
 
     };
@@ -156,9 +156,9 @@ method save ($entry) {
                                         }
                                     )
                                     ->last_insert_id_lookup->{$table_name->{entries}};
-    die $app->logger->fatal('model.entry.save.error.save_entry') unless $saved->{entry};
+    die $logger->fatal('model.entry.save.error.save_entry') unless $saved->{entry};
     my  $valid_entry_id         =   $saved->{entry} =~ $matches_valid_digit; # Again - silly - the object should validate within its setter.
-    die $app->logger->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
+    die $logger->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
     $valid_entry->id($saved->{entry});
 
     # Check entry is not already in junction table:
@@ -171,12 +171,12 @@ method save ($entry) {
                                             )
                                             ->arrays->to_array->@*; # Later, this need not be a die, and can simply prompt for confirmation before overwrite - which will be a removal, before an insert.
 
-    die                                     $app->logger->fatal('model.entry.save.error.existing_record_found')
+    die                                     $logger->fatal('model.entry.save.error.existing_record_found')
                                             if $existing_record_found;
 
     foreach my $current_valid_category (@valid_categories) {
         $saved->{entries_categories}    =   $data->save($table_name->{entries_categories} => [$valid_entry->id, $current_valid_category])->last_insert_id_lookup->{$table_name->{entries_categories}};
-        die                                 $app->logger->fatal('model.entry.save.error.save_entries_categories')
+        die                                 $logger->fatal('model.entry.save.error.save_entries_categories')
                                             unless $saved->{entries_categories};
     }
     

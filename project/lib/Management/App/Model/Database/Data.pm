@@ -6,7 +6,8 @@ use     Management::App::Languages;
 use     Data::Util qw(is_hash_ref);
 
 field   $database               :param  :reader;
-field   $last_insert_id_lookup  :reader             =   {};
+field   $logger                 :param  :reader;
+field   $last_insert_id_lookup          :reader     =   {};
 
 method save ($what_to_save) {
 
@@ -54,6 +55,21 @@ method retrieve ($what_to_retrieve ||= undef) {
     return  $data->%*?  $data:
             undef;
 
+}
+
+method entry ($app) {
+    my  @params                                     =   (
+                                                            data    =>  $self,
+                                                            logger  =>  $logger,
+                                                        );
+    state   $entry                                  =   Management::App::Model::Database::Data::Entry->new(@params);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
+}
+
+method category ($app) {
+    my  @params                                     =   (
+                                                            data    =>  $self,
+                                                        );
+    state   $category                               =   Management::App::Model::Database::Data::Category->new(@params);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
 }
 
 __END__
