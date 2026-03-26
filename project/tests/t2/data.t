@@ -65,7 +65,7 @@ Then we begin testing our Management::Model::Data Object...
 my          $app                =   Test::Mojo->new('Management')->app;
 my          $data               =   Management::App::Model::Database::Data->new(
                                         database    =>  $app->database,
-                                        app         =>  $app,
+                                        logger      =>  $app->logger,
                                     );
 isa_ok  (   $data               ,   ['Management::App::Model::Database::Data'],             'Our Management::App::Model::Database::Data object is '.
                                                                                             'of Management::App::Model::Database::Data class.'     );

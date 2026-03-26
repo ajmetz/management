@@ -31,7 +31,7 @@ field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validati
 field   $top_category   :param  :accessor   =   undef;      # Can be calculated by database look up during save to database via Model/Entry.pm
 field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
-field   $app            :param;
+field   $logger         :param;
 field   $id                     :accessor   =   undef;
 
 field   $matches_and_captures_date_and_time =   qr/
@@ -88,8 +88,8 @@ method $set_year_month_day_time {
                                     undef;
 
         # Premature Exit:
-        die $app->logger->fatal('object.entry.error.invalid_start_values'   ) unless $valid_start_values;
-        die $app->logger->fatal('object.entry.error.invalid_end_values'     ) unless $valid_end_values;
+        die $logger->fatal('object.entry.error.invalid_start_values'   ) unless $valid_start_values;
+        die $logger->fatal('object.entry.error.invalid_end_values'     ) unless $valid_end_values;
 
         # Processing:
         $start_year             =   $valid_start_values->{year};

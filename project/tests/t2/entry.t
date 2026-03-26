@@ -54,9 +54,10 @@ Then we create Dummy Data we will need...
 =cut
 
 # Dummy Data for Object Tests:
+my  $test_app               =   Test::Mojo->new('Management')->app;
 my  @dummy_data_for_entry   =   (
     
-    app             =>  Test::Mojo->new('Management')->app,     #   Created app object.
+    logger          =>  $test_app->logger,
     start           =>  '01/01/2026 00:00',
     end             =>  '23:59', # Should be capable of assuming the same year/month/day as start if not stated.
     categories      =>  [
