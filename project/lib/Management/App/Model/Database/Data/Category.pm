@@ -11,7 +11,7 @@ field   $default_top_category                                   =   'OTHER';
 
 method save ($category, $top_category //= $default_top_category) {
 
-    $last_saved_category    =   $data->save($table_name => [$category,$top_category])->last_insert_id_lookup;
+    $last_saved_category    =   $data->save({$table_name => [$category,$top_category]})->last_insert_id_lookup;
 
     return $self;
 

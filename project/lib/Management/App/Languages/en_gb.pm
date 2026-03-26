@@ -14,6 +14,7 @@ en_GB_Tokens_Phrases_Lexicon: {
 my  @tokens_short;
 my  @tokens_long;
 my  @webapp_phrases;
+my  @trace_phrases;
 my  @debug_phrases;
 my  @verbose_phrases;
 my  @stdout_phrases;
@@ -115,7 +116,7 @@ Phrases: {
 
 
             # Commonly used...
-
+            'test'  =>  'test',
 
             # Management::Controller::Input::add_entries
 
@@ -158,6 +159,14 @@ Phrases: {
 
     } #webapp
 
+    Trace: {
+        @trace_phrases = (
+        
+            'Checking our Entry Object is valid.'                           =>  'Checking our Entry Object is valid.',
+        
+        );
+    } #trace
+
     Debug: {
 
         @debug_phrases = (
@@ -184,7 +193,7 @@ Phrases: {
 
         );
 
-    } #dedbug
+    } #debug
 
     Verbose: {
 
@@ -208,6 +217,7 @@ our %Lexicon = (
     @tokens_long,
     @webapp_phrases,
     @debug_phrases,
+    @trace_phrases,
     @verbose_phrases,
     @stdout_phrases,
 );

@@ -4,7 +4,10 @@ class   Management::App::Model::Database::Data::Entry;
 use     Management::App::Boilerplate::Code;
 use     Management::App::Languages;
 use     Mojo::Util qw(dumper);
-use     Data::Util qw(is_instance);
+use     Data::Util qw(
+            is_instance
+            is_array_ref
+        );
 use     List::Util qw(none);
 #use     Management::App::Model::TimeLog::Entry;
 
@@ -73,12 +76,16 @@ method save ($entry) {
     
     
     # Initial Values
-
+    $logger->prefix_string('[Management::App::Model::Database::Data::Entry::save] ');
+    $logger->debug('About to set initial values.');
     my  @nothing                    =   ();
     my  $save                       =   {};
     my  $saved                      =   {};
     my  $where                      =   {};
     my  @valid_categories           =   @nothing;
+    
+    $logger->debug('Checking our Entry Object is valid.');
+    
     my  $valid_entry                =   is_instance($entry, $input_class)
                                         && $entry->can('start_epoch')
                                         && $entry->can('end_epoch')
@@ -88,38 +95,59 @@ method save ($entry) {
                                         && $entry->details? # not blank/false/untrue. We may wish to add further validation later.
                                             $entry:
                                         undef;
+    die $logger->fatal('Cannot save an invalid Entry object.') unless $valid_entry;
+
+    $logger->trace('Checking our top category is valid.');
+    
     my  $valid_top_category         =   $valid_entry->top_category
                                         && ($valid_entry->top_category =~ $matches_allowed_characters)? $valid_entry->top_category:
                                         undef;
+    $logger->trace('Our top category is '.($valid_top_category? 'valid.':'invalid.'));
+
+    $logger->trace('Checking our top category is new...');
     my  $existing_top_categories    =   $data->database->handle->select($table_name->{top_categories} => $fields->{top_categories_fields})->arrays->to_array;
-    my  $valid_new_top_category     =   $self->$is_new($valid_top_category, $existing_top_categories)? $valid_top_category:
+    my  $valid_new_top_category     =   $valid_top_category
+                                        && is_array_ref($existing_top_categories)
+                                        && $self->$is_new($valid_top_category, $existing_top_categories)? $valid_top_category:
                                         undef;
     $save->{top_categories}         =   [$valid_new_top_category]
                                         if $valid_new_top_category;
     
+    $logger->trace('Decided we have a valid and new top category to save.') if $valid_new_top_category;
+    $logger->trace('Decided we do not have a valid and new top category to save.') unless $valid_new_top_category;
+
     # Build what to save for categories table:
+
+    $logger->trace('Fetching existing categories from database.');
     my  $existing_categories        =   $data->database->handle->select($table_name->{categories} => $fields->{category})->arrays->to_array; # Can we not just category->retrieve_list?
+
+    $logger->trace('Processing our Entry Object\'s categories.');
     $save->{categories}             =   [];
     foreach my $current_category ($valid_entry->categories->@*) {
         my      $valid_category                 =   $current_category
                                                     && ($current_category =~ $matches_allowed_characters)?  $current_category:
                                                     undef;
-        push    @valid_categories               ,   $valid_category; # This is silly. All categories in the entry should be valid already. Either validated on object construction, or via setters.
-        my      $valid_new_category             =   $self->$is_new($valid_category, $existing_categories)?         $valid_category:
+        push    @valid_categories               ,   $valid_category? $valid_category:@nothing; # This is silly. All categories in the entry should be valid already. Either validated on object construction, or via setters.
+        my      $valid_new_category             =   $valid_category 
+                                                    && $self->$is_new($valid_category, $existing_categories)?   $valid_category:
                                                     undef;
-        my      $is_new_and_is_last_category    =   fc $valid_new_category eq fc $valid_entry->categories->[-1];
+        my      $is_new_and_is_last_category    =   $valid_new_category
+                                                    && fc $valid_new_category eq fc $valid_entry->categories->[-1];
         my      @with_optional_top_category     =   $is_new_and_is_last_category && $valid_top_category?    $valid_top_category:
                                                     @nothing;
         push    $save->{categories}->@*         ,   $valid_new_category?    [$valid_new_category, @with_optional_top_category]:
                                                     @nothing;
 
     }
+    $logger->trace('Decided to save these categories:')->dump_values($save->{categories}) if $save->{categories};
     
     # Build what to save for junction table:
         # Skipped.
         
     # Saving...
+    $logger->trace('Beginning the process of actually saving to database...');
     if ($save->{top_categories}) {
+        $logger->trace('Detected we have something to save to top_categories table...');
         $saved->{top_category}  =   $data
                                     ->save(
                                         {
@@ -129,9 +157,12 @@ method save ($entry) {
                                     ->last_insert_id_lookup->{$table_name->{top_categories}};
         die                         $logger->fatal('model.entry.save.error.save_top_categories_data')
                                     unless $saved->{top_category};
+        $logger->trace('Successfully saved top category with the following id...')->dump_values($saved->{top_category});
     };
     
     foreach my $current_category_fields_to_save ($save->{categories}->@*) {
+
+        $logger->trace('Detected we have something to save to categories table...');
 
         # Initial Values:
         $saved->{category}      =   undef; # Reset to undef for each loop.
@@ -143,9 +174,13 @@ method save ($entry) {
         # Verify:
         die                         $logger->fatal('model.entry.save.error.save_category')
                                     unless $saved->{category};
-
+        $logger->trace('Successfully saved category with the following id...')->dump_values($saved->{category});
     };
 
+    $logger->trace(
+        'Because we checked for a valid entry earlier, '.
+        'we are assuming we can proceed to save to the entry table...'
+    );
     $saved->{entry}             =   $data
                                     ->save(
                                         {

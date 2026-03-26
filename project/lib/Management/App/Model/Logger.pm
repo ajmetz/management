@@ -7,43 +7,43 @@ use     Mojo::Util qw(dumper);
 
 field   $log        :param;
 field   $language   :param;
-field   $new_line           =   "\n";
+field   $new_line                       =   "\n";
+field   $prefix_string      :accessor   =   q{};
 
 method  debug (@arguments) {
     $log->debug(
-        $language->localise(@arguments),
+        $prefix_string.$language->localise(@arguments),
     );
     return $self;
 }
 
 method  trace (@arguments) {
     $log->trace(
-        $language->localise(@arguments),
+        $prefix_string.$language->localise(@arguments),
     );
     return $self;
 }
 
 method  error (@arguments) {
     $log->error(
-        $language->localise(@arguments),
+        $prefix_string.$language->localise(@arguments),
     );
     return $self;
 }
 
 method  fatal (@arguments) {
     $log->fatal(
-        $language->localise(@arguments),
+        $prefix_string.$language->localise(@arguments),
     );
     return $self;
 }
 
 method dump_values (@arguments) {
     $log->info(
-        '-'.$new_line.dumper(@arguments)
+        $prefix_string.'-'.$new_line.dumper(@arguments)
     );
     return $self;
 }
-
 
 __END__
 
