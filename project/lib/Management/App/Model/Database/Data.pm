@@ -2,7 +2,8 @@ use     Object::Pad v0.820;
 
 class   Management::App::Model::Database::Data;
 use     Management::App::Boilerplate::Code;
-use     Management::App::Languages;
+use     Management::App::Model::Database::Data::Entry;
+use     Management::App::Model::Database::Data::Category;
 use     Data::Util qw(is_hash_ref);
 
 field   $database               :param  :reader;

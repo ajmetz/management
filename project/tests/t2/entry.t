@@ -57,7 +57,7 @@ Then we create Dummy Data we will need...
 my  $test_app_config        =   {
                                     secrets             =>  ['wakkawakka'],
                                     default_language    =>   'en-GB',
-                                    sqlite_file         =>  '../../data/database/database.db',
+                                    sqlite_file         =>  '../../data/database/test_database.db',
                                     migration_file      =>  'lib/Management/SQL/database_migration.sql',
                                 };
 my  $test_app               =   Test::Mojo->new('Management',$test_app_config)->app;
@@ -84,16 +84,16 @@ Then we begin testing our Entry Object...
 my          $entry_object                   =   Management::App::Model::TimeLog::Entry->new(@dummy_data_for_entry);
 isa_ok  (   $entry_object                   ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'                );
 
-like    (   $entry_object->start_epoch      ,   qr/^\p{Digit}+$/,                                       'Start Epoch is one or more digits'     );
-like    (   $entry_object->end_epoch        ,   qr/^\p{Digit}+$/,                                       'End Epoch is one or more digits'       );
-like    (   $entry_object->duration         ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string'  );
+like    (   $entry_object->start_epoch      ,   qr/^\p{Digit}+$/,                                       'Start Epoch is one or more digits.'     );
+like    (   $entry_object->end_epoch        ,   qr/^\p{Digit}+$/,                                       'End Epoch is one or more digits.'       );
+like    (   $entry_object->duration         ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string.'  );
 
 ok      (   $entry_object->start_epoch      <=  $entry_object->end_epoch,                               'Start Epoch is less '.
                                                                                                         'or equal to End Epoch'                 );
 ok      (   $entry_object->end_epoch        >=  $entry_object->start_epoch,                             'End Epoch is less '.
-                                                                                                        'or equal to Start Epoch'               );
+                                                                                                        'or equal to Start Epoch.'               );
 
-#ok ( $test_app->database->data->entry($entry_object),   'Entry can be saved to database');
+ok ( $test_app->database->data->entry($entry_object),   'Entry can be saved to the test database.');
 
 #my  $test_object            =   Test::Mojo->new('Management');
 

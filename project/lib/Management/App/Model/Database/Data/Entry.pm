@@ -6,14 +6,14 @@ use     Management::App::Languages;
 use     Mojo::Util qw(dumper);
 use     Data::Util;
 use     List::Util qw(none);
-use     Entry;
+#use     Management::App::Model::TimeLog::Entry;
 
 field   $data                   :param  :accessor   ;
 field   $logger                 :param  :accessor   ;
 field   $last_saved_entry_id    :reader             =   undef;
 field   $matches_valid_digit                        =   qr/^\p{Digit}+$/;
 field   $matches_allowed_characters                 =   qr/\p{Identifier_Status: Allowed}+/;
-field   $input_class                                =   'Entry';
+field   $input_class                                =   'Management::App::Model::TimeLog::Entry';
 field   $table_name                                 =   {
                                                             entries                 =>  'entries',
                                                             top_categories          =>  'top_categories',
