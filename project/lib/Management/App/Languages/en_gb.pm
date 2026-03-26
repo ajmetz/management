@@ -161,8 +161,11 @@ Phrases: {
     Trace: {
         @trace_phrases = (
         
+            # Management::App::Model::Database::Data::Entry:save
+
             'Checking our Entry Object is valid.'                           =>  'Checking our Entry Object is valid.',
             'Checking our top category is valid.'                           =>  'Checking our top category is valid.',
+            'Our top category is invalid.'                                  =>  'Our top category is invalid.',
         
         );
     } #trace
