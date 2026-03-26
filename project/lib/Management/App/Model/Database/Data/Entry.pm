@@ -76,15 +76,15 @@ method save ($entry) {
     
     
     # Initial Values
-    $logger->prefix_string('[Management::App::Model::Database::Data::Entry::save] ');
-    $logger->debug('About to set initial values.');
+    my $log                         =   $logger->context('[Management::App::Model::Database::Data::Entry::save]');
+    $log->trace('About to set initial values.');
     my  @nothing                    =   ();
     my  $save                       =   {};
     my  $saved                      =   {};
     my  $where                      =   {};
     my  @valid_categories           =   @nothing;
     
-    $logger->debug('Checking our Entry Object is valid.');
+    $log->trace('Checking our Entry Object is valid.');
     
     my  $valid_entry                =   is_instance($entry, $input_class)
                                         && $entry->can('start_epoch')
@@ -95,16 +95,16 @@ method save ($entry) {
                                         && $entry->details? # not blank/false/untrue. We may wish to add further validation later.
                                             $entry:
                                         undef;
-    die $logger->fatal('Cannot save an invalid Entry object.') unless $valid_entry;
+    die $log->fatal('Cannot save an invalid Entry object.') unless $valid_entry;
 
-    $logger->trace('Checking our top category is valid.');
+    $log->trace('Checking our top category is valid.');
     
     my  $valid_top_category         =   $valid_entry->top_category
                                         && ($valid_entry->top_category =~ $matches_allowed_characters)? $valid_entry->top_category:
                                         undef;
-    $logger->trace('Our top category is '.($valid_top_category? 'valid.':'invalid.'));
+    $log->trace('Our top category is '.($valid_top_category? 'valid.':'invalid.'));
 
-    $logger->trace('Checking our top category is new...');
+    $log->trace('Checking our top category is new...');
     my  $existing_top_categories    =   $data->database->handle->select($table_name->{top_categories} => $fields->{top_categories_fields})->arrays->to_array;
     my  $valid_new_top_category     =   $valid_top_category
                                         && is_array_ref($existing_top_categories)
@@ -113,15 +113,15 @@ method save ($entry) {
     $save->{top_categories}         =   [$valid_new_top_category]
                                         if $valid_new_top_category;
     
-    $logger->trace('Decided we have a valid and new top category to save.') if $valid_new_top_category;
-    $logger->trace('Decided we do not have a valid and new top category to save.') unless $valid_new_top_category;
+    $log->trace('Decided we have a valid and new top category to save.') if $valid_new_top_category;
+    $log->trace('Decided we do not have a valid and new top category to save.') unless $valid_new_top_category;
 
     # Build what to save for categories table:
 
-    $logger->trace('Fetching existing categories from database.');
+    $log->trace('Fetching existing categories from database.');
     my  $existing_categories        =   $data->database->handle->select($table_name->{categories} => $fields->{category})->arrays->to_array; # Can we not just category->retrieve_list?
 
-    $logger->trace('Processing our Entry Object\'s categories.');
+    $log->trace('Processing our Entry Object\'s categories.');
     $save->{categories}             =   [];
     foreach my $current_category ($valid_entry->categories->@*) {
         my      $valid_category                 =   $current_category
@@ -139,15 +139,15 @@ method save ($entry) {
                                                     @nothing;
 
     }
-    $logger->trace('Decided to save these categories:')->dump_values($save->{categories}) if $save->{categories};
+    $log->trace('Decided to save these categories:')->dump_values($save->{categories}) if $save->{categories};
     
     # Build what to save for junction table:
         # Skipped.
         
     # Saving...
-    $logger->trace('Beginning the process of actually saving to database...');
+    $log->trace('Beginning the process of actually saving to database...');
     if ($save->{top_categories}) {
-        $logger->trace('Detected we have something to save to top_categories table...');
+        $log->trace('Detected we have something to save to top_categories table...');
         $saved->{top_category}  =   $data
                                     ->save(
                                         {
@@ -155,14 +155,14 @@ method save ($entry) {
                                         }
                                     )
                                     ->last_insert_id_lookup->{$table_name->{top_categories}};
-        die                         $logger->fatal('model.entry.save.error.save_top_categories_data')
+        die                         $log->fatal('model.entry.save.error.save_top_categories_data')
                                     unless $saved->{top_category};
-        $logger->trace('Successfully saved top category with the following id...')->dump_values($saved->{top_category});
+        $log->trace('Successfully saved top category with the following id...')->dump_values($saved->{top_category});
     };
     
     foreach my $current_category_fields_to_save ($save->{categories}->@*) {
 
-        $logger->trace('Detected we have something to save to categories table...');
+        $log->trace('Detected we have something to save to categories table...');
 
         # Initial Values:
         $saved->{category}      =   undef; # Reset to undef for each loop.
@@ -172,12 +172,12 @@ method save ($entry) {
                                     ->save($current_category_fields_to_save->@*)
                                     ->last_saved_category;
         # Verify:
-        die                         $logger->fatal('model.entry.save.error.save_category')
+        die                         $log->fatal('model.entry.save.error.save_category')
                                     unless $saved->{category};
-        $logger->trace('Successfully saved category with the following id...')->dump_values($saved->{category});
+        $log->trace('Successfully saved category with the following id...')->dump_values($saved->{category});
     };
 
-    $logger->trace(
+    $log->trace(
         'Because we checked for a valid entry earlier, '.
         'we are assuming we can proceed to save to the entry table...'
     );
@@ -192,9 +192,9 @@ method save ($entry) {
                                         }
                                     )
                                     ->last_insert_id_lookup->{$table_name->{entries}};
-    die $logger->fatal('model.entry.save.error.save_entry') unless $saved->{entry};
+    die $log->fatal('model.entry.save.error.save_entry') unless $saved->{entry};
     my  $valid_entry_id         =   $saved->{entry} =~ $matches_valid_digit; # Again - silly - the object should validate within its setter.
-    die $logger->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
+    die $log->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
     $valid_entry->id($saved->{entry});
 
     # Check entry is not already in junction table:
@@ -207,12 +207,12 @@ method save ($entry) {
                                             )
                                             ->arrays->to_array->@*; # Later, this need not be a die, and can simply prompt for confirmation before overwrite - which will be a removal, before an insert.
 
-    die                                     $logger->fatal('model.entry.save.error.existing_record_found')
+    die                                     $log->fatal('model.entry.save.error.existing_record_found')
                                             if $existing_record_found;
 
     foreach my $current_valid_category (@valid_categories) {
         $saved->{entries_categories}    =   $data->save($table_name->{entries_categories} => [$valid_entry->id, $current_valid_category])->last_insert_id_lookup->{$table_name->{entries_categories}};
-        die                                 $logger->fatal('model.entry.save.error.save_entries_categories')
+        die                                 $log->fatal('model.entry.save.error.save_entries_categories')
                                             unless $saved->{entries_categories};
     }
     

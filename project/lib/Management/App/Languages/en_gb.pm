@@ -116,7 +116,6 @@ Phrases: {
 
 
             # Commonly used...
-            'test'  =>  'test',
 
             # Management::Controller::Input::add_entries
 
@@ -163,6 +162,7 @@ Phrases: {
         @trace_phrases = (
         
             'Checking our Entry Object is valid.'                           =>  'Checking our Entry Object is valid.',
+            'Checking our top category is valid.'                           =>  'Checking our top category is valid.',
         
         );
     } #trace

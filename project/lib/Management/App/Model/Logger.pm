@@ -8,41 +8,45 @@ use     Mojo::Util qw(dumper);
 field   $log        :param;
 field   $language   :param;
 field   $new_line                       =   "\n";
-field   $prefix_string      :accessor   =   q{};
+#field   $prefix_string      :accessor   =   q{};
 
 method  debug (@arguments) {
     $log->debug(
-        $prefix_string.$language->localise(@arguments),
+        $language->localise(@arguments),
     );
     return $self;
 }
 
 method  trace (@arguments) {
     $log->trace(
-        $prefix_string.$language->localise(@arguments),
+        $language->localise(@arguments),
     );
     return $self;
 }
 
 method  error (@arguments) {
     $log->error(
-        $prefix_string.$language->localise(@arguments),
+        $language->localise(@arguments),
     );
     return $self;
 }
 
 method  fatal (@arguments) {
     $log->fatal(
-        $prefix_string.$language->localise(@arguments),
+        $language->localise(@arguments),
     );
     return $self;
 }
 
 method dump_values (@arguments) {
     $log->info(
-        $prefix_string.'-'.$new_line.dumper(@arguments)
+        '-'.$new_line.dumper(@arguments)
     );
     return $self;
+}
+
+method context (@arguments) {
+    return Management::App::Model::Logger->new(log => $log->context(@arguments), language => $language);
 }
 
 __END__
