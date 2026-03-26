@@ -93,7 +93,7 @@ ok      (   $entry_object->start_epoch      <=  $entry_object->end_epoch,       
 ok      (   $entry_object->end_epoch        >=  $entry_object->start_epoch,                             'End Epoch is less '.
                                                                                                         'or equal to Start Epoch.'               );
 
-ok ( $test_app->database->data->entry($entry_object),   'Entry can be saved to the test database.');
+ok ( $test_app->database->data->entry->save($entry_object),   'Entry can be saved to the test database.');
 
 #my  $test_object            =   Test::Mojo->new('Management');
 

@@ -58,7 +58,7 @@ method retrieve ($what_to_retrieve ||= undef) {
 
 }
 
-method entry ($app) {
+method entry {
     my  @params                                     =   (
                                                             data    =>  $self,
                                                             logger  =>  $logger,
@@ -66,7 +66,7 @@ method entry ($app) {
     state   $entry                                  =   Management::App::Model::Database::Data::Entry->new(@params);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
 }
 
-method category ($app) {
+method category {
     my  @params                                     =   (
                                                             data    =>  $self,
                                                         );

@@ -4,7 +4,7 @@ class   Management::App::Model::Database::Data::Entry;
 use     Management::App::Boilerplate::Code;
 use     Management::App::Languages;
 use     Mojo::Util qw(dumper);
-use     Data::Util;
+use     Data::Util qw(is_instance);
 use     List::Util qw(none);
 #use     Management::App::Model::TimeLog::Entry;
 
@@ -79,14 +79,15 @@ method save ($entry) {
     my  $saved                      =   {};
     my  $where                      =   {};
     my  @valid_categories           =   @nothing;
-    my  $valid_entry                =   instance($entry, $input_class)
+    my  $valid_entry                =   is_instance($entry, $input_class)
                                         && $entry->can('start_epoch')
                                         && $entry->can('end_epoch')
                                         && $entry->can('details')
                                         && $entry->start_epoch  =~ $matches_valid_digit
                                         && $entry->end_epoch    =~ $matches_valid_digit
-                                        && $entry->details # not blank/false/untrue. We may wish to add further validation later.
-                                        ;
+                                        && $entry->details? # not blank/false/untrue. We may wish to add further validation later.
+                                            $entry:
+                                        undef;
     my  $valid_top_category         =   $valid_entry->top_category
                                         && ($valid_entry->top_category =~ $matches_allowed_characters)? $valid_entry->top_category:
                                         undef;
