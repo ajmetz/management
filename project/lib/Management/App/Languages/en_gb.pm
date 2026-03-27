@@ -170,13 +170,18 @@ Phrases: {
             'Decided to save these categories:'                             =>  'Decided to save these categories:',
             'Decided we do not have a valid and new top category to save.'  =>  'Decided we do not have a valid and new top category to save.',
             'Detected we have something to save to categories table...'     =>  'Detected we have something to save to categories table...',
+            'Existing categories from database are...'                      =>  'Existing categories from database are...',
             'Fetching existing categories from database.'                   =>  'Fetching existing categories from database.',
+            'For category...'                                               =>  'For category...',
             'Intending to save the following category...'                   =>  'Intending to save the following category...',
             'Our top category is invalid.'                                  =>  'Our top category is invalid.',
             "Processing our Entry Object's categories."                     =>  "Processing our Entry Object's categories.",
             'Successfully saved category with the following id...'          =>  'Successfully saved category with the following id...',
             'Successfully saved entry with the following id...'             =>  'Successfully saved entry with the following id...',
             'These are the arguments we are sending to select...'           =>  'These are the arguments we are sending to select...',
+            'We will be associating the following entry id...'              =>  'We will be associating the following entry id...',
+            '...with this list of categories...'                            =>  '...with this list of categories...',
+
 
             'Because we checked for a valid entry earlier, we are assuming we can proceed to save to the entry table...'
                 =>  'Because we checked for a valid entry earlier, we are assuming we can proceed to save to the entry table...',

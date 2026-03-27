@@ -67,7 +67,7 @@ method valid_for_saving ($entry) {
 }
 
 method $is_new ($value, $existing_values) {
-    return none { fc $value eq fc $ARG } $existing_values->@*;
+    return none { fc $value eq fc $ARG->[0] } $existing_values->@*;
 }
 
 method save ($entry) {
@@ -120,6 +120,7 @@ method save ($entry) {
 
     $log->trace('Fetching existing categories from database.');
     my  $existing_categories        =   $data->database->handle->select($table_name->{categories} => $fields->{category})->arrays->to_array; # Can we not just category->retrieve_list?
+    $log->trace('Existing categories from database are...')->dump_values($existing_categories);
 
     $log->trace('Processing our Entry Object\'s categories.');
     $save->{categories}             =   [];
@@ -229,7 +230,11 @@ method save ($entry) {
 
     foreach my $current_valid_category (@valid_categories) {
         $log->trace('For category...')->dump_values($current_valid_category);
-        $saved->{entries_categories}    =   $data->save($table_name->{entries_categories} => [$valid_entry->id, $current_valid_category])->last_insert_id_lookup->{$table_name->{entries_categories}};
+        $saved->{entries_categories}    =   $data->save(
+                                                {
+                                                    $table_name->{entries_categories} =>    [$valid_entry->id, $current_valid_category],
+                                                }
+                                            )->last_insert_id_lookup->{$table_name->{entries_categories}};
         die                                 $log->fatal('model.entry.save.error.save_entries_categories')
                                             unless $saved->{entries_categories};
     }
