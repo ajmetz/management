@@ -80,20 +80,25 @@ Then we begin testing our Entry Object...
 
 =cut
 
+my  $regex_one_or_more_digits                   =   qr/^\p{Digit}+$/;
+
 # Object Tests:
-my          $entry_object                   =   Management::App::Model::TimeLog::Entry->new(@dummy_data_for_entry);
-isa_ok  (   $entry_object                   ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'                );
+my          $entry_object                       =   Management::App::Model::TimeLog::Entry->new(@dummy_data_for_entry);
+isa_ok  (   $entry_object                       ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'    );
 
-like    (   $entry_object->start_epoch      ,   qr/^\p{Digit}+$/,                                       'Start Epoch is one or more digits.'     );
-like    (   $entry_object->end_epoch        ,   qr/^\p{Digit}+$/,                                       'End Epoch is one or more digits.'       );
-like    (   $entry_object->duration         ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string.'  );
+like    (   $entry_object->start_epoch          ,   $regex_one_or_more_digits,                              'Start Epoch is one or more digits.'                        );
+like    (   $entry_object->end_epoch            ,   $regex_one_or_more_digits,                              'End Epoch is one or more digits.'                          );
+like    (   $entry_object->duration             ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string.'                     );
 
-ok      (   $entry_object->start_epoch      <=  $entry_object->end_epoch,                               'Start Epoch is less '.
-                                                                                                        'or equal to End Epoch'                 );
-ok      (   $entry_object->end_epoch        >=  $entry_object->start_epoch,                             'End Epoch is less '.
-                                                                                                        'or equal to Start Epoch.'               );
+ok      (   $entry_object->start_epoch          <=  $entry_object->end_epoch,                               'Start Epoch is less '.
+                                                                                                            'or equal to End Epoch'                                     );
+                                                                                                        
+ok      (   $entry_object->end_epoch            >=  $entry_object->start_epoch,                             'End Epoch is less '.
+                                                                                                            'or equal to Start Epoch.'                                  );
 
-ok ( $test_app->database->data->entry->save($entry_object),   'Entry can be saved to the test database.');
+ok      (   my $saved_entry = $test_app->database->data->entry->save($entry_object),                        'Entry can be saved to the test database.'                  );
+
+like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,                               'We can obtain a numeric id for the last saved item.'       );
 
 #my  $test_object            =   Test::Mojo->new('Management');
 
