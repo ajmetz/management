@@ -195,10 +195,14 @@ method save ($entry) {
                                     )
                                     ->last_insert_id_lookup->{$table_name->{entries}};
     die $log->fatal('model.entry.save.error.save_entry') unless $saved->{entry};
-    my  $valid_entry_id         =   $saved->{entry} =~ $matches_valid_digit; # Again - silly - the object should validate within its setter.
+    my  $valid_entry_id         =   $saved->{entry} =~ $matches_valid_digit?    $saved->{entry}:
+                                    undef; # Again - silly - the object should validate within its setter.
     die $log->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
     $valid_entry->id($saved->{entry});
-    $log->trace('Successfully saved entry with the following id...')->dump_values($valid_entry->id);
+    $log->trace('Successfully saved entry with the following id...')
+    ->dump_values($valid_entry->id);
+    $last_saved_entry_id    =   $valid_entry_id;
+    $log->trace('Updated the last_saved_entry_id attribute.')->dump_values($last_saved_entry_id);
 
     # Check entry is not already in junction table:
     $where->{matches_valid_entry_id}    =   { $fields->{entry_id}->[0] =>  $valid_entry->id }; # entry_id has to be dereferenced for a where clause. 

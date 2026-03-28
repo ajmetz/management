@@ -179,6 +179,7 @@ Phrases: {
             'Successfully saved category with the following id...'          =>  'Successfully saved category with the following id...',
             'Successfully saved entry with the following id...'             =>  'Successfully saved entry with the following id...',
             'These are the arguments we are sending to select...'           =>  'These are the arguments we are sending to select...',
+            'Updated the last_saved_entry_id attribute.'                    =>  'Updated the last_saved_entry_id attribute.',
             'We will be associating the following entry id...'              =>  'We will be associating the following entry id...',
             '...with this list of categories...'                            =>  '...with this list of categories...',
 
