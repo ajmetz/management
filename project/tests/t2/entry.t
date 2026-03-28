@@ -95,8 +95,8 @@ ok      (   $entry_object->start_epoch          <=  $entry_object->end_epoch,   
                                                                                                         
 ok      (   $entry_object->end_epoch            >=  $entry_object->start_epoch,                             'End Epoch is less '.
                                                                                                             'or equal to Start Epoch.'                                  );
-
-ok      (   my $saved_entry = $test_app->database->data->entry->save($entry_object),                        'Entry can be saved to the test database.'                  );
+my $saved_entry                                 =   $test_app->database->data->entry->save($entry_object);
+ok      (  $saved_entry,                        'Entry can be saved to the test database.'                  );
 
 like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,                               'We can obtain a numeric id for the last saved item.'       );
 
