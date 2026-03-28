@@ -95,10 +95,15 @@ ok      (   $entry_object->start_epoch          <=  $entry_object->end_epoch,   
                                                                                                         
 ok      (   $entry_object->end_epoch            >=  $entry_object->start_epoch,                             'End Epoch is less '.
                                                                                                             'or equal to Start Epoch.'                                  );
-my $saved_entry                                 =   $test_app->database->data->entry->save($entry_object);
-ok      (  $saved_entry,                        'Entry can be saved to the test database.'                  );
+
+ok      (  my $saved_entry = $test_app->database->data->entry->save($entry_object),                         'Entry can be saved to the test database.'                  );
 
 like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,                               'We can obtain a numeric id for the last saved item.'       );
+
+ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),                 'Entry values can be retrieved from test database.'         ); # Not enough to construct full object.
+
+# * fetch our last save by id
+# * check it's the same entry we created
 
 #my  $test_object            =   Test::Mojo->new('Management');
 

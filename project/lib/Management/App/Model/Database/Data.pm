@@ -4,7 +4,10 @@ class   Management::App::Model::Database::Data;
 use     Management::App::Boilerplate::Code;
 use     Management::App::Model::Database::Data::Entry;
 use     Management::App::Model::Database::Data::Category;
-use     Data::Util qw(is_hash_ref);
+use     Data::Util qw(
+            is_hash_ref
+            is_array_ref
+        );
 
 field   $database               :param  :reader;
 field   $logger                 :param  :reader;
@@ -31,8 +34,8 @@ method retrieve ($what_to_retrieve ||= undef) {
 
     my $data =  {};
     my  $valid_input                                =   $what_to_retrieve
-                                                        && is_array_ref($what_to_retrieve)
-                                                        && scalar $what_to_retrieve->@*?    $what_to_retrieve:
+                                                        && is_hash_ref($what_to_retrieve)
+                                                        && scalar $what_to_retrieve->%*?    $what_to_retrieve:
                                                         undef;
 
     if ($valid_input) {

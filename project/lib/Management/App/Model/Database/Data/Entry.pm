@@ -39,7 +39,8 @@ field   $fields                                     =   {
                                                             categories_fields       =>  ['category','top_category'],
                                                             category                =>  ['category'],
                                                             top_categories_fields   =>  ['top_category'],
-                                                            entry_id                =>  ['entry_id'], # This is in both entries table and entries_categories table.
+                                                            entry_id                =>  ['id'],
+                                                            entries_categories_entry_id    =>   ['entry_id'], # entries_categories table.
 
                                                         };
 
@@ -205,19 +206,19 @@ method save ($entry) {
     $log->trace('Updated the last_saved_entry_id attribute.')->dump_values($last_saved_entry_id);
 
     # Check entry is not already in junction table:
-    $where->{matches_valid_entry_id}    =   { $fields->{entry_id}->[0] =>  $valid_entry->id }; # entry_id has to be dereferenced for a where clause. 
+    $where->{matches_valid_entry_id}    =   { $fields->{entries_categories_entry_id}->[0] =>  $valid_entry->id }; # entry_id has to be dereferenced for a where clause. 
     $log->trace('Checking to see if this entry id already exists in the entries_categories table...');
     $log->trace('These are the arguments we are sending to select...')->dump_values(
                                                 (
                                                     $table_name->{entries_categories},
-                                                    $fields->{entry_id},
+                                                    $fields->{entries_categories_entry_id},
                                                     $where->{matches_valid_entry_id},
                                                 )
     );
     my  $existing_record_found          =   scalar ($data->database->handle
                                             ->select(
                                                 $table_name->{entries_categories},
-                                                $fields->{entry_id},
+                                                $fields->{entries_categories_entry_id},
                                                 $where->{matches_valid_entry_id},
                                             )
                                             ->arrays->to_array->@*); # Later, this need not be a die, and can simply prompt for confirmation before overwrite - which will be a removal, before an insert.
@@ -252,6 +253,24 @@ method save ($entry) {
 method retrieve_last_saved {
     return  $last_saved_entry_id? $self->retrieve($last_saved_entry_id):
             undef;
+}
+
+method retrieve ($id) {
+    my  $where_id_is_id = {
+        $fields->{entry_id}->[0] => $id
+    };
+
+    my  $what_to_retrieve = {
+        $table_name->{entries}  =>  [
+                                        $fields->{entries_fields_renamed},
+                                        $where_id_is_id,
+                                    ],
+    };
+
+    my  $array_ref  =   $data->retrieve($what_to_retrieve);
+
+    return              $array_ref? $array_ref:
+                        undef;
 }
 
 
