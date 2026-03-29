@@ -100,7 +100,10 @@ ok      (  my $saved_entry = $test_app->database->data->entry->save($entry_objec
 
 like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,                               'We can obtain a numeric id for the last saved item.'       );
 
-ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),                 'Entry values can be retrieved from test database.'         ); # Not enough to construct full object.
+ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),                 'Entry values can be retrieved from test database,'.
+                                                                                                            ' by entry id.'                                             ); # Not enough to construct full object.
+
+isa_ok  (   $retrieved_entry                    ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'    );
 
 # * fetch our last save by id
 # * check it's the same entry we created
