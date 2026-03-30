@@ -65,18 +65,21 @@ method $epoch_to_string ($epoch) {
     my  $datetime   =   DateTime->from_epoch($epoch);
     my  $string     =   sprintf("%s %02d:%02d", $datetime->dmy('/'), $datetime->hour, $datetime->minute);
 
-    return $self;
+    return $string;
 
 }
 
 method $set_year_month_day_time {
 
 
-        # Initial Values:        
-        $start  =   $self->$epoch_to_string(%LAST_PAREN_MATCH{epoch})
+        # Initial Values:
+#        warn 'Dumping values.';
+#        $logger->dump_values($LAST_PAREN_MATCH) if ($start =~ $matches_and_captures_epoch);
+        
+        $start  =  $self->$epoch_to_string($LAST_PAREN_MATCH)
                     if ($start  =~  $matches_and_captures_epoch);
                     
-        $end    =   $self->$epoch_to_string(%LAST_PAREN_MATCH{epoch})
+        $end    =   $self->$epoch_to_string($LAST_PAREN_MATCH)
                     if ($end    =~  $matches_and_captures_epoch);
 
         # Definitions:
@@ -86,6 +89,8 @@ method $set_year_month_day_time {
         my  $valid_end_values   =   $end    =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
                                     $end    =~  $matches_and_captures_time?             {%LAST_PAREN_MATCH}:
                                     undef;
+        #warn 'What?';
+        #$logger->dump_values($start);
 
         # Premature Exit:
         die $logger->fatal('object.entry.error.invalid_start_values'   ) unless $valid_start_values;

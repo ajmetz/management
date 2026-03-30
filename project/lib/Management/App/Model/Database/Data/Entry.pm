@@ -16,31 +16,32 @@ field   $logger                 :param  :accessor   ;
 field   $last_saved_entry_id    :reader             =   undef;
 field   $matches_valid_digit                        =   qr/^\p{Digit}+$/;
 field   $matches_allowed_characters                 =   qr/\p{Identifier_Status: Allowed}+/;
-field   $input_class                                =   'Management::App::Model::TimeLog::Entry';
+field   $entry_class                                =   'Management::App::Model::TimeLog::Entry';
 field   $table_name                                 =   {
-                                                            entries                 =>  'entries',
-                                                            top_categories          =>  'top_categories',
-                                                            categories              =>  'categories',
-                                                            entries_categories      =>  'entries_categories',
+                                                            entries                     =>  'entries',
+                                                            top_categories              =>  'top_categories',
+                                                            categories                  =>  'categories',
+                                                            entries_categories          =>  'entries_categories',
                                                         };
 field   $fields                                     =   {
-                                                            all                     =>  undef,
-                                                            entries_fields_renamed  =>  [
-                                                                                
-                                                                                            qw(
-                                                                                                details
-                                                                                            ),
-                                                                                
-                                                                                            # Fields AS ...
-                                                                                            [start_time_utc_epoch   =>  'start_epoch'],
-                                                                                            [end_time_utc_epoch     =>  'end_epoch'],
-                                                                                
-                                                                                        ],
-                                                            categories_fields       =>  ['category','top_category'],
-                                                            category                =>  ['category'],
-                                                            top_categories_fields   =>  ['top_category'],
-                                                            entry_id                =>  ['id'],
-                                                            entries_categories_entry_id    =>   ['entry_id'], # entries_categories table.
+                                                            all                         =>  undef,
+                                                            entries_fields_renamed      =>  [
+                                                                                    
+                                                                                                qw(
+                                                                                                    details
+                                                                                                ),
+                                                                                    
+                                                                                                # Fields AS ...
+                                                                                                [start_time_utc_epoch   =>  'start_epoch'],
+                                                                                                [end_time_utc_epoch     =>  'end_epoch'],
+                                                                                    
+                                                                                            ],
+                                                            categories_fields           =>  ['category','top_category'],
+                                                            category                    =>  ['category'],
+                                                            top_categories_fields       =>  ['top_category'],
+                                                            categories_top_category     =>  ['top_category'],
+                                                            entries_id                  =>  ['id'],
+                                                            entries_categories_entry_id =>  ['entry_id'], # entries_categories table.
 
                                                         };
 
@@ -87,7 +88,7 @@ method save ($entry) {
     
     $log->trace('Checking our Entry Object is valid.');
     
-    my  $valid_entry                =   is_instance($entry, $input_class)
+    my  $valid_entry                =   is_instance($entry, $entry_class)
                                         && $entry->can('start_epoch')
                                         && $entry->can('end_epoch')
                                         && $entry->can('details')
@@ -256,21 +257,84 @@ method retrieve_last_saved {
 }
 
 method retrieve ($id) {
-    my  $where_id_is_id = {
-        $fields->{entry_id}->[0] => $id
+
+    # Initial Values:
+    my  $log                                =   $logger->context('Management::App::Model::Database::Data::Entry::retrieve');
+
+    $log->trace('About to set initial values.');
+
+    my  $categories                         =   [];
+    my  $where = {
+        id_is_id                            =>  {
+                                                    $fields->{entries_id}->[0] => $id,
+                                                },
+        entry_id_is_id                      =>  {
+                                                    $fields->{entries_categories_entry_id}->[0] => $id,
+                                                },
     };
 
     my  $what_to_retrieve = {
-        $table_name->{entries}  =>  [
-                                        $fields->{entries_fields_renamed},
-                                        $where_id_is_id,
-                                    ],
+        $table_name->{entries}              =>  [
+                                                    $fields->{entries_fields_renamed},
+                                                    $where->{id_is_id},
+                                                ],
+        $table_name->{entries_categories}   =>  [
+                                                    $fields->{category},
+                                                    $where->{entry_id_is_id},
+                                                ],
     };
 
-    my  $array_ref  =   $data->retrieve($what_to_retrieve);
+    $log->trace('Set initial values.');
+    
+    # Processing:
+    $log->trace('Making first attempt to retrieve data.');
 
-    return              $array_ref? $array_ref:
-                        undef;
+    my  $hash_ref                           =   $data->retrieve($what_to_retrieve);
+
+    $log->trace('Retrieved the following:')->dump_values($hash_ref);
+    
+    #die $logger->fatal('This will do for now.')->dump_values($hash_ref);
+
+    $log->trace('Processing categories.');
+
+    push $categories->@*                    ,   $ARG->{category}
+                                                for $hash_ref->{entries_categories}->@*;
+
+    $log->trace('Obtained categories in this order:')->dump_values($categories);
+    #die $logger->fatal('This will do for now.')->dump_values($categories);
+
+    $log->trace('Preparing values for second data retrieval.');
+    
+    my  $where->{category_is_category}      =   {
+                                                    $fields->{category}->[0] => $categories->[-1],
+                                                };
+
+    my  $what_to_retrieve = {
+        $table_name->{categories}           =>  [
+                                                    $fields->{categories_top_category},
+                                                    $where->{category_is_category},
+                                                ],
+    };
+ 
+    my  $top_category                       =   $data->retrieve($what_to_retrieve)->{categories}->[0]->{top_category};
+
+    #die $logger->fatal('This will do for now.')->dump_values($hash_ref);
+
+    my  @object_params                      =   (
+                                                    start           =>  $hash_ref->{entries}->[0]->{start_epoch},
+                                                    end             =>  $hash_ref->{entries}->[0]->{end_epoch},
+                                                    details         =>  $hash_ref->{entries}->[0]->{details},
+                                                    categories      =>  $categories,
+                                                    top_category    =>  $top_category,
+                                                    logger          =>  $logger,
+                                                );
+
+    #die $logger->fatal('This will do for now.')->dump_values(@object_params);
+
+    my  $entry                              =   $entry_class->new(@object_params);
+
+    return                                      $entry? $entry:
+                                                undef;
 }
 
 
@@ -279,6 +343,10 @@ method retrieve ($id) {
 
 
 __END__
+
+
+
+
 
 ========
 

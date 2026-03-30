@@ -194,6 +194,24 @@ Phrases: {
                 =>  'This entry id is not yet in the entries_categories table, so we will now proceed to saving it there...',
 
 
+            # Management::App::Model::Database::Data::Entry::retrieve
+            'Making first attempt to retrieve data.'                        =>  'Making first attempt to retrieve data.',
+            'Obtained categories in this order:'                            =>  'Obtained categories in this order:',
+            'Preparing values for second data retrieval.'                   =>  'Preparing values for second data retrieval.',
+            'Processing categories.'                                        =>  'Processing categories.',
+            'Retrieved the following:'                                      =>  'Retrieved the following:',
+            'Set initial values.'                                           =>  'Set initial values.',
+            'This will do for now.'                                         =>  'This will do for now.',
+
+    
+
+            
+
+            
+
+            
+
+
 
             # Management::App::Model::Database::Data::save
         
