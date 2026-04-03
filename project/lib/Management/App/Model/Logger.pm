@@ -6,7 +6,7 @@ use     Management::App::Boilerplate::Code;
 use     Mojo::Util qw(dumper);
 
 field   $log        :param;
-field   $language   :param;
+field   $language   :param  :reader;
 field   $new_line                       =   "\n";
 #field   $prefix_string      :accessor   =   q{};
 

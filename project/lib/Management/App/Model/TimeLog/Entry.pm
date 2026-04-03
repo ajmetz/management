@@ -173,7 +173,7 @@ method $instance_setup {
 
 method status_string {
     return sprintf(
-        $logger->language('object.entry.status.formatting'),
+        $logger->language->localise('object.entry.status.formatting'),
         __CLASS__,
         $self->id,
         $self->start,
