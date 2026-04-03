@@ -9,6 +9,7 @@ use Management::App::Boilerplate::Test;
 # Specific Modules used:
 use Test::Mojo;
 use Management::App::Model::TimeLog::Entry;
+use Mojo::Util qw(dumper);
 
 =pod Name, Version, Synopsis, Description
 
@@ -104,6 +105,8 @@ ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved
                                                                                                             ' by entry id.'                                             ); # Not enough to construct full object.
 
 isa_ok  (   $retrieved_entry                    ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'    );
+
+warn dumper({$retrieved_entry});
 
 # * fetch our last save by id
 # * check it's the same entry we created

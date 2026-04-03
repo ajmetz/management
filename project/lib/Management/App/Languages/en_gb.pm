@@ -49,18 +49,22 @@ Tokens: {
 
             # Management::Controller::Input::ask_days
 
-            'options.abbreviated_month.1'   =>  'Jan',
-            'options.abbreviated_month.2'   =>  'Feb',
-            'options.abbreviated_month.3'   =>  'Mar',
-            'options.abbreviated_month.4'   =>  'Apr',
-            'options.abbreviated_month.5'   =>  'May',
-            'options.abbreviated_month.6'   =>  'Jun',
-            'options.abbreviated_month.7'   =>  'Jul',
-            'options.abbreviated_month.8'   =>  'Aug',
-            'options.abbreviated_month.9'   =>  'Sep',
-            'options.abbreviated_month.10'  =>  'Oct',
-            'options.abbreviated_month.11'  =>  'Nov',
-            'options.abbreviated_month.12'  =>  'Dec',
+            'options.abbreviated_month.1'               =>  'Jan',
+            'options.abbreviated_month.2'               =>  'Feb',
+            'options.abbreviated_month.3'               =>  'Mar',
+            'options.abbreviated_month.4'               =>  'Apr',
+            'options.abbreviated_month.5'               =>  'May',
+            'options.abbreviated_month.6'               =>  'Jun',
+            'options.abbreviated_month.7'               =>  'Jul',
+            'options.abbreviated_month.8'               =>  'Aug',
+            'options.abbreviated_month.9'               =>  'Sep',
+            'options.abbreviated_month.10'              =>  'Oct',
+            'options.abbreviated_month.11'              =>  'Nov',
+            'options.abbreviated_month.12'              =>  'Dec',
+
+            # Management::Model::TimeLog::Entry::status
+
+            'object.entry.status.category_delimiter'    =>  ' ',
 
         );
     } #short
@@ -71,6 +75,28 @@ Tokens: {
 
             'object.entry.error.invalid_start_values'
                 =>  'Could not obtain values from start string. Please use the format "yyyy/mm/dd hh:mm" or an epoch number.',
+
+            # Management::Model::TimeLog::Entry::status
+
+            'object.entry.status.formatting'
+                =>
+'
+Class:          %s
+
+ID:             %d
+Start:          %s
+Start Epoch:    %d
+End:            %s
+End Epoch:      %s
+Duration:       %s
+
+Top Category:   %s
+Categories:     %s
+
+Details:
+%s
+',
+
 
             # Nothing yet.
         );

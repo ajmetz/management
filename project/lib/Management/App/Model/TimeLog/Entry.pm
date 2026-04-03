@@ -171,6 +171,23 @@ method $instance_setup {
 
 }
 
+method status {
+    return sprintf(
+        $logger->language('object.entry.status.formatting'),
+        __CLASS__,
+        $self->id,
+        $self->start,
+        $self->start_epoch,
+        $self->end,
+        $self->end_epoch,
+        $self->duration,
+        $self->top_category,
+        join('object.entry.status.category_delimiter', $self->categories->@*),
+        $self->details,
+        
+    );
+}
+
 ADJUST {
     
     $self->$instance_setup;
