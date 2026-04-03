@@ -62,10 +62,6 @@ Tokens: {
             'options.abbreviated_month.11'              =>  'Nov',
             'options.abbreviated_month.12'              =>  'Dec',
 
-            # Management::Model::TimeLog::Entry::status
-
-            'object.entry.status.category_delimiter'    =>  ' ',
-
         );
     } #short
 
@@ -78,23 +74,28 @@ Tokens: {
 
             # Management::Model::TimeLog::Entry::status
 
+            'object.entry.status.category_delimiter'
+                =>
+'
+                ',
+
             'object.entry.status.formatting'
                 =>
 '
-Class:          %s
+Class:          [_1]
 
-ID:             %d
-Start:          %s
-Start Epoch:    %d
-End:            %s
-End Epoch:      %s
-Duration:       %s
+ID:             [_2]
+Start:          [_3]
+End:            [_4]
+Start Epoch:    [_5]
+End Epoch:      [_6]
+Duration:       [_7]
 
-Top Category:   %s
-Categories:     %s
+Top Category:   [_8]
+Categories:     [_9]
 
 Details:
-%s
+[_10]
 ',
 
 

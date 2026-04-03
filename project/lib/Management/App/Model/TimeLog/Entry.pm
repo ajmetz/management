@@ -8,8 +8,8 @@ use     DateTime::Duration;
 use     Time::Piece;
 
 #bob
-field   $start          :param              =   undef;
-field   $end            :param              =   undef;
+field   $start          :param  :reader     =   undef;
+field   $end            :param  :reader     =   undef;
 
 field   $start_year             :reader     =   undef;
 field   $start_month            :reader     =   undef;
@@ -172,19 +172,21 @@ method $instance_setup {
 }
 
 method status_string {
-    return sprintf(
-        $logger->language->localise('object.entry.status.formatting'),
+    return $logger->language->localise(
+        'object.entry.status.formatting',
         __CLASS__,
         $self->id,
         $self->start,
-        $self->start_epoch,
         $self->end,
+        $self->start_epoch,
         $self->end_epoch,
         $self->duration,
         $self->top_category,
-        join('object.entry.status.category_delimiter', $self->categories->@*),
+        join(
+            $logger->language->localise('object.entry.status.category_delimiter'),
+            $self->categories->@*
+        ),
         $self->details,
-        
     );
 }
 
