@@ -171,7 +171,7 @@ method $instance_setup {
 
 }
 
-method status {
+method status_string {
     return sprintf(
         $logger->language('object.entry.status.formatting'),
         __CLASS__,
