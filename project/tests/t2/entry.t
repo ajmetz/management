@@ -110,7 +110,7 @@ ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved
 isa_ok  (   $retrieved_entry                    ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'    );
 
 warn $retrieved_entry->status_string;
-warn dumper(deconstruct_object($retrieved_entry));
+#warn dumper(deconstruct_object($retrieved_entry));
 
 # * fetch our last save by id
 # * check it's the same entry we created

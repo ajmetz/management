@@ -272,7 +272,11 @@ Phrases: {
 
             'Invalid digit provided.'                                       =>  'Invalid digit provided.',
 
+            # Management::Model::Entry - $set_duration private method
 
+            'Duration is...'                                                =>  'Duration is...',
+            'End Epoch is [_1] and Start Epoch is [_2]'                     =>  'End Epoch is [_1] and Start Epoch is [_2]',
+            
         );
 
     } #debug
