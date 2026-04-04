@@ -110,6 +110,33 @@ ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved
 isa_ok  (   $retrieved_entry                    ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'    );
 
 warn $retrieved_entry->status_string;
+warn dumper($retrieved_entry->status_array);
+warn $entry_object->details.'.'.$retrieved_entry->details;
+like(
+    $retrieved_entry->status_array,
+    array {
+        item 0 => 'Management::App::Model::TimeLog::Entry';
+        item 2 => $entry_object->start;
+        item $entry_object->end;
+        item $entry_object->start_epoch;
+        item $entry_object->end_epoch;
+        item $entry_object->duration;
+        item $entry_object->top_category;
+        item (join(
+            $test_app->language->localise('object.entry.status.category_delimiter'),
+            $entry_object->categories->@*
+        ));
+        item $entry_object->details;
+        item DNE();
+        end();
+    }                                           ,                                                           'Our retrieved Entry has the expected status values.'
+);
+
+is      (  $retrieved_entry->id =>  $saved_entry->last_saved_entry_id,                                      'Our retrieved Entry has the expected database row ID.'    );
+
+
+
+#warn $retrieved_entry->status_string;
 #warn dumper(deconstruct_object($retrieved_entry));
 
 # * fetch our last save by id
