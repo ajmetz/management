@@ -235,21 +235,17 @@ Phrases: {
             'Set initial values.'                                           =>  'Set initial values.',
             'This will do for now.'                                         =>  'This will do for now.',
 
-    
-
-            
-
-            
-
-            
-
-
 
             # Management::App::Model::Database::Data::save
         
             'This is what we have been asked to save...'                    =>  'This is what we have been asked to save...',
             'Beginning with the following data...'                          =>  'Beginning with the following data...',
             'To be saved to the following table...'                         =>  'To be saved to the following table...',
+
+            
+            # Management::Model::Entry - $set_duration private method
+
+            'Set duration data.'                                            =>  'Set duration data.',
         
         );
     } #trace
@@ -280,7 +276,7 @@ Phrases: {
             # Management::Model::Entry - $set_duration private method
 
             'Duration is...'                                                =>  'Duration is...',
-            'End Epoch is [_1] and Start Epoch is [_2]'                     =>  'End Epoch is [_1] and Start Epoch is [_2]',
+            'End Epoch is [_1] and Start Epoch is [_2].'                    =>  'End Epoch is [_1] and Start Epoch is [_2].',
             
         );
 

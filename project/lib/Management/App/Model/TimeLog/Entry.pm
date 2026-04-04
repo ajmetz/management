@@ -32,6 +32,7 @@ field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validati
 field   $top_category   :param  :accessor   =   undef;      # Can be calculated by database look up during save to database via Model/Entry.pm
 field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
+field   $duration_data          :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $logger         :param;
 field   $id                     :accessor   =   undef;
 
@@ -145,17 +146,15 @@ method $set_epochs {
 
 }
 
-method $set_duration {
+method $set_duration_data {
 
-    my  $log    =   $logger->context('[Management::App::Model::TimeLog::Entry::$set_duration]');
-    
-    $log->debug('End Epoch is [_1] and Start Epoch is [_2]',$end_epoch,$start_epoch);
+    my  $delimiter  =   '|';
 
-    my  $delimiter      =   '|';
-    my  @hour_and_mins  =   split(
-                                $delimiter,
+    $duration_data  =   [
+                            split(
+                                quotemeta($delimiter),
                                 DateTime::Format::Duration->new(
-                                    normalise   =>  1,
+                                    normalise   =>  1, # While normalise will give us hours and minutes where we previously had only seconds - will 24 hours show as zero hours and 1 day? Worth testing.
                                     pattern     =>  '%H'.$delimiter.'%M',
                                 )
                                 ->format_duration(
@@ -164,11 +163,25 @@ method $set_duration {
                                         DateTime->from_epoch($start_epoch)
                                     )
                                 )
-                            );
+                            )
+                        ];
+
+    return $self;
+
+}
+
+method $set_duration {
+
+    my  $log    =   $logger->context('[Management::App::Model::TimeLog::Entry::$set_duration]');
+
+    $log->debug('End Epoch is [_1] and Start Epoch is [_2].',$end_epoch,$start_epoch);
+
+    $self->$set_duration_data;
+    $log->trace('Set duration data.')->dump_values($duration_data);
     
     $duration       =   $log->language->localise(
                             'model.entry.set_duration.duration_string', # i.e. 1hr 30mins
-                            @hour_and_mins,
+                            $duration_data->@*,
                         );
 
     $log->debug('Duration is...')->dump_values($duration);
@@ -190,6 +203,13 @@ method $instance_setup {
 method status_string {
     return $logger->language->localise(
         'object.entry.status.formatting',
+        $self->status_array,
+    );
+}
+
+# An array means a predictable order.
+method status_array {
+    return (
         __CLASS__,
         $self->id,
         $self->start,
