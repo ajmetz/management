@@ -62,6 +62,11 @@ Tokens: {
             'options.abbreviated_month.11'              =>  'Nov',
             'options.abbreviated_month.12'              =>  'Dec',
 
+
+            # Management::Model::Entry - $set_duration private method
+
+            'model.entry.set_duration.duration_string'  =>  '[_1]hr [_2]mins',
+
         );
     } #short
 

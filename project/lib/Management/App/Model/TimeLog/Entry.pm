@@ -147,31 +147,32 @@ method $set_epochs {
 
 method $set_duration {
 
-    $logger->debug('End Epoch is [_1] and Start Epoch is [_2]',$end_epoch,$start_epoch);
+    my  $log    =   $logger->context('[Management::App::Model::TimeLog::Entry::$set_duration]');
     
-    $duration       =   sprintf(
-                            '%dhr %dmins', # i.e. 1hr 30mins
-                            DateTime
-                                ->from_epoch($end_epoch)
-                                ->subtract_datetime_absolute(
-                                    DateTime->from_epoch($start_epoch)
+    $log->debug('End Epoch is [_1] and Start Epoch is [_2]',$end_epoch,$start_epoch);
+
+    my  $delimiter      =   '|';
+    my  @hour_and_mins  =   split(
+                                $delimiter,
+                                DateTime::Format::Duration->new(
+                                    normalise   =>  1,
+                                    pattern     =>  '%H'.$delimiter.'%M',
                                 )
-                                ->in_units('hours','minutes')
-                            ,
-                        ); # This should be localised at some point?
-    $logger->debug('Duration is...')    ->dump_values(
-                                            (split(
-                                                /\|/,
-                                                DateTime::Format::Duration->new(normalise => 1, pattern => '%H|%M')->format_duration(
-                                                    DateTime->from_epoch($end_epoch)
-                                                    ->subtract_datetime_absolute(
-                                                        DateTime->from_epoch($start_epoch)
-                                                    )
-                                                    #->seconds
-                                                )
-                                            ))
-                                            #->in_units('hours','minutes')
-                                        );
+                                ->format_duration(
+                                    DateTime->from_epoch($end_epoch)
+                                    ->subtract_datetime_absolute(
+                                        DateTime->from_epoch($start_epoch)
+                                    )
+                                )
+                            );
+    
+    $duration       =   $log->language->localise(
+                            'model.entry.set_duration.duration_string', # i.e. 1hr 30mins
+                            @hour_and_mins,
+                        );
+
+    $log->debug('Duration is...')->dump_values($duration);
+
     return $self;
 
 }
