@@ -34,7 +34,7 @@ field   $details        :param  :accessor;                  # Later we could cod
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $duration_data          :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $logger         :param;
-field   $id                     :accessor   =   undef;
+field   $id             :param  :accessor   =   undef;
 
 field   $matches_and_captures_date_and_time =   qr/
                                                     ^                                     # Start of string

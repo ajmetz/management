@@ -327,6 +327,7 @@ method retrieve ($id) {
                                                     categories      =>  $categories,
                                                     top_category    =>  $top_category,
                                                     logger          =>  $logger,
+                                                    id              =>  $id,
                                                 );
 
     #die $logger->fatal('This will do for now.')->dump_values(@object_params);

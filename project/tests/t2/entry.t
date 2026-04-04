@@ -111,7 +111,14 @@ isa_ok  (   $retrieved_entry                    ,   ['Management::App::Model::Ti
 
 warn $retrieved_entry->status_string;
 warn dumper($retrieved_entry->status_array);
-warn $entry_object->details.'.'.$retrieved_entry->details;
+warn $entry_object->details.':'.$retrieved_entry->details;
+
+my  $status_categories_string   =   join(
+                                        $test_app->language->localise('object.entry.status.category_delimiter'),
+                                        $entry_object->categories->@*
+                                    );
+warn $status_categories_string;
+
 like(
     $retrieved_entry->status_array,
     array {
@@ -122,10 +129,7 @@ like(
         item $entry_object->end_epoch;
         item $entry_object->duration;
         item $entry_object->top_category;
-        item (join(
-            $test_app->language->localise('object.entry.status.category_delimiter'),
-            $entry_object->categories->@*
-        ));
+        item $status_categories_string;
         item $entry_object->details;
         item DNE();
         end();
