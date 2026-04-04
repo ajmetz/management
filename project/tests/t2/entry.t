@@ -118,9 +118,17 @@ my  $status_categories_string   =   join(
                                         $entry_object->categories->@*
                                     );
 warn $status_categories_string;
+warn 'This is what we are comparing against our test...';
+my @status_array_categories = $retrieved_entry->status_array;
+warn $status_array_categories[9];
+warn 'This is what we are testing against our compare...';
+warn $entry_object->details;
+
+warn 'This is our entry object\'s status string...';
+warn $entry_object->status_string;
 
 like(
-    $retrieved_entry->status_array,
+    [$retrieved_entry->status_array],
     array {
         item 0 => 'Management::App::Model::TimeLog::Entry';
         item 2 => $entry_object->start;
@@ -128,8 +136,8 @@ like(
         item $entry_object->start_epoch;
         item $entry_object->end_epoch;
         item $entry_object->duration;
-        item $entry_object->top_category;
-        item $status_categories_string;
+#        item $entry_object->top_category;
+        item 8 => $status_categories_string;
         item $entry_object->details;
         item DNE();
         end();

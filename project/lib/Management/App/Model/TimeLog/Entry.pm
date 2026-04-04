@@ -103,11 +103,12 @@ method $set_year_month_day_time {
         $start_month            =   $valid_start_values->{month};
         $start_day              =   $valid_start_values->{day};
         $start_time             =   $valid_start_values->{time};
-    
-        $end_year               =   $valid_end_values->{year};
-        $end_month              =   $valid_end_values->{month};
-        $end_day                =   $valid_end_values->{day};
+
+        $end_year               =   $valid_end_values->{year} // $start_year;
+        $end_month              =   $valid_end_values->{month} // $start_month;
+        $end_day                =   $valid_end_values->{day} // $start_day;
         $end_time               =   $valid_end_values->{time};
+        $end                    =   $end_day.'/'.$end_month.'/'.$end_year.' '.$end_time;
 
         # Output:
         return $self;                
@@ -133,9 +134,9 @@ method $set_epochs {
     $end_epoch      =   DateTime->new(
 
                             # Assume same year/month/day as start time, unless end year/month/day given:
-                            year    =>  $end_year // $start_year,
-                            month   =>  $end_month // $start_month,
-                            day     =>  $end_day // $start_day,
+                            year    =>  $end_year,
+                            month   =>  $end_month,
+                            day     =>  $end_day,
 
                             hour    =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
                             minute  =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
