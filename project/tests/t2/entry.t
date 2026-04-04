@@ -145,7 +145,7 @@ like(
 );
 
 is      (  $retrieved_entry->id =>  $saved_entry->last_saved_entry_id,                                      'Our retrieved Entry has the expected database row ID.'    );
-
+is      (  $retrieved_entry->top_category =>  'OTHER',                                      'Our retrieved Entry has the expected top category.'    );
 
 
 #warn $retrieved_entry->status_string;
