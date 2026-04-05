@@ -1,9 +1,8 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Model::Database::Type::SQLite;
+class   Management::App::MVC::Model::Database::Type::SQLite;
 use     Management::App::Boilerplate::Code;
 use     Mojo::SQLite;
-#use     Data::Dumper;
 
 field   $file_name  :param;
 

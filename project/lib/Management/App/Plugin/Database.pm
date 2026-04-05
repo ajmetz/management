@@ -5,7 +5,7 @@ use     Management::App::Boilerplate::Code;
 inherit Mojolicious::Plugin;
 #use     Mojo::Util qw(dumper);
 
-use     Management::App::Model::Database;
+use     Management::App::MVC::Model::Database;
 
 
 =pod Name, Version, Synopsis
@@ -66,7 +66,7 @@ method register ($app, $config) {
 }
 
 method database ($database_params) {
-    state $database = Management::App::Model::Database->new($database_params->%*);  # State means $database set only once then re-used.
+    state $database = Management::App::MVC::Model::Database->new($database_params->%*);  # State means $database set only once then re-used.
 }
 
 method setup_database_migration ($app) {
@@ -77,7 +77,7 @@ method setup_database_migration ($app) {
         )->to_string
     );
 
-    my $db  =    $app->database->handle; # First call might trigger migration.
+    my $dbh =    $app->database->handle; # First call might trigger migration.
 
     return $self;
 }

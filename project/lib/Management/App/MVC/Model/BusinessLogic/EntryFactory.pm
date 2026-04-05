@@ -1,11 +1,11 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Model::TimeLog::EntryFactory 1.00;
+class   Management::App::MVC::Model::BusinessLogic::EntryFactory 1.00;
 
 # Custom Libraries:
 use     Path::Tiny;
 use     Management::App::Boilerplate::Code;
-use     Management::App::Model::TimeLog::Entry;
+use     Management::App::MVC::Model::BusinessLogic::Entry;
 
 =utf8
 
@@ -44,7 +44,7 @@ method multiple_entries :common ($string) {
 
     foreach my $entry_string (split $entry_delimiter, $string) {
 
-        my $entry_object                =   $entry_string =~ $matches_and_captures_values?  Management::App::Model::TimeLog::Entry->new(%{^CAPTURE}):
+        my $entry_object                =   $entry_string =~ $matches_and_captures_values?  Management::App::MVC::Model::BusinessLogic::Entry->new(%{^CAPTURE}):
                                             undef;
         next unless $entry_object;
         push @array                     ,   $entry_object;

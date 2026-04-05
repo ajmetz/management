@@ -12,22 +12,23 @@ method startup {
     ->load_plugins
     ->secrets( $self->config->{secrets} )
     ->exclude_author_commands
-    ->setup_customisation_of_mojolicious_file_paths
-    ->setup_template_nest;
+    ->setup_customisation_of_mojolicious_file_paths;
 
 }
 
 method load_plugins {
 
     my  $config_params = {
-        file    =>  $self->home->rel_file('config/management.yml')->to_string,
-    };
+        file        =>  $self->home->rel_file('config/management.yml')->to_string,
+    };  
 
     $self->plugin('NotYAMLConfig', $config_params);
-    $self->plugin('Management::App::Plugin::Languages');
-    $self->plugin('Management::App::Plugin::Log'); # Uses Languages
-    $self->plugin('Management::App::Plugin::Database'); # Uses Log
-    $self->plugin('Management::App::Plugin::Routes');
+    $self->plugin('Management::App::Plugin::Language');
+    $self->plugin('Management::App::Plugin::Logger');           # Uses Languages
+    $self->plugin('Management::App::Plugin::Database');         # Uses Logger
+    $self->plugin('Management::App::Plugin::Router');
+    $self->plugin('Management::App::Plugin::TemplateNest');
+    $self->plugin('Management::App::Plugin::ShortcutHelpers');  # All other plugins had singular names and this is plural!
     return $self;
 
 }
@@ -56,34 +57,6 @@ method setup_customisation_of_mojolicious_file_paths {
 
     # Switch to installable "templates" directory
     $self->renderer->paths->[0] =   $files->child('HTML');
-
-    return $self;
-
-}
-
-method setup_template_nest {
-
-    $self->defaults(
-
-        # Store Template::Nest setup data in the stash:
-        layout_settings     =>   [
-
-            template_dir    =>  $self->app->home->rel_file('lib/Management')->child('HTML')->to_string,
-            token_delims    =>  ['PUT','HERE'],
-            escape_char     =>  '\\',
-            name_label      =>  'TEMPLATE',
-            template_ext    =>  '', # Blank so can declare extension under the NAME key (labelled TEMPLATE).
-                                    # This will allow me to use htm and html
-                                    # or anything else as I wish.
-
-            fixed_indent    =>  0,  # Off (0)
-                                    # - On (1) would be nice for tidy source code,
-                                    # and would mess with white space in substituted multi-line values
-                                    # - i.e. textarea values, or hidden form values -
-                                    # so I've decided to keep this off.
-        ],
-
-    );
 
     return $self;
 

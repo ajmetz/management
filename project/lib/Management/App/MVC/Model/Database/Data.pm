@@ -1,9 +1,9 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Model::Database::Data;
+class   Management::App::MVC::Model::Database::Data;
 use     Management::App::Boilerplate::Code;
-use     Management::App::Model::Database::Data::Entry;
-use     Management::App::Model::Database::Data::Category;
+use     Management::App::MVC::Model::Database::Data::Entry;
+use     Management::App::MVC::Model::Database::Data::Category;
 use     Data::Util qw(
             is_hash_ref
             is_array_ref
@@ -14,7 +14,7 @@ field   $logger                 :param  :reader;
 field   $last_insert_id_lookup          :reader     =   {};
 
 method save ($what_to_save) {
-    my  $log    =   $logger->context('Management::App::Model::Database::Data::save');
+    my  $log    =   $logger->context('Management::App::MVC::Model::Database::Data::save');
 
     $log->trace('This is what we have been asked to save...')->dump_values($what_to_save);
 
@@ -66,14 +66,14 @@ method entry {
                                                             data    =>  $self,
                                                             logger  =>  $logger,
                                                         );
-    state   $entry                                  =   Management::App::Model::Database::Data::Entry->new(@params);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
+    state   $entry                                  =   Management::App::MVC::Model::Database::Data::Entry->new(@params);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
 }
 
 method category {
     my  @params                                     =   (
                                                             data    =>  $self,
                                                         );
-    state   $category                               =   Management::App::Model::Database::Data::Category->new(@params);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
+    state   $category                               =   Management::App::MVC::Model::Database::Data::Category->new(@params);  # State means $category set only once then re-used. This is the object model for category crud commands and not an actual category object.
 }
 
 __END__

@@ -1,6 +1,6 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Controller::Root;
+class   Management::App::MVC::Controller::Root;
 
 inherit Mojolicious::Controller;
 use     Management::App::Boilerplate::Code;

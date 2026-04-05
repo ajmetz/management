@@ -1,12 +1,18 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Model::TimeLog::Entry 2.00;
+class   Management::App::MVC::Model::BusinessLogic::Entry 2.00;
 
 use     Management::App::Boilerplate::Code;
 use     DateTime;
 use     DateTime::Duration;
 use     DateTime::Format::Duration;
 use     Time::Piece;
+
+=encoding utf8
+
+stuff
+
+=cut
 
 #bob
 field   $start          :param  :reader     =   undef;
@@ -29,7 +35,7 @@ field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validati
                                                             # UPDATE: Validation can be done before saving. 
                                                             # LEVELS: Can tell number of levels by number of items in arrayref.
 
-field   $top_category   :param  :accessor   =   undef;      # Can be calculated by database look up during save to database via Model/Entry.pm
+field   $top_category   :param  :accessor   //= 'OTHER';      # Can be calculated by database look up during save to database via Model/Entry.pm
 field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $duration_data          :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
@@ -173,7 +179,7 @@ method $set_duration_data {
 
 method $set_duration {
 
-    my  $log    =   $logger->context('[Management::App::Model::TimeLog::Entry::$set_duration]');
+    my  $log    =   $logger->context('Management::App::MVC::Model::BusinessLogic::Entry::$set_duration]');
 
     $log->debug('End Epoch is [_1] and Start Epoch is [_2].',$end_epoch,$start_epoch);
 

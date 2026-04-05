@@ -1,16 +1,16 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Model::Database;
+class   Management::App::MVC::Model::Database;
 # As I learn how classes interoperate, I may be repeating stuff already done within the framework.
 # This class for example, attempts to be a parent database class, when Mojo::SQLite::Database may already be one.
 
 use     Management::App::Boilerplate::Code;
-use     Management::App::Model::Database::Type::SQLite;
-use     Management::App::Model::Database::Data;
+use     Management::App::MVC::Model::Database::Type::SQLite;
+use     Management::App::MVC::Model::Database::Data;
 
 field $file_name        :param  :reader;
 field $logger           :param  :reader;
-field $database_type            :reader =   'Management::App::Model::Database::Type::SQLite'; # Change the type here if required.
+field $database_type            :reader =   'Management::App::MVC::Model::Database::Type::SQLite'; # Change the type here if required.
 
 method handle {
     state   $handle                     =   $self->connection->db;  # I presently believe the handle should always be the same one
@@ -35,7 +35,7 @@ method data {
                                                 database => $self,
                                                 logger   => $self->logger
                                             );
-    state   $data                       =   Management::App::Model::Database::Data->new(@params);  # State means $data set only once then re-used.
+    state   $data                       =   Management::App::MVC::Model::Database::Data->new(@params);  # State means $data set only once then re-used.
 }
 
 method fetch_main_table_names {

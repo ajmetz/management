@@ -1,6 +1,6 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Model::Database::Data::Category;
+class   Management::App::MVC::Model::Database::Data::Category;
 use     Management::App::Boilerplate::Code;
 #use     Mojo::Util qw(dumper);
 

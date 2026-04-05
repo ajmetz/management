@@ -1,14 +1,14 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Controller::Input;
+class   Management::App::MVC::Controller::Input;
 
 inherit Mojolicious::Controller;
 use     Management::App::Boilerplate::Code;
 use     Template::Nest;
-use     Management::App::Model::TimeLog::EntryFactory;
-use     Management::App::Model::TimeLog::TimeRange;
+use     Management::App::MVC::Model::BusinessLogic::EntryFactory;
+use     Management::App::MVC::Model::BusinessLogic::TimeRange;
 
-my $time_range_class    =   'Management::App::Model::TimeLog::TimeRange';
+my $time_range_class    =   'Management::App::MVC::Model::BusinessLogic::TimeRange';
 
 method entries {
 
@@ -70,7 +70,7 @@ method confirm_input ($valid_input = undef) {
     $self->logger->debug('About to set initial values.');
 
     # Initial values:
-    my @entries                     =   $valid_input->{'data'}?    Management::App::Model::TimeLog::EntryFactory->multiple_entries($valid_input->{'data'}):
+    my @entries                     =   $valid_input->{'data'}?    Management::App::MVC::Model::BusinessLogic::EntryFactory->multiple_entries($valid_input->{'data'}):
                                         ();
     my  @entries_layout             =   ();
 

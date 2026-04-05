@@ -1,39 +1,41 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Plugin::Routes;
-
+class   Management::App::MVC::View::Router;
 use     Management::App::Boilerplate::Code;
-inherit Mojolicious::Plugin;
 
-method register ($app, $conf) {
+method routes :common ($routes) {
 
-    my  $routes =   $app->routes->under->to('Root#auto', namespace => 'Management::App::Controller');
+    # Applicable to all...
+    my $auto_first_and_then  =  $routes->under->to('Root#auto', namespace => 'Management::App::MVC::Controller');
 
     # Default at root:
-    $routes
+    $auto_first_and_then
         ->any('/')              ->to('Root#'.   'homepage'      ); # Dedicated entry for matching simply '/' (root) - list of management, comms, action, routines
 
     # Root.pm:
-    $routes
+    $auto_first_and_then
         ->any('/hello')         ->to('Root#'.   'hello_world'   );  # Hello world test.
-    $routes
+    $auto_first_and_then
         ->any('/outcomes')      ->to('Root#'.   'outcomes'      );  # HTML page showing list of outcome categories - people, print, videos, website
-    $routes
+    $auto_first_and_then
         ->any('/dynamic01')     ->to('Root#'.   'dynamic01'     );  # Dynamic layout population - example of a pie chart and some radio buttons
 
 
     # Input.pm:
-    $routes
+    $auto_first_and_then
         ->any('/entries')       ->to('Input#'.  'entries'       );  # Enter time logging
-    $routes
+    $auto_first_and_then
         ->any('/days')          ->to('Input#'.  'days'          );  # Select a time range and submit to the same days endpoint
 
 
 
     # Default / fall back for anything else (other than simply root)...
-    $routes
+    $auto_first_and_then
         ->any('/*rest_of_url')  ->to('Root#'.   'homepage'      ); # Does not match '/' and only matches '/some-stuff'
+
 
     return;
 
 }
+
+__END__

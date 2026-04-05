@@ -8,7 +8,7 @@ use Management::App::Boilerplate::Test;
 
 # Specific Modules used:
 use Test::Mojo;
-use Management::App::Model::TimeLog::Entry;
+use Management::App::MVC::Model::BusinessLogic::Entry;
 use Mojo::Util qw(dumper);
 use Object::Pad::MetaFunctions qw(
         deconstruct_object
@@ -87,8 +87,8 @@ Then we begin testing our Entry Object...
 my  $regex_one_or_more_digits                   =   qr/^\p{Digit}+$/;
 
 # Object Tests:
-my          $entry_object                       =   Management::App::Model::TimeLog::Entry->new(@dummy_data_for_entry);
-isa_ok  (   $entry_object                       ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'    );
+my          $entry_object                       =   Management::App::MVC::Model::BusinessLogic::Entry->new(@dummy_data_for_entry);
+isa_ok  (   $entry_object                       ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
 
 like    (   $entry_object->start_epoch          ,   $regex_one_or_more_digits,                              'Start Epoch is one or more digits.'                        );
 like    (   $entry_object->end_epoch            ,   $regex_one_or_more_digits,                              'End Epoch is one or more digits.'                          );
@@ -107,56 +107,28 @@ like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,   
 ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),                 'Entry values can be retrieved from test database,'.
                                                                                                             ' by entry id.'                                             ); # Not enough to construct full object.
 
-isa_ok  (   $retrieved_entry                    ,   ['Management::App::Model::TimeLog::Entry'],             'Our Entry is a Management::App::Model::TimeLog::Entry.'    );
-
-warn $retrieved_entry->status_string;
-warn dumper($retrieved_entry->status_array);
-warn $entry_object->details.':'.$retrieved_entry->details;
-
-my  $status_categories_string   =   join(
-                                        $test_app->language->localise('object.entry.status.category_delimiter'),
-                                        $entry_object->categories->@*
-                                    );
-warn $status_categories_string;
-warn 'This is what we are comparing against our test...';
-my @status_array_categories = $retrieved_entry->status_array;
-warn $status_array_categories[9];
-warn 'This is what we are testing against our compare...';
-warn $entry_object->details;
-
-warn 'This is our entry object\'s status string...';
-warn $entry_object->status_string;
+isa_ok  (   $retrieved_entry                    ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
 
 like(
-    [$retrieved_entry->status_array],
+    [$retrieved_entry->status_array], # Needs to be an arrayref for the array check below to work
     array {
-        item 0 => 'Management::App::Model::TimeLog::Entry';
-        item 2 => $entry_object->start;
+        item 'Management::App::MVC::Model::BusinessLogic::Entry';
+        item $saved_entry->last_saved_entry_id;
+        item $entry_object->start;
         item $entry_object->end;
         item $entry_object->start_epoch;
         item $entry_object->end_epoch;
         item $entry_object->duration;
-#        item $entry_object->top_category;
-        item 8 => $status_categories_string;
+        item $entry_object->top_category;
+        item join(
+                        $test_app->language->localise('object.entry.status.category_delimiter'),
+                        $entry_object->categories->@*
+                    );
         item $entry_object->details;
         item DNE();
         end();
     }                                           ,                                                           'Our retrieved Entry has the expected status values.'
 );
-
-is      (  $retrieved_entry->id =>  $saved_entry->last_saved_entry_id,                                      'Our retrieved Entry has the expected database row ID.'    );
-is      (  $retrieved_entry->top_category =>  'OTHER',                                      'Our retrieved Entry has the expected top category.'    );
-
-
-#warn $retrieved_entry->status_string;
-#warn dumper(deconstruct_object($retrieved_entry));
-
-# * fetch our last save by id
-# * check it's the same entry we created
-
-#my  $test_object            =   Test::Mojo->new('Management');
-
-#$test_object->app->entry->create(@dummy_data_for_entry)->retrieve_last_saved;
 
 =head2 Done.
 
@@ -174,6 +146,8 @@ Andrew Mehta
 
 __END__
 
+
+
 Old lines that could prove useful again later:
 #use lib path(__FILE__)->parent->parent->realpath->stringify;
 
@@ -186,3 +160,33 @@ Old lines that could prove useful again later:
                                                         #field entries => hash { prop size => '3' };
 #                                                },                                                      'Our Entry save data has an'.
 #                                                                                                        ' entries key with true values'         );
+
+======
+
+
+
+warn $retrieved_entry->status_string;
+warn dumper($retrieved_entry->status_array);
+warn $entry_object->details.':'.$retrieved_entry->details;
+
+my  $status_categories_string   =   
+warn $status_categories_string;
+warn 'This is what we are comparing against our test...';
+my @status_array_categories = $retrieved_entry->status_array;
+warn $status_array_categories[9];
+warn 'This is what we are testing against our compare...';
+warn $entry_object->details;
+
+warn 'This is our entry object\'s status string...';
+warn $entry_object->status_string;
+
+
+#warn $retrieved_entry->status_string;
+#warn dumper(deconstruct_object($retrieved_entry));
+
+# * fetch our last save by id
+# * check it's the same entry we created
+
+#my  $test_object            =   Test::Mojo->new('Management');
+
+#$test_object->app->entry->create(@dummy_data_for_entry)->retrieve_last_saved;
