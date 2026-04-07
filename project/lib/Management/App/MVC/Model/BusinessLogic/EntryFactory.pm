@@ -58,29 +58,16 @@ method multiple_entries :common ($string) {
 # Commandline execution with test data, and pretty output:
 unless (caller) {
 
-    
-    say # the following pretty output:
-'
-Start: '.$ARG->start_time.'
-End:   '.$ARG->end_time.'
-Duration: '.$ARG->duration.'
-Category: '.$ARG->category.'
-Details:  '.$ARG->details.'
-=========
-'
-for (
-    EntryFactory->multiple_entries(
-'
+say $ARG->status_string for Management::App::MVC::Model::BusinessLogic::EntryFactory->multiple_entries('
 15:02-15:15 - YOUTUBE		- Watched youtube videos.
 15:22-15:26 - PLANNING		- Getting organised.
 hjkdfshflhflaflalh
 adjdkjd
 15:22-cjcxkxl something.
 15:34-15:35 - SOMETHING		- Else.
-'
-    )
-);
+');
 
 };
+
 __END__
 
