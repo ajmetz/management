@@ -1,6 +1,6 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Language;
+class   Management::App::MVC::View::Language;
 
 use     Management::App::Boilerplate::Code;
 inherit Locale::Maketext; # Should it be inherit? We'll wait and see when we need to use it.

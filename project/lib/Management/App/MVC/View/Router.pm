@@ -19,7 +19,8 @@ method routes :common ($routes) {
         ->any('/outcomes')      ->to('Root#'.   'outcomes'      );  # HTML page showing list of outcome categories - people, print, videos, website
     $auto_first_and_then
         ->any('/dynamic01')     ->to('Root#'.   'dynamic01'     );  # Dynamic layout population - example of a pie chart and some radio buttons
-
+    $auto_first_and_then
+        ->any('/testlogging')   ->to('Root#'.   'test_logging'  );  # Testing Log::Any.
 
     # Input.pm:
     $auto_first_and_then

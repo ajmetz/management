@@ -25,6 +25,7 @@ method load_plugins {
     $self->plugin('NotYAMLConfig', $config_params);
     $self->plugin('Management::App::Plugin::Language');
     $self->plugin('Management::App::Plugin::Logger');           # Uses Languages
+    $self->plugin('Management::App::Plugin::MyLogAny');
     $self->plugin('Management::App::Plugin::Database');         # Uses Logger
     $self->plugin('Management::App::Plugin::Router');
     $self->plugin('Management::App::Plugin::TemplateNest');

@@ -1,9 +1,9 @@
 use     Object::Pad v0.820;
 
-class   Management::App::Language::en_gb;
+class   Management::App::MVC::View::Language::en_gb;
 
 use     Management::App::Boilerplate::Code;
-inherit Management::App::Language;
+inherit Management::App::MVC::View::Language;
 
 # ----------------------------------
 

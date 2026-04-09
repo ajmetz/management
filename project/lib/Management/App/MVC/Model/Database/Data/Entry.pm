@@ -2,7 +2,7 @@ use     Object::Pad v0.820;
 
 class   Management::App::MVC::Model::Database::Data::Entry;
 use     Management::App::Boilerplate::Code;
-use     Management::App::Language;
+use     Management::App::MVC::View::Language;
 use     Mojo::Util qw(dumper);
 use     Data::Util qw(
             is_instance

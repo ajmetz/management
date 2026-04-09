@@ -5,6 +5,9 @@ class   Management::App::MVC::Controller::Root;
 inherit Mojolicious::Controller;
 use     Management::App::Boilerplate::Code;
 use     Template::Nest;
+use     Log::Any;
+
+field   $log  :reader    =  Log::Any->get_logger;
 
 method auto {
     my  @supported_languages        =   ('en-GB','de-DE'); # TODO - create language class method for this.
@@ -20,6 +23,16 @@ method hello_world {
 
     $self->render(
         text => "Hello World!",
+    );
+
+}
+
+method test_logging {
+
+    $log->info('Testing log any from test_logging subroutine.');
+    
+    $self->render(
+        text => "Test Logging.",
     );
 
 }
@@ -114,5 +127,7 @@ method dynamic01 {
         text                    =>  $layout,
     );
 }
+
+
 
 __END__
