@@ -6,7 +6,7 @@ inherit Mojolicious::Controller;
 use     Management::App::Boilerplate::Code;
 use     Template::Nest;
 use     Log::Any;
-use     Management::App::MVC::Model::TestLogging;
+use     Management::App::MVC::Model::TestLogAny;
 
 field   $log  :reader    =  Log::Any->get_logger;
 
@@ -31,7 +31,7 @@ method hello_world {
 method test_logging {
 
     $log->info('Testing log any from test_logging subroutine.');
-    Management::App::MVC::Model::TestLogging->new->test->log->trace('Testing TestLogging from test_logging.');
+    Management::App::MVC::Model::TestLogAny->new->test->log->trace('Testing TestLogAny from test_logging.');
     
     $self->render(
         text => "Test Logging.",

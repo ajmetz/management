@@ -1,6 +1,6 @@
 use     Object::Pad v0.820;
 
-class   Management::App::MVC::Model::TestLogging;
+class   Management::App::MVC::Model::TestLogAny;
 use     Management::App::Boilerplate::Code;
 
 use     Mojo::Util qw(dumper);
