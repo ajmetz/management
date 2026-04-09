@@ -11,6 +11,7 @@ field   $log     :param :reader      =   Log::Any->get_logger;
 method test {
     warn ('Log message from the test method via warn.');
     $log->info('Log message from the test method via \$log.');
+    return $self;
 }
 
 __END__
