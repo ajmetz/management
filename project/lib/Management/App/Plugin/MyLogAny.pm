@@ -8,7 +8,7 @@ use     Log::Any::Adapter;
 
 method register ($app, $config) {
 
-    Log::Any::Adapter->set('MojoLog', logger => $app->log);
+    Log::Any::Adapter->set('+Management::App::MVC::View::MyLogAnyAdapter', language => $app->language, logger => $app->log);
 
     return;
 

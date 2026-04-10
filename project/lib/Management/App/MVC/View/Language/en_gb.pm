@@ -14,8 +14,9 @@ en_GB_Tokens_Phrases_Lexicon: {
 my  @tokens_short;
 my  @tokens_long;
 my  @webapp_phrases;
-my  @trace_phrases;
-my  @debug_phrases;
+my  @logging_trace_phrases;
+my  @logging_debug_phrases;
+my  @logging_info_phrases;
 my  @verbose_phrases;
 my  @stdout_phrases;
 
@@ -191,9 +192,9 @@ Phrases: {
     } #webapp
 
     Trace: {
-        @trace_phrases = (
+        @logging_trace_phrases = (
         
-            # Management::App::Model::Database::Data::Entry::save
+            # Management::App::MVC::Model::Database::Data::Entry::save
 
             'Beginning the process of actually saving to database...'       =>  'Beginning the process of actually saving to database...',
             'Checking our Entry Object is valid.'                           =>  'Checking our Entry Object is valid.',
@@ -226,7 +227,7 @@ Phrases: {
                 =>  'This entry id is not yet in the entries_categories table, so we will now proceed to saving it there...',
 
 
-            # Management::App::Model::Database::Data::Entry::retrieve
+            # Management::App::MVC::Model::Database::Data::Entry::retrieve
             'Making first attempt to retrieve data.'                        =>  'Making first attempt to retrieve data.',
             'Obtained categories in this order:'                            =>  'Obtained categories in this order:',
             'Preparing values for second data retrieval.'                   =>  'Preparing values for second data retrieval.',
@@ -236,7 +237,7 @@ Phrases: {
             'This will do for now.'                                         =>  'This will do for now.',
 
 
-            # Management::App::Model::Database::Data::save
+            # Management::App::MVC::Model::Database::Data::save
         
             'Beginning with the following data...'                          =>  'Beginning with the following data...',
             'Our top category is valid.'                                    =>  'Our top category is valid.',
@@ -244,7 +245,7 @@ Phrases: {
             'To be saved to the following table...'                         =>  'To be saved to the following table...',
 
             
-            # Management::Model::Entry - $set_duration private method
+            # Management::App::MVC::Model::Entry - $set_duration private method
 
             'Set duration data.'                                            =>  'Set duration data.',
         
@@ -253,13 +254,13 @@ Phrases: {
 
     Debug: {
 
-        @debug_phrases = (
+        @logging_debug_phrases = (
 
 
             # Commonly used...
 
 
-            # Management::Controller::Input
+            # Management::App::MVC::Controller::Input
 
             'About to set initial values.'                                  =>  'About to set initial values.',
             'About to start processing.'                                    =>  'About to start processing.',
@@ -270,11 +271,11 @@ Phrases: {
             'Set layout data structure as follows:'                         =>  'Set layout data structure as follows:',
 
 
-            # Management::Model::Entry
+            # Management::App::MVC::Model::Entry
 
             'Invalid digit provided.'                                       =>  'Invalid digit provided.',
 
-            # Management::Model::Entry - $set_duration private method
+            # Management::App::MVC::Model::Entry - $set_duration private method
 
             'Duration is...'                                                =>  'Duration is...',
             'End Epoch is [_1] and Start Epoch is [_2].'                    =>  'End Epoch is [_1] and Start Epoch is [_2].',
@@ -282,6 +283,21 @@ Phrases: {
         );
 
     } #debug
+
+    Info: {
+    
+        @logging_info_phrases = (
+
+        # Management::App::MVC::Controller::Root
+        'Testing log any from test_logging subroutine.'                     =>  'Testing log any from test_logging subroutine.',
+        'Testing TestLogAny from test_logging.'                             =>  'Testing TestLogAny from test_logging.',
+        
+        # Management::App::MVC::Model::TestLogAny
+        'Log message from the test method via \$log.'                       =>  'Log message from the test method via \$log.',
+        'Log message from the test method via \$self->log.'                 =>  'Log message from the test method via \$self->log.',
+
+        );
+    }
 
     Verbose: {
 
@@ -304,8 +320,9 @@ our %Lexicon = (
     @tokens_short,
     @tokens_long,
     @webapp_phrases,
-    @debug_phrases,
-    @trace_phrases,
+    @logging_debug_phrases,
+    @logging_trace_phrases,
+    @logging_info_phrases,
     @verbose_phrases,
     @stdout_phrases,
 );
