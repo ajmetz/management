@@ -7,6 +7,7 @@ use     Management::App::Boilerplate::Code;
 use     Template::Nest;
 use     Management::App::MVC::Model::BusinessLogic::EntryFactory;
 use     Management::App::MVC::Model::BusinessLogic::TimeRange;
+use     DateTime;
 
 my $time_range_class    =   'Management::App::MVC::Model::BusinessLogic::TimeRange';
 
@@ -43,8 +44,8 @@ method entries {
 method get_valid_entries_input {
     # Conditional initial values:
     return  $self->validation->has_data
-            && $self->validation->required('data')->size(1,undef)->is_valid
-            && $self->validation->required('stage')->in('confirm', 'save')->is_valid?    $self->validation->output:
+            && $self->validation->required('entries')->size(1,undef)->is_valid
+            && $self->validation->required('stage')->in('add','confirm', 'save')->is_valid?    $self->validation->output:
             undef;
 
 }
@@ -59,6 +60,9 @@ method request_input {
             'SPECIFIC CONTENT'      =>  {
                 TEMPLATE            =>  'add_entries/content.htm',
                 PROMPT              =>  $self->language->localise_html('Please enter some data as input...'),
+                DATE                =>  DateTime->now->ymd,
+                STAGE               =>  'add',
+                
             },
         },
     };
@@ -196,7 +200,7 @@ method ask_days {
     ];
 
 
-    for my $value ($time_range_class::list_of_acceptable_years) {
+    for my $value ($time_range_class->list_of_acceptable_years) {
         push $year_options->@*      ,   {
             @option_defaults,
             VALUE                   =>  $value,
@@ -204,11 +208,11 @@ method ask_days {
         };
     };
 
-    for my $value ($time_range_class::list_of_acceptable_months) {
+    for my $value ($time_range_class->list_of_acceptable_months) {
         push $month_options->@*     ,   {
             @option_defaults,
             VALUE                   =>  $value,
-            LABEL                   =>  $self->language->localise_html('options.abbreviated_month.'.$value),
+            LABEL                   =>  $self->language->localise_html(('options.abbreviated_month.'.$value)),
         };
     };
 
@@ -256,10 +260,10 @@ method show_days {
 method get_valid_days_input {
     # Conditional initial values:
     return  $self->validation->has_data
-            && $self->validation->required('time_range_start_year')->in($time_range_class::list_of_acceptable_years)->is_valid
-            && $self->validation->required('time_range_start_month')->in($time_range_class::list_of_acceptable_months)->is_valid
-            && $self->validation->required('time_range_end_year')->in($time_range_class::list_of_acceptable_years)->is_valid
-            && $self->validation->required('time_range_end_month')->in($time_range_class::list_of_acceptable_months)->is_valid?     $self->validation->output:
+            && $self->validation->required('time_range_start_year')->in($time_range_class->list_of_acceptable_years)->is_valid
+            && $self->validation->required('time_range_start_month')->in($time_range_class->list_of_acceptable_months)->is_valid
+            && $self->validation->required('time_range_end_year')->in($time_range_class->list_of_acceptable_years)->is_valid
+            && $self->validation->required('time_range_end_month')->in($time_range_class->list_of_acceptable_months)->is_valid?     $self->validation->output:
             undef;
 
 }
