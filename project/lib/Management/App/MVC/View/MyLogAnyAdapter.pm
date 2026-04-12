@@ -12,7 +12,11 @@ use base qw(Log::Any::Adapter::Base);
 
 use Mojo::Log;
 use Management::App::MVC::View::Language;
-use Mojo::Util qw( dumper);
+use Mojo::Util qw(dumper);
+use Data::Util qw(
+    is_string
+    is_code_ref
+);
 
 sub init { 
 
@@ -38,10 +42,34 @@ foreach my $method ( Log::Any->logging_methods ) {
     make_method(
         $method,
         sub {
-                my $self = shift;
-                $self->{logger}->$mojo_method(
-                    $self->{language}->localise(@_) # Do we want it to gobble up all arguments? Or just the message? Leaving it at all for now, until we test.
-                )
+                use Data::Util qw(
+                    is_string
+                    is_code_ref
+                );
+                my  $self = shift;
+                my  $first_part = shift;
+ 
+                warn 'here is the first part:'.dumper($first_part);
+                warn Carp::longmess();
+                warn 'First part appears to be a string.' if is_string($first_part);
+                warn 'First part appears to be a coderef.' if is_code_ref($first_part);
+                warn 'here is the rest:'.dumper(@_) if @_;
+                warn 'There was no rest.' unless @_;
+
+                if (is_code_ref($first_part)) {
+                    $self->{logger}->$mojo_method($first_part, @_);
+                }
+                else {
+                       $self->{language}->localise($first_part, @_),
+                }
+#                $self->{logger}->$mojo_method(
+#                    (
+#                        is_code_ref($first_part)?   ($first_part, @_,):
+#                        $self->{language}->localise($first_part, @_),
+#                    ) # Do we want it to gobble up all arguments? Or just the message? Leaving it at all for now, until we test.
+##                    (is_string($first_part)? $self->{language}->localise($first_part, @_):
+##                    ($first_part, @_,),) # Do we want it to gobble up all arguments? Or just the message? Leaving it at all for now, until we test.
+#                )
             }
     );
 }
