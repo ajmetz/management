@@ -20,15 +20,19 @@ use Data::Util qw(
 
 sub init { 
 
-$_[0]->{logger}     ||= Mojo::Log->new;
-$_[0]->{language}   ||= Management::App::MVC::View::Language->try_or_die();
+$_[0]->{logger}             ||= Mojo::Log->new;
+$_[0]->{language}           ||= Management::App::MVC::View::Language->try_or_die();
+$_[0]->{localisation_scope} ||= undef;
 
 };
+
+
 
 # Create logging methods
 #
 foreach my $method ( Log::Any->logging_methods ) {
     my $mojo_method = $method;
+
 
     # Map log levels down to Mojo::Log levels where necessary
     #
@@ -42,35 +46,20 @@ foreach my $method ( Log::Any->logging_methods ) {
     make_method(
         $method,
         sub {
-                use Data::Util qw(
-                    is_string
-                    is_code_ref
-                );
                 my  $self = shift;
-                my  $first_part = shift;
- 
-                warn 'here is the first part:'.dumper($first_part);
-                warn Carp::longmess();
-                warn 'First part appears to be a string.' if is_string($first_part);
-                warn 'First part appears to be a coderef.' if is_code_ref($first_part);
-                warn 'here is the rest:'.dumper(@_) if @_;
-                warn 'There was no rest.' unless @_;
+                my  ($calling_class) = caller;
+                my  $management_code    =   $self->{scope}
+                                            && $calling_class
+                                            && 1+(
+                                                index ($calling_class, $self->{localisation_scope}, 0)
+                                            )?  'Yes, I believe this is Management class!':
+                                            undef;
+                $self->{logger}->$mojo_method(
+                    $management_code?   $self->{language}->localise(@_):
+                    @_,
+                );
 
-                if (is_code_ref($first_part)) {
-                    $self->{logger}->$mojo_method($first_part, @_);
-                }
-                else {
-                       $self->{language}->localise($first_part, @_),
-                }
-#                $self->{logger}->$mojo_method(
-#                    (
-#                        is_code_ref($first_part)?   ($first_part, @_,):
-#                        $self->{language}->localise($first_part, @_),
-#                    ) # Do we want it to gobble up all arguments? Or just the message? Leaving it at all for now, until we test.
-##                    (is_string($first_part)? $self->{language}->localise($first_part, @_):
-##                    ($first_part, @_,),) # Do we want it to gobble up all arguments? Or just the message? Leaving it at all for now, until we test.
-#                )
-            }
+        }
     );
 }
 
