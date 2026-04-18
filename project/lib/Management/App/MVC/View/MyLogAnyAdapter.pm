@@ -47,19 +47,33 @@ foreach my $method ( Log::Any->logging_methods ) {
     make_method(
         $method,
         sub {
-                use Carp qw(longmess);
-                my  $self = shift;
-                my  ($calling_class) = caller;
+                #use Carp qw(longmess);
+                my  $self               = shift;
+                my  $first_argument     = shift;
+                my  ($calling_class)    = caller;
                 my  $management_code    =   $self->{scope}
                                             && $calling_class
                                             && 1+(
                                                 index ($calling_class, $self->{localisation_scope}, 0)
                                             )?  'Yes, I believe this is Management class!':
                                             undef;
+                                            
+                # Not detecting the code ref (was it stringified earlier in the chain?)
+                warn 'First arg is...'.dumper($first_argument);
+                warn 'Is_code_ref is...'.dumper(is_code_ref($first_argument));
+                warn 'Seems to be '.(is_code_ref($first_argument)? 'true - a code ref.':'false - not a code ref.');
+
+                $first_argument         =   $first_argument->()
+                                            if is_code_ref($first_argument);
+                my  $string             =   is_code_ref($first_argument)? 'Dereferenced and executed:'.$first_argument->(): 'Left as is:'.$first_argument;
+                
+                warn 'First arg becomes...'.dumper($first_argument); # Remains a code ref representation as a string, rather than the return string from the coderef.
+                warn 'This string we got is...'.dumper($string);
+                
                 warn Carp::longmess('From anon sub in make_method in our custom LogAny Adapter');
                 $self->{logger}->$mojo_method(
-                    $management_code?   $self->{language}->localise(@_):
-                    @_,
+                    $management_code?   $self->{language}->localise($first_argument, @_):
+                    ($first_argument, @_),
                 );
 
                 
