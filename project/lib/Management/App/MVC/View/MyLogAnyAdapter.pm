@@ -47,7 +47,7 @@ foreach my $method ( Log::Any->logging_methods ) {
     make_method(
         $method,
         sub {
-                use Carp;
+                use Carp qw(longmess);
                 my  $self = shift;
                 my  ($calling_class) = caller;
                 my  $management_code    =   $self->{scope}
@@ -56,7 +56,7 @@ foreach my $method ( Log::Any->logging_methods ) {
                                                 index ($calling_class, $self->{localisation_scope}, 0)
                                             )?  'Yes, I believe this is Management class!':
                                             undef;
-                Carp::longmess('From anon sub in make_method in our custom LogAny Adapter');
+                warn Carp::longmess('From anon sub in make_method in our custom LogAny Adapter');
                 $self->{logger}->$mojo_method(
                     $management_code?   $self->{language}->localise(@_):
                     @_,
