@@ -60,12 +60,12 @@ foreach my $method ( Log::Any->logging_methods ) {
                                             
                 # Not detecting the code ref (was it stringified earlier in the chain?)
                 warn 'First arg is...'.dumper($first_argument);
-                warn 'Is_code_ref is...'.dumper(is_code_ref($first_argument));
-                warn 'Seems to be '.(is_code_ref($first_argument)? 'true - a code ref.':'false - not a code ref.');
+                warn 'Is_code_ref is...'.dumper(ref $first_argument eq 'CODE');
+                warn 'Seems to be '.(ref $first_argument eq 'CODE'? 'true - a code ref.':'false - not a code ref.');
 
                 $first_argument         =   $first_argument->()
-                                            if is_code_ref($first_argument);
-                my  $string             =   is_code_ref($first_argument)? 'Dereferenced and executed:'.$first_argument->(): 'Left as is:'.$first_argument;
+                                            if (ref $first_argument eq 'CODE');
+                my  $string             =   ref $first_argument eq 'CODE'? 'Dereferenced and executed:'.$first_argument->(): 'Left as is:'.$first_argument;
                 
                 warn 'First arg becomes...'.dumper($first_argument); # Remains a code ref representation as a string, rather than the return string from the coderef.
                 warn 'This string we got is...'.dumper($string);
