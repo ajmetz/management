@@ -23,7 +23,7 @@ method entries {
                                                         $self->request_input:
                                         $self->request_input;
 
-    $self->logger->debug('Set layout data structure as follows:')->dump_values($layout_data_structure);
+    $self->logger->debug('Set layout data structure as follows:', { layout_data_structure => $layout_data_structure }, );
 
     $self->logger->debug('About to start processing.');
 
@@ -156,7 +156,7 @@ method days {
     my  $layout_data_structure      =   $valid_input?   $self->show_days($valid_input):
                                         $self->ask_days;
 
-    $self->logger->trace('Set layout data structure as follows:')->dump_values($layout_data_structure);
+    $self->logger->trace('Set layout data structure as follows:', { layout_data_structure => $layout_data_structure }, );
 
     $self->logger->trace('About to start processing.');
 

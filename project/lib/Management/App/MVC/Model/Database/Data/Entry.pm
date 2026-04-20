@@ -77,7 +77,7 @@ method save ($entry) {
     
     
     # Initial Values
-    my $log                         =   $logger->context('Management::App::MVC::Model::Database::Data::Entry::save');
+    my $log                         =   $logger->clone( prefix => '[Management::App::MVC::Model::Database::Data::Entry::save] ');
     $log->trace('About to set initial values.');
     my  @nothing                    =   ();
     my  $save                       =   {};
@@ -121,7 +121,7 @@ method save ($entry) {
 
     $log->trace('Fetching existing categories from database.');
     my  $existing_categories        =   $data->database->handle->select($table_name->{categories} => $fields->{category})->arrays->to_array; # Can we not just category->retrieve_list?
-    $log->trace('Existing categories from database are...')->dump_values($existing_categories);
+    $log->trace('Existing categories from database are...', { existing_categories => $existing_categories },);
 
     $log->trace('Processing our Entry Object\'s categories.');
     $save->{categories}             =   [];
@@ -141,7 +141,7 @@ method save ($entry) {
                                                     @nothing;
 
     }
-    $log->trace('Decided to save these categories:')->dump_values($save->{categories}) if $save->{categories};
+    $log->trace('Decided to save these categories:', { categories => $save->{categories}}, ) if $save->{categories};
     
     # Build what to save for junction table:
         # Skipped.
@@ -159,25 +159,25 @@ method save ($entry) {
                                     ->last_insert_id_lookup->{$table_name->{top_categories}};
         die                         $log->fatal('model.entry.save.error.save_top_categories_data')
                                     unless $saved->{top_category};
-        $log->trace('Successfully saved top category with the following id...')->dump_values($saved->{top_category});
+        $log->trace('Successfully saved top category with the following id...', { top_category => $saved->{top_category} },);
     };
     
     foreach my $current_category_to_save ($save->{categories}->@*) {
 
-        $log->trace('Detected we have something to save to categories table...')->dump_values($save->{categories});
+        $log->trace('Detected we have something to save to categories table...', { categories => $save->{categories} }, );
 
         # Initial Values:
         $saved->{category}      =   undef; # Reset to undef for each loop.
         
         # Processing
-        $log->trace('Intending to save the following category...')->dump_values($current_category_to_save);
+        $log->trace('Intending to save the following category...', {current_category_to_save => $current_category_to_save},);
         $saved->{category}      =   $data->category
                                     ->save($current_category_to_save->@*)
                                     ->last_saved_category;
         # Verify:
         die                         $log->fatal('model.entry.save.error.save_category')
                                     unless $saved->{category};
-        $log->trace('Successfully saved category with the following id...')->dump_values($saved->{category});
+        $log->trace('Successfully saved category with the following id...', { category => $saved->{category} },);
     };
 
     $log->trace(
@@ -203,18 +203,19 @@ method save ($entry) {
     $log->trace('Successfully saved entry with the following id...')
     ->dump_values($valid_entry->id);
     $last_saved_entry_id    =   $valid_entry_id;
-    $log->trace('Updated the last_saved_entry_id attribute.')->dump_values($last_saved_entry_id);
+    $log->trace('Updated the last_saved_entry_id attribute.', { last_saved_entry_id => $last_saved_entry_id },);
 
     # Check entry is not already in junction table:
     $where->{matches_valid_entry_id}    =   { $fields->{entries_categories_entry_id}->[0] =>  $valid_entry->id }; # entry_id has to be dereferenced for a where clause. 
     $log->trace('Checking to see if this entry id already exists in the entries_categories table...');
-    $log->trace('These are the arguments we are sending to select...')->dump_values(
-                                                (
+    $log->trace('These are the arguments we are sending to select...', {
+                                                arguments =>
+                                                [
                                                     $table_name->{entries_categories},
                                                     $fields->{entries_categories_entry_id},
                                                     $where->{matches_valid_entry_id},
-                                                )
-    );
+                                                ],
+    });
     my  $existing_record_found          =   scalar ($data->database->handle
                                             ->select(
                                                 $table_name->{entries_categories},
@@ -228,13 +229,11 @@ method save ($entry) {
 
     $log
     ->trace('This entry id is not yet in the entries_categories table, so we will now proceed to saving it there...')
-    ->trace('We will be associating the following entry id...')
-    ->dump_values($valid_entry->id)
-    ->trace('...with this list of categories...')
-    ->dump_values(@valid_categories);
+    ->trace('We will be associating the following entry id...', { id => $valid_entry->id },)
+    ->trace('...with this list of categories...',{ valid_categories => [@valid_categories] },);
 
     foreach my $current_valid_category (@valid_categories) {
-        $log->trace('For category...')->dump_values($current_valid_category);
+        $log->trace('For category...', {current_valid_category => $current_valid_category},);
         $saved->{entries_categories}    =   $data->save(
                                                 {
                                                     $table_name->{entries_categories} =>    [$valid_entry->id, $current_valid_category],
@@ -258,7 +257,7 @@ method retrieve_last_saved {
 method retrieve ($id) {
 
     # Initial Values:
-    my  $log                                =   $logger->context('Management::App::MVC::Model::Database::Data::Entry::retrieve');
+    my  $log                                =   $logger->clone( prefix => '[Management::App::MVC::Model::Database::Data::Entry::retrieve] ', );
 
     $log->trace('About to set initial values.');
 
@@ -290,7 +289,7 @@ method retrieve ($id) {
 
     my  $hash_ref                           =   $data->retrieve($what_to_retrieve);
 
-    $log->trace('Retrieved the following:')->dump_values($hash_ref);
+    $log->trace('Retrieved the following:', {hash_ref => $hash_ref},);
     
     #die $logger->fatal('This will do for now.')->dump_values($hash_ref);
 
@@ -299,8 +298,8 @@ method retrieve ($id) {
     push $categories->@*                    ,   $ARG->{category}
                                                 for $hash_ref->{entries_categories}->@*;
 
-    $log->trace('Obtained categories in this order:')->dump_values($categories);
-    #die $logger->fatal('This will do for now.')->dump_values($categories);
+    $log->trace('Obtained categories in this order:', { categories => $categories }, );
+    #die $logger->fatal('This will do for now.', { categories => $categories }, );
 
     $log->trace('Preparing values for second data retrieval.');
     
@@ -317,7 +316,7 @@ method retrieve ($id) {
  
     my  $top_category                       =   $data->retrieve($what_to_retrieve)->{categories}->[0]->{top_category};
 
-    #die $logger->fatal('This will do for now.')->dump_values($hash_ref);
+    #die $logger->fatal('This will do for now.', { hash_ref => $hash_ref }, );
 
     my  @object_params                      =   (
                                                     start           =>  $hash_ref->{entries}->[0]->{start_epoch},
@@ -329,7 +328,7 @@ method retrieve ($id) {
                                                     id              =>  $id,
                                                 );
 
-    #die $logger->fatal('This will do for now.')->dump_values(@object_params);
+    #die $logger->fatal('This will do for now.', { object_params => [@object_params] },);
 
     my  $entry                              =   $entry_class->new(@object_params);
 

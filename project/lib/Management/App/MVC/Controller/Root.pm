@@ -5,10 +5,7 @@ class   Management::App::MVC::Controller::Root;
 inherit Mojolicious::Controller;
 use     Management::App::Boilerplate::Code;
 use     Template::Nest;
-use     Log::Any;
 use     Management::App::MVC::Model::TestLogAny;
-
-#field   $log  :reader    =  Log::Any->get_logger;
 
 method auto {
     my  @supported_languages        =   ('en-GB','de-DE'); # TODO - create language class method for this.
@@ -30,8 +27,8 @@ method hello_world {
 
 method test_logging {
 
-    $self->log->info('Testing log any from test_logging subroutine.');
-    Management::App::MVC::Model::TestLogAny->new->test->log->trace('Testing TestLogAny from test_logging.');
+    $self->logger->info('Testing logger helper from test_logging subroutine.');
+    Management::App::MVC::Model::TestLogAny->new->test->logger->trace('Testing TestLogAny from test_logging.');
     
     $self->render(
         text => "Test Logging.",

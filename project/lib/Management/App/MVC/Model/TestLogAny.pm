@@ -6,12 +6,12 @@ use     Management::App::Boilerplate::Code;
 use     Mojo::Util qw(dumper);
 use     Data::Util qw(is_string);
 
-field   $log     :param :reader      =   Log::Any->get_logger;
+field   $logger :param  :reader =   Log::Any->get_logger;
 
 method test {
-    warn ('Log message from the test method via warn.');
-    $log->info('Log message from the test method via \$log.');
-    $self->log->info('Log message from the test method via \$self->log.');
+    warn ('Log message from the test method of TestLogAny via warn.');
+    $logger->info('Log message from the test method via \$logger.');
+    $self->logger->info('Log message from the test method via \$self->logger.');
     return $self;
 }
 

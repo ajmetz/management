@@ -3,6 +3,7 @@ use     Object::Pad v0.820;
 class   Management::App::MVC::Model::BusinessLogic::Entry 2.00;
 
 use     Management::App::Boilerplate::Code;
+use     Management::App::MVC::View::Language;
 use     DateTime;
 use     DateTime::Duration;
 use     DateTime::Format::Duration;
@@ -39,8 +40,9 @@ field   $top_category   :param  :accessor   //= 'OTHER';      # Can be calculate
 field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $duration_data          :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
-field   $logger         :param;
+field   $logger         :param  :reader;
 field   $id             :param  :accessor   =   undef;
+field   $language       :param  :accessor   =   Management::App::MVC::View::Language->try_or_die;
 
 field   $matches_and_captures_date_and_time =   qr/
                                                     ^                                     # Start of string
@@ -179,19 +181,19 @@ method $set_duration_data {
 
 method $set_duration {
 
-    my  $log    =   $logger->context('Management::App::MVC::Model::BusinessLogic::Entry::$set_duration]');
+    my  $log    =   $logger->clone( prefix => '[Management::App::MVC::Model::BusinessLogic::Entry::$set_duration] ', );
 
     $log->debug('End Epoch is [_1] and Start Epoch is [_2].',$end_epoch,$start_epoch);
 
     $self->$set_duration_data;
-    $log->trace('Set duration data.')->dump_values($duration_data);
+    $log->trace('Set duration data.', {duration_data => $duration_data}, );
     
-    $duration       =   $log->language->localise(
+    $duration       =   $language->localise(
                             'model.entry.set_duration.duration_string', # i.e. 1hr 30mins
                             $duration_data->@*,
                         );
 
-    $log->debug('Duration is...')->dump_values($duration);
+    $log->debug('Duration is...', { duration => $duration}, );
 
     return $self;
 
@@ -208,7 +210,7 @@ method $instance_setup {
 }
 
 method status_string {
-    return $logger->language->localise(
+    return $language->localise(
         'object.entry.status.formatting',
         $self->status_array,
     );
@@ -226,7 +228,7 @@ method status_array {
         $self->duration,
         $self->top_category,
         join(
-            $logger->language->localise('object.entry.status.category_delimiter'),
+            $language->localise('object.entry.status.category_delimiter'),
             $self->categories->@*
         ),
         $self->details,
