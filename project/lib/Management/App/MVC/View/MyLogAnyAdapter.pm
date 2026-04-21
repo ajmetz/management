@@ -50,16 +50,18 @@ foreach my $method ( Log::Any->logging_methods ) {
         sub {
                 # Initial Values:
                 my  $self               =   shift;
-                my  ($calling_class)    =   caller;
+                my  ($calling_class)    =   caller(1); # 1 should take us back beyond just Log::Any::Proxy
 
                 # Definition:
-                my  $management_code    =   $self->{scope}
+                my  $management_code    =   $self->{localisation_scope}
                                             && $calling_class
                                             && 1+(
                                                 index ($calling_class, $self->{localisation_scope}, 0)
                                             )?  'Yes, I believe this is Management class!':
                                             undef;
-
+                warn 'Calling class: '.$calling_class;
+                warn 'Management code: '.($management_code // 'Nope');
+                warn Carp::longmess();
                 # Processing:
                 $self->{logger}->$mojo_method(
 
