@@ -26,23 +26,22 @@ $_[0]->{logger}             ||= Mojo::Log->new;
 $_[0]->{language}           ||= Management::App::MVC::View::Language->try_or_die();
 $_[0]->{localisation_scope} ||= undef;
 $_[0]->{prefix_localisation}||= undef;
+$_[0]->{prefix}             ||= q{};
+$_[0]->{prefix_format}      ||= '[%s] ';
 
 };
 
-sub context {
+sub prefix {
+
     # Initial Values:
-    my  $self   =   shift;
+    my  $self       =   shift;
+    return $self->{prefix} unless @ARG;
 
     # Processing:
-    $self->{logger}->context(
+    $self->{prefix} =   $self->{prefix_localisation}?   $self->{language}->localise(@ARG):
+                        $ARG[0];
 
-        $self->{prefix_localisation}?       $self->{language}->localise(@ARG):
-        @ARG
-
-    );
-    
-    #return $self;
-    
+    return $self;
 }
 
 # Create logging methods
@@ -78,10 +77,11 @@ foreach my $method ( Log::Any->logging_methods ) {
 
                 # Processing:
                 $self->{logger}->$mojo_method(
-
-                    $management_code?       $self->{language}->localise(@ARG):
-                    @ARG
-
+                    sprintf($self->{prefix_format}, $self->prefix).
+                    (
+                        $management_code?   $self->{language}->localise(@ARG):
+                        @ARG
+                    )
                 );
 
         }

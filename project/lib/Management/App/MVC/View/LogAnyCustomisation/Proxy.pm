@@ -119,13 +119,12 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
                 #                        if  defined $self->{prefix}
                 #                            && length $self->{prefix};
 
-                if (defined $self->{prefix} && length $self->{prefix}) {
-                    $self->{adapter}    ->  context($self->{prefix})->$realname($message);
+                $self->{adapter}    ->  prefix($self->{prefix})
+                                        if  defined $self->{prefix}
+                                            && length $self->{prefix};
                                         # AJM 21/APR/2026
-                }
-                else {
-                    $self->{adapter}    ->  $realname($message);
-                };
+                $self->{adapter}    ->  $realname($message);
+
             }
         }
         return $message if defined wantarray; # Do all further mentioning of message require the prefix prefixed to it?
