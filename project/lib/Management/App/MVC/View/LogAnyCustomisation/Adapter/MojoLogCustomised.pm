@@ -1,4 +1,4 @@
-package Management::App::MVC::View::MyLogAnyAdapter;
+package Management::App::MVC::View::LogAnyCustomisation::Adapter::MojoLogCustomised;
 # Derived from: package Log::Any::Adapter::MojoLog;
 
 use strict;
@@ -25,10 +25,25 @@ sub init {
 $_[0]->{logger}             ||= Mojo::Log->new;
 $_[0]->{language}           ||= Management::App::MVC::View::Language->try_or_die();
 $_[0]->{localisation_scope} ||= undef;
+$_[0]->{prefix_localisation}||= undef;
 
 };
 
+sub context {
+    # Initial Values:
+    my  $self   =   shift;
 
+    # Processing:
+    $self->{logger}->context(
+
+        $self->{prefix_localisation}?       $self->{language}->localise(@ARG):
+        @ARG
+
+    );
+    
+    #return $self;
+    
+}
 
 # Create logging methods
 #
@@ -50,8 +65,9 @@ foreach my $method ( Log::Any->logging_methods ) {
         sub {
                 # Initial Values:
                 my  $self               =   shift;
-                my  ($calling_class)    =   caller(1); # 1 should take us back beyond just Log::Any::Proxy
 
+                my  ($calling_class)    =   caller(1); # 1 should take us back beyond just Log::Any::Proxy
+                warn 'My caller at current depth setting:'.$calling_class;
                 # Definition:
                 my  $management_code    =   $self->{localisation_scope}
                                             && $calling_class
@@ -59,9 +75,7 @@ foreach my $method ( Log::Any->logging_methods ) {
                                                 index ($calling_class, $self->{localisation_scope}, 0)
                                             )?  'Yes, I believe this is Management class!':
                                             undef;
-                warn 'Calling class: '.$calling_class;
-                warn 'Management code: '.($management_code // 'Nope');
-                warn Carp::longmess();
+
                 # Processing:
                 $self->{logger}->$mojo_method(
 
@@ -98,6 +112,10 @@ foreach my $method ( Log::Any->detection_methods ) {
 1;
 
 __END__
+
+                #warn 'Calling class: '.$calling_class;
+                #warn 'Management code: '.($management_code // 'Nope');
+                #warn Carp::longmess();
 
                 my  $first_argument     =   shift;
                 # Not detecting the code ref (was it stringified earlier in the chain?)
