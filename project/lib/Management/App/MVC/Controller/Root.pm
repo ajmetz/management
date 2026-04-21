@@ -18,7 +18,8 @@ method auto {
 }
 
 method hello_world {
-
+    my $log =   $self->logger->clone( prefix => 'Are prefixes excluded from translation or not?' );
+    $log->debug('Testing from Hello World!');
     $self->render(
         text => "Hello World!",
     );

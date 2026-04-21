@@ -271,9 +271,14 @@ Phrases: {
             'Set layout data structure as follows:'                         =>  'Set layout data structure as follows:',
 
 
+            # Management::App::MVC::Controller::Root::hello_world            
+            'Testing from Hello World!'                                     =>  'Testing from Hello World!',
+
+
             # Management::App::MVC::Model::Entry
 
             'Invalid digit provided.'                                       =>  'Invalid digit provided.',
+
 
             # Management::App::MVC::Model::Entry - $set_duration private method
 
