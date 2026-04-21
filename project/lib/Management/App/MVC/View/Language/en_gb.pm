@@ -272,7 +272,7 @@ Phrases: {
 
 
             # Management::App::MVC::Controller::Root::hello_world            
-            'Testing from Hello World!'                                     =>  'Testing from Hello World!',
+            'Testing from Hello World!'                                     =>  'Testing from Hello World! bob',
 
 
             # Management::App::MVC::Model::Entry
