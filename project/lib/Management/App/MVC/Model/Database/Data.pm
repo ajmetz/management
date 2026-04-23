@@ -14,7 +14,7 @@ field   $logger                 :param  :reader;
 field   $last_insert_id_lookup          :reader     =   {};
 
 method save ($what_to_save) {
-    my  $log    =   $logger->clone(prefix => '[Management::App::MVC::Model::Database::Data::save] ');
+    my  $log    =   $logger->clone(prefix => 'Management::App::MVC::Model::Database::Data::save');
 
     $log->trace('This is what we have been asked to save...', { what_to_save => $what_to_save },);
 

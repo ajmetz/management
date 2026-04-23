@@ -181,7 +181,7 @@ method $set_duration_data {
 
 method $set_duration {
 
-    my  $log    =   $logger->clone( prefix => '[Management::App::MVC::Model::BusinessLogic::Entry::$set_duration] ', );
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration', );
 
     $log->debug('End Epoch is [_1] and Start Epoch is [_2].',$end_epoch,$start_epoch);
 
@@ -193,7 +193,7 @@ method $set_duration {
                             $duration_data->@*,
                         );
 
-    $log->debug('Duration is...', { duration => $duration}, );
+    $log->debug('Duration is...', { duration => $duration }, );
 
     return $self;
 

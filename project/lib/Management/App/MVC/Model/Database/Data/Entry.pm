@@ -77,7 +77,7 @@ method save ($entry) {
     
     
     # Initial Values
-    my $log                         =   $logger->clone( prefix => '[Management::App::MVC::Model::Database::Data::Entry::save] ');
+    my $log                         =   $logger->clone( prefix => 'Management::App::MVC::Model::Database::Data::Entry::save');
     $log->trace('About to set initial values.');
     my  @nothing                    =   ();
     my  $save                       =   {};
@@ -200,8 +200,7 @@ method save ($entry) {
                                     undef; # Again - silly - the object should validate within its setter.
     die $log->fatal('model.entry.save.error.invalid_entry_id') unless $valid_entry_id;
     $valid_entry->id($saved->{entry});
-    $log->trace('Successfully saved entry with the following id...')
-    ->dump_values($valid_entry->id);
+    $log->trace('Successfully saved entry with the following id...', { id => $valid_entry->id },);
     $last_saved_entry_id    =   $valid_entry_id;
     $log->trace('Updated the last_saved_entry_id attribute.', { last_saved_entry_id => $last_saved_entry_id },);
 
@@ -257,7 +256,7 @@ method retrieve_last_saved {
 method retrieve ($id) {
 
     # Initial Values:
-    my  $log                                =   $logger->clone( prefix => '[Management::App::MVC::Model::Database::Data::Entry::retrieve] ', );
+    my  $log                                =   $logger->clone( prefix => 'Management::App::MVC::Model::Database::Data::Entry::retrieve', );
 
     $log->trace('About to set initial values.');
 

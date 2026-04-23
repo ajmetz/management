@@ -38,8 +38,13 @@ sub prefix {
     return $self->{prefix} unless @ARG;
 
     # Processing:
-    $self->{prefix} =   $self->{prefix_localisation}?   $self->{language}->localise(@ARG):
-                        $ARG[0];
+    $self->{prefix} =   sprintf(
+                            $self->{prefix_format},
+                            (
+                                $self->{prefix_localisation}?   $self->{language}->localise(@ARG):
+                                $ARG[0]
+                            ),
+                        );
 
     return $self;
 }
@@ -66,7 +71,7 @@ foreach my $method ( Log::Any->logging_methods ) {
                 my  $self               =   shift;
 
                 my  ($calling_class)    =   caller(1); # 1 should take us back beyond just Log::Any::Proxy
-                warn 'My caller at current depth setting:'.$calling_class;
+                #warn 'My caller at current depth setting:'.$calling_class;
                 # Definition:
                 my  $management_code    =   $self->{localisation_scope}
                                             && $calling_class
@@ -77,14 +82,15 @@ foreach my $method ( Log::Any->logging_methods ) {
 
                 # Processing:
                 $self->{logger}->$mojo_method(
-                    sprintf($self->{prefix_format}, $self->prefix).
+                    $self->prefix.
                     (
                         $management_code?   $self->{language}->localise(@ARG):
                         @ARG
                     )
                 );
 
-        }
+        },
+        
     );
 }
 

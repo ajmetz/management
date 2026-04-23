@@ -9,8 +9,10 @@ our $VERSION = '1.719'; # AJM - 21/Apr/2026 - based off of this Log::Any::Proxy 
 
 use Log::Any::Adapter::Util ();
 use overload;
+use Mojo::Util qw(dumper);
 
 sub _stringify_params {
+    #warn 'Inside _stringify_params';
     my @params = @_;
 
     return  map {
@@ -25,6 +27,7 @@ sub _stringify_params {
 }
 
 sub _default_formatter {
+    #warn 'Inside _default_formatter';
     my ( $cat, $lvl, $format, @params ) = @_;
     return $format->() if ref($format) eq 'CODE';
 
@@ -94,11 +97,11 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
             $self->{adapter}->can('structured') && !$self->{filter};
 
         my $data_from_parts = pop @parts
-            if ( @parts && ( ( ref $parts[-1] || '' ) eq ref {} ) );
+            if ( @parts && ( ( ref $parts[-1] || '' ) eq ref {} ) ); # Data from a hashref on the end of the parts.
         my $data_from_context = $self->{context};
         my $data =
             { map {%$_} grep {$_ && %$_} $data_from_context, $data_from_parts };
-
+        warn 'Data is...'.dumper($data);
         if ($structured_logging) {
             unshift @parts, $self->{prefix} if $self->{prefix};
             $self->{adapter}
@@ -107,9 +110,18 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
         }
 
         @parts = grep { defined($_) && length($_) } @parts;
-        push @parts, _stringify_params($data) if %$data;
+        #warn 'Parts before push.'."\n".dumper(@parts);
+        #push @parts, _stringify_params($data) if %$data;
 
-        my $message = join( " ", @parts );
+        warn 'Parts after push.'."\n".dumper(@parts);
+        my  $message    =   join(
+                                " ",
+                                (shift @parts),
+                                (
+                                    %$data?    _stringify_params($data):
+                                    ()
+                                ),
+                            ); # This will rob the filter below of any arguments, but we're not ever using a filter, so who cares?
         if ( length $message && !$structured_logging ) {
             $message =
               $self->{filter}->( $self->{category}, $numeric, $message )
@@ -123,11 +135,11 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
                                         if  defined $self->{prefix}
                                             && length $self->{prefix};
                                         # AJM 21/APR/2026
-                $self->{adapter}    ->  $realname($message);
+                $self->{adapter}    ->  $realname($message, @parts);
 
             }
         }
-        return $message if defined wantarray; # Do all further mentioning of message require the prefix prefixed to it?
+        return $self;#$message if defined wantarray; # Do all further mentioning of message require the prefix prefixed to it? No this is for fluent interface, we'll return self instead of the message.
     };
     *{$namef} = sub {
         my ( $self, @args ) = @_;
