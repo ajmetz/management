@@ -27,7 +27,9 @@ $_[0]->{language}           ||= Management::App::MVC::View::Language->try_or_die
 $_[0]->{localisation_scope} ||= undef;
 $_[0]->{prefix_localisation}||= undef;
 $_[0]->{prefix}             ||= q{};
+$_[0]->{data}               ||= q{};
 $_[0]->{prefix_format}      ||= '[%s] ';
+
 
 };
 
@@ -47,6 +49,23 @@ sub prefix {
                         );
 
     return $self;
+}
+
+sub data {
+
+    # Initial Values:
+    my  $self       =   shift;
+    return $self->{data} unless @ARG;
+
+    # Processing:
+    $self->{data}   =   shift;
+
+    return $self;
+
+}
+
+sub clear_data {
+    shift->data(q{});
 }
 
 # Create logging methods
@@ -86,9 +105,10 @@ foreach my $method ( Log::Any->logging_methods ) {
                     (
                         $management_code?   $self->{language}->localise(@ARG):
                         @ARG
-                    )
+                    ).
+                    $self->data
                 );
-
+                $self->clear_data;
         },
         
     );

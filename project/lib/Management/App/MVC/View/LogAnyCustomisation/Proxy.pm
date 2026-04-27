@@ -101,7 +101,7 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
         my $data_from_context = $self->{context};
         my $data =
             { map {%$_} grep {$_ && %$_} $data_from_context, $data_from_parts };
-        warn 'Data is...'.dumper($data);
+        #warn 'Data is...'.dumper($data);
         if ($structured_logging) {
             unshift @parts, $self->{prefix} if $self->{prefix};
             $self->{adapter}
@@ -113,20 +113,19 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
         #warn 'Parts before push.'."\n".dumper(@parts);
         #push @parts, _stringify_params($data) if %$data;
 
-        warn 'Parts after push.'."\n".dumper(@parts);
-        my  $message    =   join(
-                                " ",
-                                (shift @parts),
-                                (
-                                    %$data?    _stringify_params($data):
-                                    ()
-                                ),
-                            ); # This will rob the filter below of any arguments, but we're not ever using a filter, so who cares?
-        if ( length $message && !$structured_logging ) {
-            $message =
-              $self->{filter}->( $self->{category}, $numeric, $message )
-              if defined $self->{filter};
-            if ( defined $message and length $message ) {
+        my  @arguments_without_data  =   @parts;
+        push @parts, _stringify_params($data) if %$data;
+
+        my $message = join( " ", @parts ); # parts is message, arguments, data; message is message, data.
+        my $message_custom = $parts[0];
+
+
+        #warn 'Parts after push.'."\n".dumper(@parts);
+        if ( length $message_custom && !$structured_logging ) {
+            $message_custom =
+              $self->{filter}->( $self->{category}, $numeric, $message_custom )
+              if defined $self->{filter}; 
+            if ( defined $message_custom and length $message_custom ) {
                 #$message            =   "$self->{prefix}$message"
                 #                        if  defined $self->{prefix}
                 #                            && length $self->{prefix};
@@ -134,8 +133,10 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
                 $self->{adapter}    ->  prefix($self->{prefix})
                                         if  defined $self->{prefix}
                                             && length $self->{prefix};
+                $self->{adapter}    ->  data(_stringify_params($data))
+                                        if %$data;
                                         # AJM 21/APR/2026
-                $self->{adapter}    ->  $realname($message, @parts);
+                $self->{adapter}    ->  $realname(@arguments_without_data);
 
             }
         }
@@ -157,6 +158,16 @@ foreach my $name ( Log::Any::Adapter::Util::logging_methods(), keys(%aliases) )
 # vim: ts=4 sts=4 sw=4 et tw=75:
 
 __END__
+
+#        my  $message    =   join(
+#                                " ",
+#                                (shift @parts),
+#                                (
+#                                    %$data?    _stringify_params($data):
+#                                    ()
+#                                ),
+#                            ); # This will rob the filter below of any arguments, but we're not ever using a filter, so who cares?
+
 
 =pod
 
