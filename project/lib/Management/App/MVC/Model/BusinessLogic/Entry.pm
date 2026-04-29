@@ -101,6 +101,7 @@ method $set_year_month_day_time {
         $end    =   $end    =~  $matches_and_captures_epoch?    $self->$epoch_to_string($LAST_PAREN_MATCH):
                     $end?                                       $end:
                     $date_time_is_possible_from_params?         sprintf('%s/%s/%s %s', $end_year // $start_year, $end_month // $start_month, $end_day // $start_day, $end_time):
+                    undef;
 
         
 
