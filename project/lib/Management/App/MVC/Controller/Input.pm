@@ -119,9 +119,9 @@ method confirm_input ($valid_input = undef) {
     for my $entry_object (@entries) {
         push @entries_layout        ,   {
             TEMPLATE                =>  'entries.htm',
-            'TIME RANGE'            =>  sprintf('%s-%s', $entry_object->start_time, $entry_object->end_time),
+            'TIME RANGE'            =>  sprintf('%s-%s', $entry_object->start_time, $entry_object->end_time), # Shouldn't there be some logic for if this spans multiple days?
             'DURATION'              =>  $entry_object->duration,
-            'CATEGORY'              =>  $entry_object->category, # Should this now be categories?
+            'CATEGORIES'            =>  join(', ', $entry_object->categories->@*),
             'DETAILS'               =>  $entry_object->details,
         };
     };
@@ -131,12 +131,12 @@ method confirm_input ($valid_input = undef) {
 
         'TIME RANGE LABEL'          =>  $self->language->localise('Time Range'),
         'DURATION LABEL'            =>  $self->language->localise('Duration'),
-        'CATEGORY LABEL'            =>  $self->language->localise('Category'),
+        'CATEGORIES LABEL'          =>  $self->language->localise('Categories'),
         'DETAILS LABEL'             =>  $self->language->localise('Details'),
         'QUESTION'                  =>  $self->language->localise('How do you wish to proceed?'),
         'SAVE LABEL'                =>  $self->language->localise('Save'),
         'DISCARD LABEL'             =>  $self->language->localise('Discard'),
-        'DATA'                      =>  $valid_input->{'data'},
+        'DATA'                      =>  $valid_input->{'time_logging'},
         ENTRIES                     =>  [@entries_layout],
     };
     my  $layout_for_no_entries           =   {

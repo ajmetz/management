@@ -177,6 +177,7 @@ Phrases: {
             # Management::Controller::Input::confirm_entries
 
             'Add Time Logging Entry'                =>  'Add Time Logging Entry',
+            'Categories'                            =>  'Categories',
             'Category'                              =>  'Category',
             'Details'                               =>  'Details',
             'Discard'                               =>  'Discard',

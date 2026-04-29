@@ -19,15 +19,15 @@ stuff
 field   $start          :param  :reader     =   undef;
 field   $end            :param  :reader     =   undef;
 
-field   $start_year             :reader     =   undef;
-field   $start_month            :reader     =   undef;
-field   $start_day              :reader     =   undef;
-field   $start_time             :reader     =   undef;
+field   $start_year     :param  :reader     =   undef;
+field   $start_month    :param  :reader     =   undef;
+field   $start_day      :param  :reader     =   undef;
+field   $start_time     :param  :reader     =   undef;
 
-field   $end_year               :reader     =   undef;
-field   $end_month              :reader     =   undef;
-field   $end_day                :reader     =   undef;
-field   $end_time               :reader     =   undef;
+field   $end_year       :param  :reader     =   undef;
+field   $end_month      :param  :reader     =   undef;
+field   $end_day        :param  :reader     =   undef;
+field   $end_time       :param  :reader     =   undef;
 
 field   $start_epoch            :reader     =   undef;
 field   $end_epoch              :reader     =   undef;
@@ -69,6 +69,13 @@ field   $matches_and_captures_epoch         =   qr/
                                                 /x;
 
 
+method $date_time_is_possible_from_params {
+    return  $start_day
+            && $start_month
+            && $start_year
+            && $start_time
+            && $end_time;
+}
 
 method $epoch_to_string ($epoch) {
 
@@ -86,11 +93,16 @@ method $set_year_month_day_time {
 #        warn 'Dumping values.';
 #        $logger->dump_values($LAST_PAREN_MATCH) if ($start =~ $matches_and_captures_epoch);
         
-        $start  =  $self->$epoch_to_string($LAST_PAREN_MATCH)
-                    if ($start  =~  $matches_and_captures_epoch);
+        $start  =   $start  =~  $matches_and_captures_epoch?    $self->$epoch_to_string($LAST_PAREN_MATCH):
+                    $start?                                     $start:
+                    $date_time_is_possible_from_params?         sprintf('%s/%s/%s %s', $start_year, $start_month, $start_day, $start_time):
+                    undef;
                     
-        $end    =   $self->$epoch_to_string($LAST_PAREN_MATCH)
-                    if ($end    =~  $matches_and_captures_epoch);
+        $end    =   $end    =~  $matches_and_captures_epoch?    $self->$epoch_to_string($LAST_PAREN_MATCH):
+                    $end?                                       $end:
+                    $date_time_is_possible_from_params?         sprintf('%s/%s/%s %s', $end_year // $start_year, $end_month // $start_month, $end_day // $start_day, $end_time):
+
+        
 
         # Definitions:
         my  $valid_start_values =   $start  =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
