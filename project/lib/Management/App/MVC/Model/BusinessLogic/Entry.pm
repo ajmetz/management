@@ -88,22 +88,24 @@ method $epoch_to_string ($epoch) {
 
 method $set_year_month_day_time {
 
+        my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time', );
 
         # Initial Values:
 #        warn 'Dumping values.';
 #        $logger->dump_values($LAST_PAREN_MATCH) if ($start =~ $matches_and_captures_epoch);
         
-        $start  =   $start  =~  $matches_and_captures_epoch?    $self->$epoch_to_string($LAST_PAREN_MATCH):
-                    $start?                                     $start:
-                    $date_time_is_possible_from_params?         sprintf('%s/%s/%s %s', $start_year, $start_month, $start_day, $start_time):
+        $start  =   $start && ($start  =~  $matches_and_captures_epoch)?    $self->$epoch_to_string($LAST_PAREN_MATCH):
+                    $start?                                                 $start:
+                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $start_year, $start_month, $start_day, $start_time):
                     undef;
                     
-        $end    =   $end    =~  $matches_and_captures_epoch?    $self->$epoch_to_string($LAST_PAREN_MATCH):
-                    $end?                                       $end:
-                    $date_time_is_possible_from_params?         sprintf('%s/%s/%s %s', $end_year // $start_year, $end_month // $start_month, $end_day // $start_day, $end_time):
+        $end    =   $end && ($end    =~  $matches_and_captures_epoch)?      $self->$epoch_to_string($LAST_PAREN_MATCH):
+                    $end?                                                   $end:
+                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $end_year // $start_year, $end_month // $start_month, $end_day // $start_day, $end_time):
                     undef;
 
-        
+        $log->debug('Start is...', { dumping_value => $start });
+        $log->debug('End is...', { dumping_value => $end });
 
         # Definitions:
         my  $valid_start_values =   $start  =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:

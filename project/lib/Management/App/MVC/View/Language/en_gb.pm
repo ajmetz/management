@@ -286,6 +286,11 @@ Phrases: {
             'Duration is...'                                                =>  'Duration is...',
             'End Epoch is [_1] and Start Epoch is [_2].'                    =>  'End Epoch is [_1] and Start Epoch is [_2].',
             
+            
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time
+            
+            'Start is...'                                                   =>  'Start is...',
+            'End is...'                                                     =>  'End is...',
         );
 
     } #debug

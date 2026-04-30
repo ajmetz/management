@@ -58,10 +58,15 @@ method multiple_entries :common ($start_date, $string) {
                                                                                                 start_day   =>  $day,
                                                                                                 start_month =>  $month,
                                                                                                 start_year  =>  $year,
-                                                                                                start_time  =>  %LAST_PAREN_MATCH{start_time},
-                                                                                                end_time    =>  %LAST_PAREN_MATCH{end_time},
-                                                                                                categories  =>  [split /,/ %LAST_PAREN_MATCH{categories}],
-                                                                                                details     =>  %LAST_PAREN_MATCH{details},
+                                                                                                start_time  =>  $LAST_PAREN_MATCH{start_time},
+                                                                                                end_time    =>  $LAST_PAREN_MATCH{end_time},
+                                                                                                categories  =>  [
+                                                                                                                    split (
+                                                                                                                        /,/,
+                                                                                                                        $LAST_PAREN_MATCH{categories}
+                                                                                                                    )
+                                                                                                                ],
+                                                                                                details     =>  $LAST_PAREN_MATCH{details},
                                                                                                 logger      =>  Log::Any->get_logger,
                                                                                             ):
                                             undef;
