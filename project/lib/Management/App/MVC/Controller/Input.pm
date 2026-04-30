@@ -14,9 +14,9 @@ field   $time_range_class           =   'Management::App::MVC::Model::BusinessLo
 field   $valid_date                 =   qr/
                                             ^                   # Start of string
                                             \p{Digit}{4}        # Four digits
-                                            \-                  # A dash
+                                            (\-|\/)             # A dash or slash
                                             \p{Digit}{2}        # Two digits
-                                            \-                  # A dash
+                                            (\-|\/)             # A dash or slash
                                             \p{Digit}{2}        # Two digits
                                             $                   # End of string
                                         /x;                     # We could make this more advanced. Why not limit digits to possible month and day calendar ranges? 
@@ -53,6 +53,15 @@ method entries {
     # Initial Values:
     my  $valid_input                =   $self->get_valid_add_entries_input;
 
+    $log->debug(
+        (
+            $valid_input?  'Valid input.':
+            'Invalid input.'
+        ),
+        { dumping_value => $valid_input },
+    );
+    $log->debug('What fields failed validation:', { failing_fields => $self->validation->failed });
+
     my  $layout_data_structure      =   $valid_input?   $valid_input->{'stage'} eq 'confirm'?   $self->confirm_input($valid_input):
                                                         $valid_input->{'stage'} eq 'save'?      $self->save_input($valid_input):
                                                         $self->request_input:
@@ -77,12 +86,18 @@ method entries {
 }
 
 method get_valid_add_entries_input {
+     my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::get_valid_add_entries_input' );
+
+    $log->debug('Values before validation:', {dumping_values => $self->validation->input});   
     # Conditional initial values:
-    return  $self->validation->has_data
-            && $self->validation->required('time_logging')->size(1,undef)->is_valid
-            && $self->validation->required('date')->size(1,undef)->like($valid_date)->is_valid
-            && $self->validation->required('stage')->in('add','confirm', 'save')->is_valid?    $self->validation->output:
-            undef;
+    
+    my  $return_value   =   $self->validation->has_data
+                            && $self->validation->required('time_logging', 'trim')->size(1,undef)->is_valid('time_logging')
+                            && $self->validation->required('date')->size(1,undef)->like($valid_date)->is_valid('date')
+                            && $self->validation->required('stage')->in('add','confirm', 'save')->is_valid('stage')?    $self->validation->output:
+                            undef;
+    
+    return  $return_value;
 
 }
 
@@ -112,7 +127,7 @@ method confirm_input ($valid_input = undef) {
     $log->trace('About to set initial values.');
 
     # Initial values:
-    my  @entries                    =   $valid_input->{'time_logging'} && $valid_input->{'date'}?   Management::App::MVC::Model::BusinessLogic::EntryFactory->multiple_entries($valid_input):
+    my  @entries                    =   $valid_input->{'time_logging'} && $valid_input->{'date'}?   Management::App::MVC::Model::BusinessLogic::EntryFactory->new( logger => $self->logger, )->multiple_entries($valid_input->{'date'}, $valid_input->{'time_logging'}):
                                         ();
     my  @entries_layout             =   ();
 

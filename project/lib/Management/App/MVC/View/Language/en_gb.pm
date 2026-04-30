@@ -272,6 +272,17 @@ Phrases: {
             'Set layout data structure as follows:'                         =>  'Set layout data structure as follows:',
 
 
+            # Management::App::MVC::Controller::Input::entries
+            
+            'Invalid input.'                                                =>  'Invalid input.',
+            'Valid input.'                                                  =>  'Valid input.',
+            'What fields failed validation:'                                =>  'What fields failed validation:',
+
+            # Management::App::MVC::Controller::Input::get_valid_add_entries_input
+
+            'Values before validation:'                                     =>  'Values before validation:',
+
+
             # Management::App::MVC::Controller::Root::hello_world            
             'Testing from Hello World!'                                     =>  'Testing from Hello World! bob',
 
