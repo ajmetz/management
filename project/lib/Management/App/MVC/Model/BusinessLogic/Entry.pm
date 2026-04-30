@@ -96,12 +96,12 @@ method $set_year_month_day_time {
         
         $start  =   $start && ($start  =~  $matches_and_captures_epoch)?    $self->$epoch_to_string($LAST_PAREN_MATCH):
                     $start?                                                 $start:
-                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $start_year, $start_month, $start_day, $start_time):
+                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $start_day, $start_month, $start_year, $start_time):
                     undef;
                     
         $end    =   $end && ($end    =~  $matches_and_captures_epoch)?      $self->$epoch_to_string($LAST_PAREN_MATCH):
                     $end?                                                   $end:
-                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $end_year // $start_year, $end_month // $start_month, $end_day // $start_day, $end_time):
+                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $end_day // $start_day, $end_month // $start_month, $end_year // $start_year, $end_time):
                     undef;
 
         $log->debug('Start is...', { dumping_value => $start });

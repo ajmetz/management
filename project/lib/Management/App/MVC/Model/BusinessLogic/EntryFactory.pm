@@ -7,8 +7,9 @@ use     Path::Tiny;
 use     Management::App::Boilerplate::Code;
 use     Management::App::MVC::Model::BusinessLogic::Entry;
 use     Log::Any ();
+use     Log::Any::Adapter;
 
-#field   $logger     :param;
+field   $logger     :param;
 #field   $start_date :param;
 #field   $string     :param;
 
@@ -26,10 +27,11 @@ Returns an array of entries.
 
 # What approach should we have to logging? Should we have a log object or a language object?
 
-method multiple_entries :common ($start_date, $string) {
+method multiple_entries ($start_date, $string) {
 
     return () unless $start_date && $string; # Unhelpful premature exit. Perhaps specify that no true arguments were passed in.
-    my $log =   Log::Any->get_logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory' );
+
+    my $log =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory' );
 
     #$start_date =   s/-/\//g; # Replace dashes with slashes.
     my ($day, $month, $year) = split /-|\//, $start_date;
@@ -67,7 +69,7 @@ method multiple_entries :common ($start_date, $string) {
                                                                                                                     )
                                                                                                                 ],
                                                                                                 details     =>  $LAST_PAREN_MATCH{details},
-                                                                                                logger      =>  Log::Any->get_logger,
+                                                                                                logger      =>  $logger,
                                                                                             ):
                                             undef;
         next unless $entry_object;
@@ -78,6 +80,30 @@ method multiple_entries :common ($start_date, $string) {
     return @array;
 
 }
+
+
+
+__END__
+
+Brand New PDL:
+
+multiple_entries
+Desired - output an array of entry objects.
+
+input is a starting date, and a multiline string of data.
+
+=====
+
+    my  $logger;
+    if (!$Log::Any::Adapter::INIT) {
+        require Log::Any::Adapter;
+        Log::Any::Adapter->set('Stderr', log_level => 'trace');
+        $logger = Log::Any->get_logger;
+    }
+    else 
+    
+    
+======
 
 # Commandline execution with test data, and pretty output:
 unless (caller) {
@@ -94,13 +120,3 @@ adjdkjd
 ');
 
 };
-
-__END__
-
-Brand New PDL:
-
-multiple_entries
-Desired - output an array of entry objects.
-
-input is a starting date, and a multiline string of data.
-

@@ -8,11 +8,8 @@ use Management::App::Boilerplate::Test;
 
 # Specific Modules used:
 use Test::Mojo;
-use Management::App::MVC::Model::BusinessLogic::Entry;
+use Management::App::MVC::Model::BusinessLogic::EntryFactory;
 use Mojo::Util qw(dumper);
-use Object::Pad::MetaFunctions qw(
-        deconstruct_object
-    );
 
 =pod Name, Version, Synopsis, Description
 
@@ -28,7 +25,7 @@ v1.0.0
 
 =cut
 
-our $VERSION                    =   'v2.0.0';
+our $VERSION                =   'v2.0.0';
 
 =head1 SYNOPSIS
 
@@ -48,7 +45,7 @@ First we test to see if the test is functioning correctly.
 =cut
 
 ok(
-    1                                   ,   "Testing our test can function."
+    1                       ,   "Testing our test can function."
 );
 
 =head2 Dummy Data.
@@ -65,18 +62,7 @@ my  $test_app_config        =   {
                                     migration_file      =>  'lib/Management/SQL/database_migration.sql',
                                 };
 my  $test_app               =   Test::Mojo->new('Management',$test_app_config)->app;
-my  @dummy_data_for_entry   =   (
-    
-    logger          =>  $test_app->logger,
-    start           =>  '01/01/2026 00:00',
-    end             =>  '23:59', # Should be capable of assuming the same year/month/day as start if not stated.
-    categories      =>  [
-                            'Event',
-                            'Silliness',
-                        ],
-    details         =>  'Did a day.',
 
-);
 
 =head2 Object Tests.
 
@@ -86,48 +72,30 @@ Then we begin testing our Entry Object...
 
 my  $regex_one_or_more_digits                   =   qr/^\p{Digit}+$/;
 
+my @dummy_data_for_entry_factory = (
+
+'29-04-2026',   # Date with dashes
+'
+15:02-15:15 - YOUTUBE		- Watched youtube videos.
+15:22-15:26 - PLANNING		- Getting organised.
+hjkdfshflhflaflalh
+adjdkjd
+15:22-cjcxkxl something.
+15:34-15:35 - SOMETHING		- Else.
+',
+
+);
 # Object Tests:
-my          $entry_object                       =   Management::App::MVC::Model::BusinessLogic::Entry->new(@dummy_data_for_entry);
-isa_ok  (   $entry_object                       ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
+my          $entry_factory_object               =   Management::App::MVC::Model::BusinessLogic::EntryFactory->new(logger => $test_app->logger);
 
-like    (   $entry_object->start_epoch          ,   $regex_one_or_more_digits,                              'Start Epoch is one or more digits.'                        );
-like    (   $entry_object->end_epoch            ,   $regex_one_or_more_digits,                              'End Epoch is one or more digits.'                          );
-like    (   $entry_object->duration             ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string.'                     );
 
-ok      (   $entry_object->start_epoch          <=  $entry_object->end_epoch,                               'Start Epoch is less '.
-                                                                                                            'or equal to End Epoch'                                     );
-                                                                                                        
-ok      (   $entry_object->end_epoch            >=  $entry_object->start_epoch,                             'End Epoch is less '.
-                                                                                                            'or equal to Start Epoch.'                                  );
-
-ok      (  my $saved_entry = $test_app->database->data->entry->save($entry_object),                         'Entry can be saved to the test database.'                  );
-
-like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,                               'We can obtain a numeric id for the last saved item.'       );
-
-ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),                 'Entry values can be retrieved from test database,'.
-                                                                                                            ' by entry id.'                                             ); # Not enough to construct full object.
-
-isa_ok  (   $retrieved_entry                    ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
+isa_ok  (   $entry_factory_object               ,   ['Management::App::MVC::Model::BusinessLogic::EntryFactory'],   'Our Entry is a Management::App::MVC::Model::BusinessLogic::EntryFactory.'  );
 
 like(
-    [$retrieved_entry->status_array], # Needs to be an arrayref for the array check below to work
+    [$entry_factory_object->multiple_entries(@dummy_data_for_entry_factory)], # Needs to be an arrayref for the array check below to work
     array {
-        item 'Management::App::MVC::Model::BusinessLogic::Entry';
-        item $saved_entry->last_saved_entry_id;
-        item $entry_object->start;
-        item $entry_object->end;
-        item $entry_object->start_epoch;
-        item $entry_object->end_epoch;
-        item $entry_object->duration;
-        item $entry_object->top_category;
-        item join(
-                        $test_app->language->localise('object.entry.status.category_delimiter'),
-                        $entry_object->categories->@*
-                    );
-        item $entry_object->details;
-        item DNE();
-        end();
-    }                                           ,                                                           'Our retrieved Entry has the expected status values.'
+        all_items check_isa 'Management::App::MVC::Model::BusinessLogic::Entry';
+    }                                           ,                                                           'Multiple Entries method returns an array of multiple entry object instances.'
 );
 
 =head2 Done.

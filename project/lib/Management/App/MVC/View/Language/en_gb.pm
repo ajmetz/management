@@ -291,6 +291,10 @@ Phrases: {
             
             'Start is...'                                                   =>  'Start is...',
             'End is...'                                                     =>  'End is...',
+            
+            # Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries
+            
+            'Day, Month, and Year are...'                                   =>  'Day, Month, and Year are...',
         );
 
     } #debug
