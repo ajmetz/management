@@ -12,7 +12,24 @@ method startup {
     ->load_plugins
     ->secrets( $self->config->{secrets} )
     ->exclude_author_commands
-    ->setup_customisation_of_mojolicious_file_paths;
+    ->setup_customisation_of_mojolicious_file_paths
+    ->setup_stash_defaults;
+
+}
+
+method setup_stash_defaults {
+
+    $self->defaults(
+
+        # Store setup data in the stash:
+        add_entries     =>  {
+            errors      =>  {},
+            valid       =>  {},
+        },
+
+    );
+
+    return $self;
 
 }
 

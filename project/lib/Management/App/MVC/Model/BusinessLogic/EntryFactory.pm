@@ -27,14 +27,14 @@ Returns an array of entries.
 
 # What approach should we have to logging? Should we have a log object or a language object?
 
-method multiple_entries ($start_date, $string) {
+method multiple_entries ($start_yyyymmdd, $string) {
 
-    return () unless $start_date && $string; # Unhelpful premature exit. Perhaps specify that no true arguments were passed in.
+    return () unless $start_yyyymmdd && $string; # Unhelpful premature exit. Perhaps specify that no true arguments were passed in.
 
     my $log =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory' );
 
     #$start_date =   s/-/\//g; # Replace dashes with slashes.
-    my ($day, $month, $year) = split /-|\//, $start_date;
+    my ($year, $month, $day) = split /-|\//, $start_yyyymmdd;
     $log->debug('Day, Month, and Year are...', { ddmmyyyy => [$day, $month, $year] }, );
 
     # Only object instances can access fields, so these are locally scoped variables while :common is in place:

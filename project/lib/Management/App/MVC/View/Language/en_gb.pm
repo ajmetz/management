@@ -67,7 +67,15 @@ Tokens: {
             # Management::Model::Entry - $set_duration private method
 
             'model.entry.set_duration.duration_string'  =>  '[_1]hr [_2]mins',
-
+            
+            # Management::App::MVC::Controller::Input::get_valid_add_entries_input
+            'confirm_entries.time_logging.descriptive_field_name'   =>  'Time Logging',
+            'confirm_entries.error.empty_or_zero_length'            =>  'Validation Error - [_1] field was either empty or had a value of zero length.',
+            'confirm_entries.error.invalid_date'                    =>  'Validation Error - invalid date.',
+            'confirm_entries.error.invalid_stage'                   =>  'Validation Error - invalid stage.',
+            'confirm_entries.date.descriptive_field_name'           =>  'Date',
+            'confirm_entries.stage.descriptive_field_name'          =>  'Stage',
+            'confirm_entries.yyyymmdd.descriptive_field_name'          =>  'YYYY/MM/DD Date',
         );
     } #short
 
@@ -76,7 +84,7 @@ Tokens: {
         @tokens_long = (
 
             'object.entry.error.invalid_start_values'
-                =>  'Could not obtain values from start string. Please use the format "yyyy/mm/dd hh:mm" or an epoch number.',
+                =>  'Could not obtain values from start string. Please use the format "dd/mm/yyyy hh:mm" or an epoch number.',
 
             # Management::Model::TimeLog::Entry::status
 
@@ -249,6 +257,9 @@ Phrases: {
             # Management::App::MVC::Model::Entry - $set_duration private method
 
             'Set duration data.'                                            =>  'Set duration data.',
+            
+            
+
         
         );
     } #trace
@@ -306,6 +317,12 @@ Phrases: {
             # Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries
             
             'Day, Month, and Year are...'                                   =>  'Day, Month, and Year are...',
+            
+            # MojoLogCustomised:
+            'Error stashed:'    =>  'Error stashed:',
+            'Errors stashed:'   =>  'Errors stashed:',
+            'Valid fields stashed:'  =>  'Valid fields stashed:',
+            'Valid field stashed:'  =>  'Valid field stashed:',
         );
 
     } #debug

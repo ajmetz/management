@@ -11,9 +11,9 @@ use     DateTime;
 
 field   $time_range_class           =   'Management::App::MVC::Model::BusinessLogic::TimeRange';
 
-field   $valid_date                 =   qr/
+field   $valid_yyyymmdd             =   qr/
                                             ^                   # Start of string
-                                            \p{Digit}{4}        # Four digits
+                                            \p{Digit}{4}        # Two digits
                                             (\-|\/)             # A dash or slash
                                             \p{Digit}{2}        # Two digits
                                             (\-|\/)             # A dash or slash
@@ -45,13 +45,21 @@ In all other cases - the data structure is produced by the request_input method.
 
 =cut
 
+method reset_add_entries_fields {
+    # Reset fields before processing new values for them begins!
+    $self->stash('add_entries')->{errors}                     =   {};
+    $self->stash('add_entries')->{valid}                      =   {};
+    $self->stash('add_entries')->{'successful_submission'}    =   undef;
+    return $self;
+}
+
 method entries {
 
     my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::entries' );
     $log->trace('About to set initial values.');
 
     # Initial Values:
-    my  $valid_input                =   $self->get_valid_add_entries_input;
+    my  $valid_input                =   $self->reset_add_entries_fields->get_valid_add_entries_input;
 
     $log->debug(
         (
@@ -89,15 +97,47 @@ method get_valid_add_entries_input {
      my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::get_valid_add_entries_input' );
 
     $log->debug('Values before validation:', {dumping_values => $self->validation->input});   
-    # Conditional initial values:
-    
-    my  $return_value   =   $self->validation->has_data
-                            && $self->validation->required('time_logging', 'trim')->size(1,undef)->is_valid('time_logging')
-                            && $self->validation->required('date')->size(1,undef)->like($valid_date)->is_valid('date')
-                            && $self->validation->required('stage')->in('add','confirm', 'save')->is_valid('stage')?    $self->validation->output:
-                            undef;
-    
-    return  $return_value;
+    my  @fields_to_validate = qw(
+        time_logging
+        yyyymmdd
+        stage
+    );
+    for my $field (@fields_to_validate) {
+        my  $error  =   $self->validation->required($field, 'not_empty')->required($field, 'trim')->size(1,undef)->has_error($field)?   $self->language->localise_html(
+                                                                                                                                            'confirm_entries.error.empty_or_zero_length',
+                                                                                                                                            $self->language->localise("confirm_entries.$field.descriptive_field_name"),
+                                                                                                                                        ):
+
+                        ($field eq 'yyyymmdd')
+                        && $self->validation->required($field, 'trim')->size(1,undef)->like($valid_yyyymmdd)->has_error($field)?            $self->language->localise_html(
+                                                                                                                                            'confirm_entries.error.invalid_date',
+                                                                                                                                        ):
+
+                        ($field eq 'stage')
+                        && $self->validation->required($field, 'trim')->in('add','confirm','save')->has_error($field)?                  $self->language->localise_html(
+                                                                                                                                            'confirm_entries.error.invalid_stage',
+                                                                                                                                        ):
+                        undef; # Fallback/default.
+
+        my  $valid  =   $self->validation->topic($field)->is_valid? $self->validation->topic($field)->param:
+                        undef;  # Does $self->validation->param($field) already default to undef if not valid!? We should test it at some point to see and learn.
+                        
+        $self->stash('add_entries')->{errors}->{"$field"}   =   $error
+                                                                if $error;
+
+        $self->stash('add_entries')->{valid}->{"$field"}    =   $valid
+                                                                if $valid;
+                                                                
+        $log->debug('Error stashed:', { error => $self->stash('add_entries')->{errors}->{"$field"} }) if $error;
+        $log->debug('Valid field stashed:', { valid => $self->stash('add_entries')->{valid}->{"$field"} }) if $valid;
+
+    };        
+
+        $log->debug('Errors stashed:', $self->stash('add_entries')->{errors});
+        $log->debug('Valid fields stashed:', $self->stash('add_entries')->{valid});
+
+        
+    return  $self->stash('add_entries')->{valid};
 
 }
 
@@ -111,8 +151,8 @@ method request_input {
             'SPECIFIC CONTENT'      =>  {
                 TEMPLATE            =>  'add_entries/content.htm',
                 PROMPT              =>  $self->language->localise_html('Please enter some data as input...'),
-                DATE                =>  DateTime->now->ymd,
-                STAGE               =>  'add',
+                YYYYMMDD            =>  DateTime->now->ymd,
+                STAGE               =>  'confirm',
                 
             },
         },
@@ -127,9 +167,12 @@ method confirm_input ($valid_input = undef) {
     $log->trace('About to set initial values.');
 
     # Initial values:
-    my  @entries                    =   $valid_input->{'time_logging'} && $valid_input->{'date'}?   Management::App::MVC::Model::BusinessLogic::EntryFactory->new( logger => $self->logger, )->multiple_entries($valid_input->{'date'}, $valid_input->{'time_logging'}):
+    my  @entries                    =   $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'}?   Management::App::MVC::Model::BusinessLogic::EntryFactory->new( logger => $self->logger, )->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}):
                                         ();
     my  @entries_layout             =   ();
+
+    $log->trace('Entries array contains [_1] entries.', scalar @entries);
+    $log->trace('Moving on to generate the page layout...');
 
     for my $entry_object (@entries) {
         push @entries_layout        ,   {
@@ -173,13 +216,15 @@ method confirm_input ($valid_input = undef) {
         },
     };
 
+    $log->trace('Generated the following layout structure:', $layout_data_structure);
+
     return $layout_data_structure;
 
 }
 
 method save_input ($valid_input = undef) {
 
-    return  $self->request_input unless $valid_input->{'data'};
+    return  $self->request_input unless $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'};
 
     # Code to save put here
 
