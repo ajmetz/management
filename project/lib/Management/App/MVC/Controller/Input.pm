@@ -226,6 +226,17 @@ method save_input ($valid_input = undef) {
 
     return  $self->request_input unless $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'};
 
+    my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::save_input' );
+
+    $log->trace('About to set initial values.');
+
+    # Initial values:
+    my  @entries                    =   $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'}?   Management::App::MVC::Model::BusinessLogic::EntryFactory->new( logger => $self->logger, )->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}):
+                                        ();
+    my  @entries_layout             =   ();
+
+    $log->trace('Entries array contains [_1] entries.', scalar @entries);
+
     # Code to save put here
 
     return {

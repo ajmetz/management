@@ -74,7 +74,8 @@ my  $regex_one_or_more_digits                   =   qr/^\p{Digit}+$/;
 
 my @dummy_data_for_entry_factory = (
 
-'29-04-2026',   # Date with dashes
+#'29-04-2026',   # Date with dashes # While this date is what we type as humans, the html form in the webpage will deliver yyyy-mm-dd instead.
+'2026-04-29',   # Providing value as a html date input field would.
 '
 15:02-15:15 - YOUTUBE		- Watched youtube videos.
 15:22-15:26 - PLANNING		- Getting organised.
