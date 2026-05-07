@@ -75,7 +75,11 @@ Tokens: {
             'confirm_entries.error.invalid_stage'                   =>  'Validation Error - invalid stage.',
             'confirm_entries.date.descriptive_field_name'           =>  'Date',
             'confirm_entries.stage.descriptive_field_name'          =>  'Stage',
-            'confirm_entries.yyyymmdd.descriptive_field_name'          =>  'YYYY/MM/DD Date',
+            'confirm_entries.yyyymmdd.descriptive_field_name'       =>  'YYYY/MM/DD Date',
+            
+            
+            # save_input
+            'error.last_saved_entry_id.invalid'                     =>  'No last_saved_entry_id was forthcoming.',
         );
     } #short
 
@@ -258,8 +262,16 @@ Phrases: {
 
             'Set duration data.'                                            =>  'Set duration data.',
             
+            # Management::App::MVC::Controller::Input::confirm_entries
+            'Entries array contains [_1] entries.'                          =>  'Entries array contains [_1] entries.', # Also used by Management::App::MVC::Controller::Input::save_input
+            'Generated the following layout structure:'                     =>  'Generated the following layout structure:',
+            'Moving on to generate the page layout...'                      =>  'Moving on to generate the page layout...',
             
+            # Management::App::MVC::Controller::Input::save_input
+            'About to set initial values.'                                  =>  'About to set initial values.',
 
+            'Saved Entry and then looked up the last saved entry ID, and got: [_1]'
+                =>  'Saved Entry and then looked up the last saved entry ID, and got: [_1]',
         
         );
     } #trace

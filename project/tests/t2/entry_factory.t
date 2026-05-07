@@ -93,7 +93,7 @@ my          $entry_factory_object               =   Management::App::MVC::Model:
 isa_ok  (   $entry_factory_object               ,   ['Management::App::MVC::Model::BusinessLogic::EntryFactory'],   'Our Entry is a Management::App::MVC::Model::BusinessLogic::EntryFactory.'  );
 
 like(
-    [$entry_factory_object->multiple_entries(@dummy_data_for_entry_factory)], # Needs to be an arrayref for the array check below to work
+    [$entry_factory_object->multiple_entries(@dummy_data_for_entry_factory)], # Needs to be an arrayref for the array check below to work. Hence square brackets.
     array {
         all_items check_isa 'Management::App::MVC::Model::BusinessLogic::Entry';
     }                                           ,                                                           'Multiple Entries method returns an array of multiple entry object instances.'

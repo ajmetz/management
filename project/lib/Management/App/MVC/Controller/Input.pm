@@ -160,15 +160,14 @@ method request_input {
 
 }
 
-method confirm_input ($valid_input = undef) {
+method confirm_input ($valid_input = {}) {
 
     my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::confirm_input' );
 
     $log->trace('About to set initial values.');
 
     # Initial values:
-    my  @entries                    =   $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'}?   Management::App::MVC::Model::BusinessLogic::EntryFactory->new( logger => $self->logger, )->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}):
-                                        ();
+    my  @entries                    =   $self->get_entries_from_entryfactory($valid_input);
     my  @entries_layout             =   ();
 
     $log->trace('Entries array contains [_1] entries.', scalar @entries);
@@ -195,6 +194,7 @@ method confirm_input ($valid_input = undef) {
         'SAVE LABEL'                =>  $self->language->localise('Save'),
         'DISCARD LABEL'             =>  $self->language->localise('Discard'),
         'DATA'                      =>  $valid_input->{'time_logging'},
+        'YYYYMMDD'                  =>  $valid_input->{'yyyymmdd'},
         ENTRIES                     =>  [@entries_layout],
     };
     my  $layout_for_no_entries           =   {
@@ -222,7 +222,21 @@ method confirm_input ($valid_input = undef) {
 
 }
 
-method save_input ($valid_input = undef) {
+method get_entries_from_entryfactory ($valid_input //= {}) {
+
+    # This should be put in a Factory class, as it is delivering a ConcreteProduct - a list of Entries. 
+    # There can then be an iterator pattern too to iterate through or over them. 
+    # We should think about that, as the business logic may not need the traditional "next" iterator,
+    # as entries are processed according to time range.
+
+    return  $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'}?    Management::App::MVC::Model::BusinessLogic::EntryFactory
+                                                                            ->new( logger => $self->logger, )
+                                                                            ->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}):
+            ();
+
+}
+
+method save_input ($valid_input //= {}) {
 
     return  $self->request_input unless $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'};
 
@@ -231,11 +245,16 @@ method save_input ($valid_input = undef) {
     $log->trace('About to set initial values.');
 
     # Initial values:
-    my  @entries                    =   $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'}?   Management::App::MVC::Model::BusinessLogic::EntryFactory->new( logger => $self->logger, )->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}):
-                                        ();
+    my  @entries                    =   $self->get_entries_from_entryfactory($valid_input);
     my  @entries_layout             =   ();
 
     $log->trace('Entries array contains [_1] entries.', scalar @entries);
+
+    # This could be put in some kinda iterator place...
+    foreach my $entry (@entries) {
+        my  $saved_entry_id         =   $self->database->data->entry->save($entry)->last_saved_entry_id // $self->language->localise('error.last_saved_entry_id.invalid'); # I worry about how this will perform if we ever do async, and save stuff in parallel.
+        $log->trace('Saved Entry and then looked up the last saved entry ID, and got: [_1]', $saved_entry_id);
+    };
 
     # Code to save put here
 

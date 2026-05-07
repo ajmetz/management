@@ -107,7 +107,7 @@ like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,   
 ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),                 'Entry values can be retrieved from test database,'.
                                                                                                             ' by entry id.'                                             ); # Not enough to construct full object.
 
-isa_ok  (   $retrieved_entry                    ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
+isa_ok  (   $retrieved_entry                    ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our retrieved Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
 
 like(
     [$retrieved_entry->status_array], # Needs to be an arrayref for the array check below to work
