@@ -2,6 +2,7 @@
 secrets:
   - wakkawakka
 default_language: en-GB
+time_zone: Europe/London
 sqlite_file: ../../data/database/database.db
 migration_file: lib/Management/SQL/database_migration.sql
 ...
