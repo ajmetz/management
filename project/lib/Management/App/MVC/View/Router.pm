@@ -6,7 +6,7 @@ use     Management::App::Boilerplate::Code;
 method routes :common ($routes) {
 
     # Applicable to all...
-    my $auto_first_and_then  =  $routes->under->to('Root#auto', namespace => 'Management::App::MVC::Controller');
+    my $auto_first_and_then  =  $routes->under->to('Root#auto', namespace => 'Management::App::MVC::Controller'); # Namespace stated because it's not the default for Mojolicious.
 
     # Default at root:
     $auto_first_and_then

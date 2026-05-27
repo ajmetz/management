@@ -8,13 +8,14 @@ use     Template::Nest;
 use     Management::App::MVC::Model::TestLogAny;
 
 method auto {
+    # These lines are input validation, so should be moved to input - unless you wish to create a class or perl module dedicated to auto stuff, which can include multiple things?
     my  @supported_languages        =   ('en-GB','de-DE'); # TODO - create language class method for this.
     my  $valid_language_requested   =   $self->validation->has_data
-                                        && $self->validation->required('language')->in(@supported_languages)->is_valid? $self->validation->output:
+                                        && $self->validation->required('language')->in(@supported_languages)->is_valid? $self->validation->topic('language')->param:
                                         undef;
     return $self;
-    #$self->language->try_or_die($language_requested) if $language_requested;
-                                        
+    #$self->language->try_or_die($valid_language_requested) if $valid_language_requested;
+
 }
 
 method hello_world {

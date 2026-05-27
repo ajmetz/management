@@ -37,7 +37,7 @@ method multiple_entries ($start_yyyymmdd, $string) {
     my ($year, $month, $day) = split /-|\//, $start_yyyymmdd;
     $log->debug('Day, Month, and Year are...', { ddmmyyyy => [$day, $month, $year] }, );
 
-    # Only object instances can access fields, so these are locally scoped variables while :common is in place:
+    # Only object instances can access fields, so these are locally scoped variables while :common is in place: UPDATE: Common no longer in place.
     my  $entry_delimiter                =   "\n";
     my  $matches_and_captures_values    =   qr/
                                                 ^                                           # Start of string
