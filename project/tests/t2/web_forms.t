@@ -63,8 +63,8 @@ ok( $test_object->get_ok('/entries')->status_is(200)
                                                                 # Find could be used, and returns Mojo Collection of find results,
                                                                 # so not an assertion of a match.
 ok( $test_object->get_ok('/entries')->status_is(200)
-    ->tx->res->dom->at('textarea#data')                     ,   'Our entires page has a textarea'.
-                                                                ' for data input.'                      );
+    ->tx->res->dom->at('textarea#time_logging')                     ,   'Our entires page has a textarea'.
+                                                                ' for time_logging input.'                      );
 
 done_testing();
 

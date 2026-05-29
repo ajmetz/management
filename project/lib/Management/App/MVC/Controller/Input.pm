@@ -70,9 +70,9 @@ method entries {
     );
     $log->debug('What fields failed validation:', { failing_fields => $self->validation->failed });
 
-    my  $layout_data_structure      =   $valid_input?   $valid_input->{'stage'} eq 'confirm'?   $self->confirm_input($valid_input):
-                                                        $valid_input->{'stage'} eq 'save'?      $self->save_input($valid_input):
-                                                        $self->request_input:
+    my  $layout_data_structure      =   $valid_input && $valid_input->{'stage'}?    $valid_input->{'stage'} eq 'confirm'?   $self->confirm_input($valid_input):
+                                                                                    $valid_input->{'stage'} eq 'save'?      $self->save_input($valid_input):
+                                                                                    $self->request_input:
                                         $self->request_input;
 
     $log->debug('Set layout data structure as follows:', { layout_data_structure => $layout_data_structure }, );

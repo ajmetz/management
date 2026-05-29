@@ -197,6 +197,9 @@ Phrases: {
                 =>  'Year Selection for end of Time Range.',
 
 
+            # Management::App::MVC::Controller::Root::hello_world
+
+            'Testing from Hello World!' =>  'Testing from Hello World!',
 
             # Management::Controller::Input::confirm_entries
 
@@ -385,19 +388,31 @@ Phrases: {
             'Values set as follows: [_1]'                                   =>  'Values set as follows: [_1]',
 
 
-            # Management::App::MVC::Model::Entry::$set_duration private
+            # Management::App::MVC::Model::Entry - Commonly used...
+
+            'Daylight saving is in effect.'                                 =>  'Daylight saving is in effect.',
+            'Daylight saving is not in effect.'                             =>  'Daylight saving is not in effect.',
+
+
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_duration
 
             'Duration is...'                                                =>  'Duration is...',
             'End UTC Epoch is [_1] and Start UTC Epoch is [_2].'            =>  'End UTC Epoch is [_1] and Start UTC Epoch is [_2].',
+
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_utc_epochs
+
+            'End Datetime converted to UTC timezone: [_1]'                  =>  'End Datetime converted to UTC timezone: [_1]',
+            'End Datetime created in "[_2]" timezone: [_1]'                 =>  'End Datetime created in "[_2]" timezone: [_1]',
+            'Start Datetime converted to UTC timezone: [_1]'                =>  'Start Datetime converted to UTC timezone: [_1]',
+            'Start Datetime created in "[_2]" timezone: [_1]'               =>  'Start Datetime created in "[_2]" timezone: [_1]',
+
+
             
             # Management::App::MVC::Model::BusinessLogic::Entry::$utc_epoch_to_time_zone_string
 
             'About to return the following string: [_1]'                    =>  'About to return the following string: [_1]',
-            'Daylight saving is in effect.'                                 =>  'Daylight saving is in effect.',
-            'Daylight saving is not in effect.'                             =>  'Daylight saving is not in effect.',
             'UTC Datetime converted to [_2] Timezone : [_1]'                =>  'UTC Datetime converted to [_2] Timezone : [_1]',
             'UTC Epoch translated to Datetime: [_1]'                        =>  'UTC Epoch translated to Datetime: [_1]',
-
 
 
             # MojoLogCustomised:

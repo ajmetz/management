@@ -210,8 +210,7 @@ method $set_utc_epochs {
 
     return $self if $start_utc_epoch && $end_utc_epoch;
 
-    
-    $start_utc_epoch    =   DateTime->new(
+    my  $start_datetime =   DateTime->new(
 
                                 year        =>  $start_year,
                                 month       =>  $start_month,
@@ -221,9 +220,25 @@ method $set_utc_epochs {
                                 minute      =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
                                 time_zone   =>  $time_zone,
     
-                            )->set_time_zone('UTC')->epoch;
+                            );
 
-    $end_utc_epoch      =   DateTime->new(
+    $log->debug('Start Datetime created in "[_2]" timezone: [_1]', $start_datetime->stringify, $time_zone);
+    $log->debug(
+        $start_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $start_datetime->set_time_zone('UTC');
+
+    $log->debug('Start Datetime converted to UTC timezone: [_1]', $start_datetime->stringify);
+    $log->debug(
+        $start_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $start_utc_epoch    =   $start_datetime->epoch;
+
+    my $end_datetime    =   DateTime->new(
 
                                 # Assume same year/month/day as start time, unless end year/month/day given:
                                 year        =>  $end_year,
@@ -234,7 +249,23 @@ method $set_utc_epochs {
                                 minute      =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
                                 time_zone   =>  $time_zone,
 
-                            )->set_time_zone('UTC')->epoch;
+                            );
+
+    $log->debug('End Datetime created in "[_2]" timezone: [_1]', $end_datetime->stringify, $time_zone);
+    $log->debug(
+        $end_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $end_datetime->set_time_zone('UTC');
+
+    $log->debug('End Datetime converted to UTC timezone: [_1]', $end_datetime->stringify);
+    $log->debug(
+        $end_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );                            
+
+    $end_utc_epoch      =   $end_datetime->epoch;
 
     $log->debug('UTC epochs set.', { start_utc_epoch => $start_utc_epoch, end_utc_epoch => $end_utc_epoch });
 
