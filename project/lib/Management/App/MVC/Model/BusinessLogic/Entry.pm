@@ -43,7 +43,7 @@ field   $duration_data          :reader     =   undef;      # Undef is a clear i
 field   $logger         :param  :reader;
 field   $id             :param  :accessor   =   undef;
 field   $language       :param  :accessor   =   Management::App::MVC::View::Language->try_or_die;
-field   $time_zone      :param              //= 'Europe/London';
+field   $time_zone      :param  :reader     //= 'Europe/London';
 
 field   $matches_and_captures_date_and_time =   qr/
                                                     ^                                     # Start of string
@@ -80,8 +80,23 @@ method $date_time_is_possible_from_params {
 
 method $utc_epoch_to_time_zone_string ($utc_epoch) {
 
-    my  $datetime   =   DateTime->from_epoch($utc_epoch)->set_time_zone($time_zone);
+    my  $log        =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$utc_epoch_to_time_zone_string', );
+
+    my  $datetime   =   DateTime->from_epoch($utc_epoch);
+    
+    $log->debug('UTC Epoch translated to Datetime: [_1]', $datetime->stringify);
+     
+    $datetime->set_time_zone($time_zone);
+    
+    $log->debug('UTC Datetime converted to [_2] Timezone : [_1]', $datetime->stringify, $time_zone);
+    $log->debug(
+        $datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+    
     my  $string     =   sprintf("%s %02d:%02d", $datetime->dmy('/'), $datetime->hour, $datetime->minute);
+
+    $log->debug('About to return the following string: [_1]', $string);
 
     return $string;
 
@@ -93,7 +108,7 @@ method $set_year_month_day_time {
 
         my  $log                =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time', );
 
-        $log->trace('About to begin processing the start and end input params, to ensure they deliver the strings we want.');
+        $log->trace('About to begin processing the start input param, to ensure it delivers the string we want.');
 
         $start                  =   $start && ($start  =~  $matches_and_captures_utc_epoch)?    $self->$utc_epoch_to_time_zone_string($LAST_PAREN_MATCH):
                                     $start?                                                     $start:
@@ -105,6 +120,8 @@ method $set_year_month_day_time {
                                                                                                     $start_time
                                                                                                 ):
                                     undef;
+
+        $log->trace('About to begin processing the end input param, to ensure it delivers the string we want.');
                     
         $end                    =   $end && ($end    =~  $matches_and_captures_utc_epoch)?      $self->$utc_epoch_to_time_zone_string($LAST_PAREN_MATCH):
                                     $end?                                                       $end:
@@ -151,13 +168,29 @@ method $set_year_month_day_time {
         $start_day              =   $valid_start_values->{day};
         $start_time             =   $valid_start_values->{time};
 
-        $log->  trace('About to set our end year, month, day, and time, from our valid end values.');
+        $log->trace('About to set our end year, month, day, and time, from our valid end values.');
 
         $end_year               =   $valid_end_values->{year} // $start_year;
         $end_month              =   $valid_end_values->{month} // $start_month;
         $end_day                =   $valid_end_values->{day} // $start_day;
         $end_time               =   $valid_end_values->{time};
+
+        $log->trace('About to update our end string, using the new values.');
+
+        $log->debug('Before update:', { end => $end });
+
         $end                    =   $end_day.'/'.$end_month.'/'.$end_year.' '.$end_time;
+
+        $log->debug('After update:', { end => $end });
+
+        $log->debug(
+            'Values set as follows: [_1]',
+            $language->localise(
+                'entry.set_year_month_day_time.log_string_of_set_values',
+                ($start_year, $start_month, $start_day, $start_time, $end_year, $end_month, $end_day, $end_time, $end),
+            ),
+        );
+
 
         # Output:
 
@@ -169,8 +202,14 @@ method $set_year_month_day_time {
 
 method $set_utc_epochs {
 
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_utc_epochs', );
+
     # Premature exit if already set - this presumably needs more validation:
+
+    $log->debug('UTC epochs already set.') if $start_utc_epoch && $end_utc_epoch;
+
     return $self if $start_utc_epoch && $end_utc_epoch;
+
     
     $start_utc_epoch    =   DateTime->new(
 
@@ -182,7 +221,7 @@ method $set_utc_epochs {
                                 minute      =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
                                 time_zone   =>  $time_zone,
     
-                            )->epoch;
+                            )->set_time_zone('UTC')->epoch;
 
     $end_utc_epoch      =   DateTime->new(
 
@@ -195,13 +234,17 @@ method $set_utc_epochs {
                                 minute      =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
                                 time_zone   =>  $time_zone,
 
-                            )->epoch;
+                            )->set_time_zone('UTC')->epoch;
+
+    $log->debug('UTC epochs set.', { start_utc_epoch => $start_utc_epoch, end_utc_epoch => $end_utc_epoch });
 
     return $self;
 
 }
 
 method $set_duration_data {
+
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration_data', );
 
     my  $delimiter  =   '|';
 
@@ -221,6 +264,8 @@ method $set_duration_data {
                             )
                         ];
 
+    $log->debug('Set duration data.', {duration_data => $duration_data}, );
+
     return $self;
 
 }
@@ -229,10 +274,9 @@ method $set_duration {
 
     my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration', );
 
-    $log->debug('End UTC Epoch is [_1] and Start UTC Epoch is [_2].',$end_utc_epoch,$start_utc_epoch);
+    $log->debug('End UTC Epoch is [_1] and Start UTC Epoch is [_2].', $end_utc_epoch, $start_utc_epoch);
 
     $self->$set_duration_data;
-    $log->trace('Set duration data.', {duration_data => $duration_data}, );
     
     $duration       =   $language->localise(
                             'model.entry.set_duration.duration_string', # i.e. 1hr 30mins
@@ -247,8 +291,11 @@ method $set_duration {
 
 method $instance_setup {
 
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$instance_setup', );
+
+    $log->trace('About to set the order in which we will run our setup-related private methods.');
+
     $self
-    #->$set_logger
     ->$set_year_month_day_time
     ->$set_utc_epochs
     ->$set_duration;
@@ -258,15 +305,27 @@ method $instance_setup {
 method status_string {
     return $language->localise(
         'object.entry.status.formatting',
-        $self->status_array,
+        $self->status_array(
+            $language->localise('object.entry.status.category_delimiter')
+        ),
+    );
+}
+
+method status_log_string {
+    return $language->localise(
+        'object.entry.status.log_formatting',
+        $self->status_array(
+            $language->localise('object.entry.status.category_log_delimiter')
+        ),
     );
 }
 
 # An array means a predictable order.
-method status_array {
+method status_array ($category_delimiter //= $language->localise('object.entry.status.category_delimiter') ) {
     return (
         __CLASS__,
         $self->id,
+        $self->time_zone,
         $self->start,
         $self->end,
         $self->start_utc_epoch,
@@ -274,19 +333,28 @@ method status_array {
         $self->duration,
         $self->top_category,
         join(
-            $language->localise('object.entry.status.category_delimiter'),
+            $category_delimiter,
             $self->categories->@*
         ),
         $self->details,
     );
 }
 
+
+
 ADJUST {
-    
+
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::new - ADJUST Phase', );
+
+    $log->trace(
+        'About to call private method [_1] as part of new\'s ADJUST phase (See URL: [_2]).', # Phrase
+        '$instance_setup', # Private Method Name
+        'https://metacpan.org/pod/Object::Pad#The-ADJUST-phase', # URL
+    );
+
     $self->$instance_setup;
-    
-    #$self->valid_epochs_or_die(@created_epochs);
  
+    $log->debug('Instance status is: ', { status_log_string => $self->status_log_string });
 }
 
 

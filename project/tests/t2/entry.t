@@ -69,7 +69,7 @@ my  $test_app               =   Test::Mojo->new('Management',$test_app_config)->
 my  @dummy_data_for_entry   =   (
     
     logger          =>  $test_app->logger,
-    start           =>  '01/01/2026 00:00',
+    start           =>  '28/05/2026 00:00',
     end             =>  '23:59', # Should be capable of assuming the same year/month/day as start if not stated.
     categories      =>  [
                             'Event',
@@ -101,7 +101,7 @@ like    (   $entry_object->duration             ,   qr/^\p{Digit}+hr \p{Digit}+m
 ok      (   $entry_object->start_utc_epoch      <=  $entry_object->end_utc_epoch,                       'Start UTC Epoch is less '.
                                                                                                         'or equal to End UTC Epoch'                             );
                                                                                                         
-ok      (   $entry_object->end_utc_epoch        >=  $entry_object->start_utc_epoch,                     'End UTC Epoch is less '.
+ok      (   $entry_object->end_utc_epoch        >=  $entry_object->start_utc_epoch,                     'End UTC Epoch is more than '.
                                                                                                         'or equal to Start UTC Epoch.'                          );
 
 ok      (  my $saved_entry = $test_app->database->data->entry->save($entry_object),                     'Entry can be saved to the test database.'              );
@@ -114,10 +114,13 @@ ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved
 isa_ok  (   $retrieved_entry                    ,   [$entry_class_name],                                'Our retrieved Entry is a '.$entry_class_name.'.'       );
 
 like(
-    [$retrieved_entry->status_array], # Needs to be an arrayref for the array check below to work
+    [
+        $retrieved_entry->status_array,
+    ], # Needs to be an arrayref for the array check below to work
     array {
         item $entry_class_name;
         item $saved_entry->last_saved_entry_id;
+        item $entry_object->time_zone;
         item $entry_object->start;
         item $entry_object->end;
         item $entry_object->start_utc_epoch;

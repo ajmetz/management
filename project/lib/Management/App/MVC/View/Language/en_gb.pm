@@ -47,8 +47,7 @@ Tokens: {
     Short: {
         @tokens_short = (
 
-
-            # Management::Controller::Input::ask_days
+            # Management::App::MVC::Controller::Input::ask_days
 
             'options.abbreviated_month.1'               =>  'Jan',
             'options.abbreviated_month.2'               =>  'Feb',
@@ -63,10 +62,15 @@ Tokens: {
             'options.abbreviated_month.11'              =>  'Nov',
             'options.abbreviated_month.12'              =>  'Dec',
 
+            # Management::App::MVC::Model::BusinessLogic::Entry::status_string
 
-            # Management::Model::Entry - $set_duration private method
+            'object.entry.status.category_log_delimiter'    =>  ', ', # comma and space
 
-            'model.entry.set_duration.duration_string'  =>  '[_1]hr [_2]mins',
+
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_duration
+
+            'model.entry.set_duration.duration_string'      =>  '[_1]hr [_2]mins',
+
             
             # Management::App::MVC::Controller::Input::get_valid_add_entries_input
             'confirm_entries.time_logging.descriptive_field_name'   =>  'Time Logging',
@@ -80,6 +84,7 @@ Tokens: {
             
             # save_input
             'error.last_saved_entry_id.invalid'                     =>  'No last_saved_entry_id was forthcoming.',
+
         );
     } #short
 
@@ -90,7 +95,7 @@ Tokens: {
             'object.entry.error.invalid_start_values'
                 =>  'Could not obtain values from start string. Please use the format "dd/mm/yyyy hh:mm" or an epoch number.',
 
-            # Management::Model::TimeLog::Entry::status
+            # Management::App::MVC::Model::BusinessLogic::Entry::status_string
 
             'object.entry.status.category_delimiter'
                 =>
@@ -103,21 +108,28 @@ Tokens: {
 Class:              [_1]
 
 ID:                 [_2]
-Start:              [_3]
-End:                [_4]
-Start UTC Epoch:    [_5]
-End UTC Epoch:      [_6]
-Duration:           [_7]
+Time Zone:          [_3]
+Start:              [_4]
+End:                [_5]
+Start UTC Epoch:    [_6]
+End UTC Epoch:      [_7]
+Duration:           [_8]
 
-Top Category:       [_8]
-Categories:         [_9]
+Top Category:       [_9]
+Categories:         [_10]
 
 Details:
-[_10]
+[_11]
 ',
 
+            'object.entry.status.log_formatting'
+                => 'Class: [_1], ID: [_2], Time Zone: [_3], Start: [_4], End: [_5], Start UTC Epoch: [_6], End UTC Epoch: [_7], Duration: [_8], Top Category: [_9], Categories: [_10], Details: [_11]',
 
-            # Nothing yet.
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time
+
+            'entry.set_year_month_day_time.log_string_of_set_values'
+                =>  'Start Year: [_1], Start Month: [_2], Start Day: [_3], Start Time: [_4], End Year: [_5], End Month: [_6], End Day: [_7], End String: [_8]',
+
         );
     } #long
 
@@ -221,10 +233,33 @@ Phrases: {
                 =>  'Saved Entry and then looked up the last saved entry ID, and got: [_1]',
 
 
+            # Management::App::MVC::Model::BusinessLogic::Entry::$instance_setup
+            
+            'About to set the order in which we will run our setup-related private methods.'
+                =>  'About to set the order in which we will run our setup-related private methods.',
+
+
+            # Management::App::MVC::Model::BusinessLogic::Entry::new - ADJUST Phase
+            
+            'About to call private method [_1] as part of new\'s ADJUST phase (See URL: [_2]).'
+                =>  'About to call private method [_1] as part of new\'s ADJUST phase (See URL: [_2]).',
+
+
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_utc_epochs
+
+            'UTC epochs already set.'                                       =>  'UTC epochs already set.',
+            'UTC epochs set.'                                               =>  'UTC epochs set.',
+
+
             # Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time
 
-            'About to begin processing the start and end input params, to ensure they deliver the strings we want.'
-                =>  'About to begin processing the start and end input params, to ensure they deliver the strings we want.',
+            'About to update our end string, using the new values.'         =>  'About to update our end string, using the new values.',
+
+            'About to begin processing the end input param, to ensure it delivers the string we want.'
+                =>  'About to begin processing the end input param, to ensure it delivers the string we want.',
+
+            'About to begin processing the start input param, to ensure it delivers the string we want.'
+                =>  'About to begin processing the start input param, to ensure it delivers the string we want.',
                 
             'About to check our start and end strings for valid start and end values.'
                 =>  'About to check our start and end strings for valid start and end values.',
@@ -240,8 +275,6 @@ Phrases: {
 
             'About to throw an exception if the hashrefs for valid start and end values are undefined, false, or zero length in scalar context.'
                 =>  'About to throw an exception if the hashrefs for valid start and end values are undefined, false, or zero length in scalar context.',
-        
-
 
             # Management::App::MVC::Model::Database::Data::Entry::save
 
@@ -307,7 +340,6 @@ Phrases: {
 
             # Commonly used...
 
-
             # Management::App::MVC::Controller::Input
 
             'About to set initial values.'                                  =>  'About to set initial values.',
@@ -334,31 +366,48 @@ Phrases: {
             'Testing from Hello World!'                                     =>  'Testing from Hello World! bob',
 
 
-            # Management::App::MVC::Model::Entry
+            # Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries
+            
+            'Day, Month, and Year are...'                                   =>  'Day, Month, and Year are...',
 
-            'Invalid digit provided.'                                       =>  'Invalid digit provided.',
+
+            # Management::App::MVC::Model::BusinessLogic::Entry::new - ADJUST Phase
+            
+            'Instance status is: '                                          =>  'Instance status is: ',
 
 
-            # Management::App::MVC::Model::Entry - $set_duration private method
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time
+
+            'After update:'                                                 =>  'After update:',
+            'Before update:'                                                =>  'Before update:',
+            'Start is...'                                                   =>  'Start is...',
+            'End is...'                                                     =>  'End is...',
+            'Values set as follows: [_1]'                                   =>  'Values set as follows: [_1]',
+
+
+            # Management::App::MVC::Model::Entry::$set_duration private
 
             'Duration is...'                                                =>  'Duration is...',
             'End UTC Epoch is [_1] and Start UTC Epoch is [_2].'            =>  'End UTC Epoch is [_1] and Start UTC Epoch is [_2].',
             
-            
-            # Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time
-            
-            'Start is...'                                                   =>  'Start is...',
-            'End is...'                                                     =>  'End is...',
-            
-            # Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries
-            
-            'Day, Month, and Year are...'                                   =>  'Day, Month, and Year are...',
-            
+            # Management::App::MVC::Model::BusinessLogic::Entry::$utc_epoch_to_time_zone_string
+
+            'About to return the following string: [_1]'                    =>  'About to return the following string: [_1]',
+            'Daylight saving is in effect.'                                 =>  'Daylight saving is in effect.',
+            'Daylight saving is not in effect.'                             =>  'Daylight saving is not in effect.',
+            'UTC Datetime converted to [_2] Timezone : [_1]'                =>  'UTC Datetime converted to [_2] Timezone : [_1]',
+            'UTC Epoch translated to Datetime: [_1]'                        =>  'UTC Epoch translated to Datetime: [_1]',
+
+
+
             # MojoLogCustomised:
-            'Error stashed:'    =>  'Error stashed:',
-            'Errors stashed:'   =>  'Errors stashed:',
-            'Valid fields stashed:'  =>  'Valid fields stashed:',
-            'Valid field stashed:'  =>  'Valid field stashed:',
+            'Error stashed:'                                                =>  'Error stashed:',
+            'Errors stashed:'                                               =>  'Errors stashed:',
+            'Valid fields stashed:'                                         =>  'Valid fields stashed:',
+            'Valid field stashed:'                                          =>  'Valid field stashed:',
+
+            
+
         );
 
     } #debug
