@@ -31,8 +31,8 @@ field   $fields                                     =   {
                                                                                                 ),
                                                                                     
                                                                                                 # Fields AS ...
-                                                                                                [start_time_utc_epoch   =>  'start_epoch'],
-                                                                                                [end_time_utc_epoch     =>  'end_epoch'],
+                                                                                                [start_utc_epoch   =>  'start_utc_epoch'],
+                                                                                                [end_utc_epoch     =>  'end_utc_epoch'],
                                                                                     
                                                                                             ],
                                                             categories_fields           =>  ['category','top_category'],
@@ -50,8 +50,8 @@ method object_params_to_data ($entry) {
 
     return {
         entries         =>  [{
-                                'start_time_utc_epoch'  =>  $entry->start_epoch,
-                                'end_time_utc_epoch'    =>  $entry->end_epoch,
+                                'start_utc_epoch'  =>  $entry->start_utc_epoch,
+                                'end_utc_epoch'    =>  $entry->end_utc_epoch,
                                 'details'               =>  $entry->details,
                             }],
         categories      =>  $entry->categories,
@@ -88,11 +88,11 @@ method save ($entry) {
     $log->trace('Checking our Entry Object is valid.');
     
     my  $valid_entry                =   is_instance($entry, $entry_class)
-                                        && $entry->can('start_epoch')
-                                        && $entry->can('end_epoch')
+                                        && $entry->can('start_utc_epoch')
+                                        && $entry->can('end_utc_epoch')
                                         && $entry->can('details')
-                                        && $entry->start_epoch  =~ $matches_valid_digit
-                                        && $entry->end_epoch    =~ $matches_valid_digit
+                                        && $entry->start_utc_epoch  =~ $matches_valid_digit
+                                        && $entry->end_utc_epoch    =~ $matches_valid_digit
                                         && $entry->details? # not blank/false/untrue. We may wish to add further validation later.
                                             $entry:
                                         undef;
@@ -188,8 +188,8 @@ method save ($entry) {
                                     ->save(
                                         {
                                             $table_name->{entries} => {
-                                                start_time_utc_epoch    =>  $valid_entry->start_epoch,
-                                                end_time_utc_epoch      =>  $valid_entry->end_epoch,
+                                                start_utc_epoch    =>  $valid_entry->start_utc_epoch,
+                                                end_utc_epoch      =>  $valid_entry->end_utc_epoch,
                                                 details                 =>  $valid_entry->details,
                                             },
                                         }
@@ -318,8 +318,8 @@ method retrieve ($id) {
     #die $logger->fatal('This will do for now.', { hash_ref => $hash_ref }, );
 
     my  @object_params                      =   (
-                                                    start           =>  $hash_ref->{entries}->[0]->{start_epoch},
-                                                    end             =>  $hash_ref->{entries}->[0]->{end_epoch},
+                                                    start           =>  $hash_ref->{entries}->[0]->{start_utc_epoch},
+                                                    end             =>  $hash_ref->{entries}->[0]->{end_utc_epoch},
                                                     details         =>  $hash_ref->{entries}->[0]->{details},
                                                     categories      =>  $categories,
                                                     top_category    =>  $top_category,
@@ -373,7 +373,7 @@ Entry Model:
 					so perhaps you could build it as a string with %s as a placeholder, and then populate it later, with sprintf, and then turn it into a hash with eval? No. Lol.
 
 
-	* Check Entry has valid start_epoch, end_epoch and details. Potentially via validator.
+	* Check Entry has valid start_utc_epoch, end_utc_epoch and details. Potentially via validator.
 
 	* Save any new top categories set to be saved.
 	* Check valid last top_category inserted, else complain there's a problem with top_category save.

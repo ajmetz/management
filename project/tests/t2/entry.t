@@ -60,7 +60,8 @@ Then we create Dummy Data we will need...
 # Dummy Data for Object Tests:
 my  $test_app_config        =   {
                                     secrets             =>  ['wakkawakka'],
-                                    default_language    =>   'en-GB',
+                                    default_language    =>  'en-GB',
+                                    time_zone           =>  'Europe/London',
                                     sqlite_file         =>  '../../data/database/test_database.db',
                                     migration_file      =>  'lib/Management/SQL/database_migration.sql',
                                 };
@@ -75,6 +76,7 @@ my  @dummy_data_for_entry   =   (
                             'Silliness',
                         ],
     details         =>  'Did a day.',
+    
 
 );
 
@@ -85,39 +87,41 @@ Then we begin testing our Entry Object...
 =cut
 
 my  $regex_one_or_more_digits                   =   qr/^\p{Digit}+$/;
+my  $entry_class_name                           =   'Management::App::MVC::Model::BusinessLogic::Entry';
+
 
 # Object Tests:
-my          $entry_object                       =   Management::App::MVC::Model::BusinessLogic::Entry->new(@dummy_data_for_entry);
-isa_ok  (   $entry_object                       ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
+my          $entry_object                       =   $entry_class_name->new(@dummy_data_for_entry);
+isa_ok  (   $entry_object                       ,   [$entry_class_name],                                'Our Entry is a '.$entry_class_name.'.'                 );
 
-like    (   $entry_object->start_epoch          ,   $regex_one_or_more_digits,                              'Start Epoch is one or more digits.'                        );
-like    (   $entry_object->end_epoch            ,   $regex_one_or_more_digits,                              'End Epoch is one or more digits.'                          );
-like    (   $entry_object->duration             ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                      'We have the expected duration string.'                     );
+like    (   $entry_object->start_utc_epoch      ,   $regex_one_or_more_digits,                          'Start UTC Epoch is one or more digits.'                );
+like    (   $entry_object->end_utc_epoch        ,   $regex_one_or_more_digits,                          'End UTC Epoch is one or more digits.'                  );
+like    (   $entry_object->duration             ,   qr/^\p{Digit}+hr \p{Digit}+mins$/,                  'We have the expected duration string.'                 );
 
-ok      (   $entry_object->start_epoch          <=  $entry_object->end_epoch,                               'Start Epoch is less '.
-                                                                                                            'or equal to End Epoch'                                     );
+ok      (   $entry_object->start_utc_epoch      <=  $entry_object->end_utc_epoch,                       'Start UTC Epoch is less '.
+                                                                                                        'or equal to End UTC Epoch'                             );
                                                                                                         
-ok      (   $entry_object->end_epoch            >=  $entry_object->start_epoch,                             'End Epoch is less '.
-                                                                                                            'or equal to Start Epoch.'                                  );
+ok      (   $entry_object->end_utc_epoch        >=  $entry_object->start_utc_epoch,                     'End UTC Epoch is less '.
+                                                                                                        'or equal to Start UTC Epoch.'                          );
 
-ok      (  my $saved_entry = $test_app->database->data->entry->save($entry_object),                         'Entry can be saved to the test database.'                  );
+ok      (  my $saved_entry = $test_app->database->data->entry->save($entry_object),                     'Entry can be saved to the test database.'              );
 
-like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,                               'We can obtain a numeric id for the last saved item.'       );
+like    (   $saved_entry->last_saved_entry_id   ,  $regex_one_or_more_digits,                           'We can obtain a numeric id for the last saved item.'   );
 
-ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),                 'Entry values can be retrieved from test database,'.
-                                                                                                            ' by entry id.'                                             ); # Not enough to construct full object.
+ok      (  my $retrieved_entry = $saved_entry->retrieve($saved_entry->last_saved_entry_id),             'Entry values can be retrieved from test database,'.
+                                                                                                        ' by entry id.'                                         ); # Not enough to construct full object.
 
-isa_ok  (   $retrieved_entry                    ,   ['Management::App::MVC::Model::BusinessLogic::Entry'],             'Our retrieved Entry is a Management::App::MVC::Model::BusinessLogic::Entry.'    );
+isa_ok  (   $retrieved_entry                    ,   [$entry_class_name],                                'Our retrieved Entry is a '.$entry_class_name.'.'       );
 
 like(
     [$retrieved_entry->status_array], # Needs to be an arrayref for the array check below to work
     array {
-        item 'Management::App::MVC::Model::BusinessLogic::Entry';
+        item $entry_class_name;
         item $saved_entry->last_saved_entry_id;
         item $entry_object->start;
         item $entry_object->end;
-        item $entry_object->start_epoch;
-        item $entry_object->end_epoch;
+        item $entry_object->start_utc_epoch;
+        item $entry_object->end_utc_epoch;
         item $entry_object->duration;
         item $entry_object->top_category;
         item join(
@@ -127,7 +131,7 @@ like(
         item $entry_object->details;
         item DNE();
         end();
-    }                                           ,                                                           'Our retrieved Entry has the expected status values.'
+    }                                           ,                                                       'Our retrieved Entry has the expected status values.'
 );
 
 =head2 Done.

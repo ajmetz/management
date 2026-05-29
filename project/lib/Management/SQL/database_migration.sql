@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS categories (
 
 CREATE TABLE IF NOT EXISTS entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    start_time_utc_epoch INTEGER,
-    end_time_utc_epoch INTEGER,
+    start_utc_epoch INTEGER,
+    end_utc_epoch INTEGER,
     details TEXT
 );
 

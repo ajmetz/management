@@ -29,20 +29,21 @@ field   $end_month      :param  :reader     =   undef;
 field   $end_day        :param  :reader     =   undef;
 field   $end_time       :param  :reader     =   undef;
 
-field   $start_epoch            :reader     =   undef;
-field   $end_epoch              :reader     =   undef;
+field   $start_utc_epoch        :reader     =   undef;
+field   $end_utc_epoch          :reader     =   undef;
 
-field   $categories     :param  :accessor   =   ['Misc'];   # TODO: Add validation to the accessor/setter.
+field   $categories     :param  :accessor   //= ['Misc'];   # TODO: Add validation to the accessor/setter.
                                                             # UPDATE: Validation can be done before saving. 
                                                             # LEVELS: Can tell number of levels by number of items in arrayref.
 
-field   $top_category   :param  :accessor   //= 'OTHER';      # Can be calculated by database look up during save to database via Model/Entry.pm
+field   $top_category   :param  :accessor   //= 'OTHER';    # Can be calculated by database look up during save to database via Model/Entry.pm
 field   $details        :param  :accessor;                  # Later we could code a subroutine to pick a specific index number that serves as the default.
 field   $duration               :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $duration_data          :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $logger         :param  :reader;
 field   $id             :param  :accessor   =   undef;
 field   $language       :param  :accessor   =   Management::App::MVC::View::Language->try_or_die;
+field   $time_zone      :param              //= 'Europe/London';
 
 field   $matches_and_captures_date_and_time =   qr/
                                                     ^                                     # Start of string
@@ -62,9 +63,9 @@ field   $matches_and_captures_time          =   qr/
                                                     $                                     # End of string.
                                                 /x;
 
-field   $matches_and_captures_epoch         =   qr/
+field   $matches_and_captures_utc_epoch     =   qr/
                                                     ^                                     # Start of string
-                                                    (?<epoch>\p{Digit}+)                  # Epoch - one or more consecutive digits
+                                                    (?<utc_epoch>\p{Digit}+)              # UTC Epoch - one or more consecutive digits
                                                     $                                     # End of string.
                                                 /x;
 
@@ -77,9 +78,9 @@ method $date_time_is_possible_from_params {
             && $end_time;
 }
 
-method $epoch_to_string ($epoch) {
+method $utc_epoch_to_time_zone_string ($utc_epoch) {
 
-    my  $datetime   =   DateTime->from_epoch($epoch);
+    my  $datetime   =   DateTime->from_epoch($utc_epoch)->set_time_zone($time_zone);
     my  $string     =   sprintf("%s %02d:%02d", $datetime->dmy('/'), $datetime->hour, $datetime->minute);
 
     return $string;
@@ -89,43 +90,68 @@ method $epoch_to_string ($epoch) {
 method $set_year_month_day_time {
 
         # Initial Values:
-        my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time', );
 
-#        warn 'Dumping values.';
-#        $logger->dump_values($LAST_PAREN_MATCH) if ($start =~ $matches_and_captures_epoch);
+        my  $log                =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time', );
 
-        $start  =   $start && ($start  =~  $matches_and_captures_epoch)?    $self->$epoch_to_string($LAST_PAREN_MATCH):
-                    $start?                                                 $start:
-                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $start_day, $start_month, $start_year, $start_time):
-                    undef;
+        $log->trace('About to begin processing the start and end input params, to ensure they deliver the strings we want.');
+
+        $start                  =   $start && ($start  =~  $matches_and_captures_utc_epoch)?    $self->$utc_epoch_to_time_zone_string($LAST_PAREN_MATCH):
+                                    $start?                                                     $start:
+                                    $date_time_is_possible_from_params?                         sprintf(
+                                                                                                    '%s/%s/%s %s',
+                                                                                                    $start_day,
+                                                                                                    $start_month,
+                                                                                                    $start_year,
+                                                                                                    $start_time
+                                                                                                ):
+                                    undef;
                     
-        $end    =   $end && ($end    =~  $matches_and_captures_epoch)?      $self->$epoch_to_string($LAST_PAREN_MATCH):
-                    $end?                                                   $end:
-                    $date_time_is_possible_from_params?                     sprintf('%s/%s/%s %s', $end_day // $start_day, $end_month // $start_month, $end_year // $start_year, $end_time):
-                    undef;
+        $end                    =   $end && ($end    =~  $matches_and_captures_utc_epoch)?      $self->$utc_epoch_to_time_zone_string($LAST_PAREN_MATCH):
+                                    $end?                                                       $end:
+                                    $date_time_is_possible_from_params?                         sprintf(
+                                                                                                    '%s/%s/%s %s',
+                                                                                                    $end_day // $start_day,
+                                                                                                    $end_month // $start_month,
+                                                                                                    $end_year // $start_year,
+                                                                                                    $end_time
+                                                                                                ):
+                                    undef;
 
         $log->debug('Start is...', { dumping_value => $start });
         $log->debug('End is...', { dumping_value => $end });
 
         # Definitions:
+
+        $log->trace('About to check our start and end strings for valid start and end values.');
+
         my  $valid_start_values =   $start  =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
                                     undef;
 
         my  $valid_end_values   =   $end    =~  $matches_and_captures_date_and_time?    {%LAST_PAREN_MATCH}:
                                     $end    =~  $matches_and_captures_time?             {%LAST_PAREN_MATCH}:
                                     undef;
-        #warn 'What?';
-        #$logger->dump_values($start);
 
         # Premature Exit:
-        die $log->fatal('object.entry.error.invalid_start_values'   ) unless $valid_start_values;
-        die $log->fatal('object.entry.error.invalid_end_values'     ) unless $valid_end_values;
+
+        $log->trace('About to throw an exception if the hashrefs for valid start and end values are undefined, false, or zero length in scalar context.');
+
+        die                         $log->fatal('object.entry.error.invalid_start_values')
+                                    unless $valid_start_values;
+                                    
+        die                         $log->fatal('object.entry.error.invalid_end_values')
+                                    unless $valid_end_values;
+
 
         # Processing:
+
+        $log->trace('About to set our start year, month, day, and time, from our valid start values.');
+
         $start_year             =   $valid_start_values->{year};
         $start_month            =   $valid_start_values->{month};
         $start_day              =   $valid_start_values->{day};
         $start_time             =   $valid_start_values->{time};
+
+        $log->  trace('About to set our end year, month, day, and time, from our valid end values.');
 
         $end_year               =   $valid_end_values->{year} // $start_year;
         $end_month              =   $valid_end_values->{month} // $start_month;
@@ -134,37 +160,42 @@ method $set_year_month_day_time {
         $end                    =   $end_day.'/'.$end_month.'/'.$end_year.' '.$end_time;
 
         # Output:
-        return $self;                
-      
+
+        $log->trace('About to return self for fluent interface / method chaining, and exit method.');
+
+        return $self;
+
 }
 
-method $set_epochs {
+method $set_utc_epochs {
 
     # Premature exit if already set - this presumably needs more validation:
-    return $self if $start_epoch && $end_epoch;
+    return $self if $start_utc_epoch && $end_utc_epoch;
     
-    $start_epoch    =   DateTime->new(
+    $start_utc_epoch    =   DateTime->new(
 
-                            year    =>  $start_year,
-                            month   =>  $start_month,
-                            day     =>  $start_day,
+                                year        =>  $start_year,
+                                month       =>  $start_month,
+                                day         =>  $start_day,
+    
+                                hour        =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
+                                minute      =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
+                                time_zone   =>  $time_zone,
+    
+                            )->epoch;
 
-                            hour    =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
-                            minute  =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
+    $end_utc_epoch      =   DateTime->new(
 
-                        )->epoch;
+                                # Assume same year/month/day as start time, unless end year/month/day given:
+                                year        =>  $end_year,
+                                month       =>  $end_month,
+                                day         =>  $end_day,
 
-    $end_epoch      =   DateTime->new(
+                                hour        =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
+                                minute      =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
+                                time_zone   =>  $time_zone,
 
-                            # Assume same year/month/day as start time, unless end year/month/day given:
-                            year    =>  $end_year,
-                            month   =>  $end_month,
-                            day     =>  $end_day,
-
-                            hour    =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
-                            minute  =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
-
-                        )->epoch;
+                            )->epoch;
 
     return $self;
 
@@ -182,9 +213,9 @@ method $set_duration_data {
                                     pattern     =>  '%H'.$delimiter.'%M',
                                 )
                                 ->format_duration(
-                                    DateTime->from_epoch($end_epoch)
+                                    DateTime->from_epoch($end_utc_epoch)
                                     ->subtract_datetime_absolute(
-                                        DateTime->from_epoch($start_epoch)
+                                        DateTime->from_epoch($start_utc_epoch)
                                     )
                                 )
                             )
@@ -198,7 +229,7 @@ method $set_duration {
 
     my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration', );
 
-    $log->debug('End Epoch is [_1] and Start Epoch is [_2].',$end_epoch,$start_epoch);
+    $log->debug('End UTC Epoch is [_1] and Start UTC Epoch is [_2].',$end_utc_epoch,$start_utc_epoch);
 
     $self->$set_duration_data;
     $log->trace('Set duration data.', {duration_data => $duration_data}, );
@@ -219,7 +250,7 @@ method $instance_setup {
     $self
     #->$set_logger
     ->$set_year_month_day_time
-    ->$set_epochs
+    ->$set_utc_epochs
     ->$set_duration;
 
 }
@@ -238,8 +269,8 @@ method status_array {
         $self->id,
         $self->start,
         $self->end,
-        $self->start_epoch,
-        $self->end_epoch,
+        $self->start_utc_epoch,
+        $self->end_utc_epoch,
         $self->duration,
         $self->top_category,
         join(

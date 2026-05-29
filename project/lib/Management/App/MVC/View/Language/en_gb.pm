@@ -100,17 +100,17 @@ Tokens: {
             'object.entry.status.formatting'
                 =>
 '
-Class:          [_1]
+Class:              [_1]
 
-ID:             [_2]
-Start:          [_3]
-End:            [_4]
-Start Epoch:    [_5]
-End Epoch:      [_6]
-Duration:       [_7]
+ID:                 [_2]
+Start:              [_3]
+End:                [_4]
+Start UTC Epoch:    [_5]
+End UTC Epoch:      [_6]
+Duration:           [_7]
 
-Top Category:   [_8]
-Categories:     [_9]
+Top Category:       [_8]
+Categories:         [_9]
 
 Details:
 [_10]
@@ -206,7 +206,43 @@ Phrases: {
 
     Trace: {
         @logging_trace_phrases = (
+
+            # Management::App::MVC::Controller::Input::confirm_entries
+
+            'Entries array contains [_1] entries.'                          =>  'Entries array contains [_1] entries.', # Also used by Management::App::MVC::Controller::Input::save_input
+            'Generated the following layout structure:'                     =>  'Generated the following layout structure:',
+            'Moving on to generate the page layout...'                      =>  'Moving on to generate the page layout...',
+            
+            # Management::App::MVC::Controller::Input::save_input
+
+            'About to set initial values.'                                  =>  'About to set initial values.',
+
+            'Saved Entry and then looked up the last saved entry ID, and got: [_1]'
+                =>  'Saved Entry and then looked up the last saved entry ID, and got: [_1]',
+
+
+            # Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time
+
+            'About to begin processing the start and end input params, to ensure they deliver the strings we want.'
+                =>  'About to begin processing the start and end input params, to ensure they deliver the strings we want.',
+                
+            'About to check our start and end strings for valid start and end values.'
+                =>  'About to check our start and end strings for valid start and end values.',
+
+            'About to return self for fluent interface / method chaining, and exit method.'
+                =>  'About to return self for fluent interface / method chaining, and exit method.',
+
+            'About to set our end year, month, day, and time, from our valid end values.'
+                =>  'About to set our end year, month, day, and time, from our valid end values.',
+                
+            'About to set our start year, month, day, and time, from our valid start values.'
+                =>  'About to set our start year, month, day, and time, from our valid start values.',
+
+            'About to throw an exception if the hashrefs for valid start and end values are undefined, false, or zero length in scalar context.'
+                =>  'About to throw an exception if the hashrefs for valid start and end values are undefined, false, or zero length in scalar context.',
         
+
+
             # Management::App::MVC::Model::Database::Data::Entry::save
 
             'Beginning the process of actually saving to database...'       =>  'Beginning the process of actually saving to database...',
@@ -228,7 +264,6 @@ Phrases: {
             'Updated the last_saved_entry_id attribute.'                    =>  'Updated the last_saved_entry_id attribute.',
             'We will be associating the following entry id...'              =>  'We will be associating the following entry id...',
             '...with this list of categories...'                            =>  '...with this list of categories...',
-
 
             'Because we checked for a valid entry earlier, we are assuming we can proceed to save to the entry table...'
                 =>  'Because we checked for a valid entry earlier, we are assuming we can proceed to save to the entry table...',
@@ -261,17 +296,6 @@ Phrases: {
             # Management::App::MVC::Model::Entry - $set_duration private method
 
             'Set duration data.'                                            =>  'Set duration data.',
-            
-            # Management::App::MVC::Controller::Input::confirm_entries
-            'Entries array contains [_1] entries.'                          =>  'Entries array contains [_1] entries.', # Also used by Management::App::MVC::Controller::Input::save_input
-            'Generated the following layout structure:'                     =>  'Generated the following layout structure:',
-            'Moving on to generate the page layout...'                      =>  'Moving on to generate the page layout...',
-            
-            # Management::App::MVC::Controller::Input::save_input
-            'About to set initial values.'                                  =>  'About to set initial values.',
-
-            'Saved Entry and then looked up the last saved entry ID, and got: [_1]'
-                =>  'Saved Entry and then looked up the last saved entry ID, and got: [_1]',
         
         );
     } #trace
@@ -318,7 +342,7 @@ Phrases: {
             # Management::App::MVC::Model::Entry - $set_duration private method
 
             'Duration is...'                                                =>  'Duration is...',
-            'End Epoch is [_1] and Start Epoch is [_2].'                    =>  'End Epoch is [_1] and Start Epoch is [_2].',
+            'End UTC Epoch is [_1] and Start UTC Epoch is [_2].'            =>  'End UTC Epoch is [_1] and Start UTC Epoch is [_2].',
             
             
             # Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time

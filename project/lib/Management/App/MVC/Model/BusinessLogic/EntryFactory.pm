@@ -77,7 +77,8 @@ method multiple_entries ($start_yyyymmdd, $string) {
 
     };
 
-    return @array;
+    return  wantarray?   @array:
+            [@array];
 
 }
 

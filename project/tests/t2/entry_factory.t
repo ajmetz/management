@@ -45,7 +45,7 @@ First we test to see if the test is functioning correctly.
 =cut
 
 ok(
-    1                       ,   "Testing our test can function."
+    1                               ,   "Testing our test can function."
 );
 
 =head2 Dummy Data.
@@ -55,13 +55,14 @@ Then we create Dummy Data we will need...
 =cut
 
 # Dummy Data for Object Tests:
-my  $test_app_config        =   {
-                                    secrets             =>  ['wakkawakka'],
-                                    default_language    =>   'en-GB',
-                                    sqlite_file         =>  '../../data/database/test_database.db',
-                                    migration_file      =>  'lib/Management/SQL/database_migration.sql',
-                                };
-my  $test_app               =   Test::Mojo->new('Management',$test_app_config)->app;
+my  $test_app_config                =   {
+                                            secrets             =>  ['wakkawakka'],
+                                            default_language    =>  'en-GB',
+                                            time_zone           =>  'Europe/London',
+                                            sqlite_file         =>  '../../data/database/test_database.db',
+                                            migration_file      =>  'lib/Management/SQL/database_migration.sql',
+                                        };
+my  $test_app                       =   Test::Mojo->new('Management',$test_app_config)->app;
 
 
 =head2 Object Tests.
@@ -70,9 +71,11 @@ Then we begin testing our Entry Object...
 
 =cut
 
-my  $regex_one_or_more_digits                   =   qr/^\p{Digit}+$/;
+my  $regex_one_or_more_digits       =   qr/^\p{Digit}+$/;
+my  $factory_class_name             =   'Management::App::MVC::Model::BusinessLogic::EntryFactory';
+my  $entry_class_name               =   'Management::App::MVC::Model::BusinessLogic::Entry';
 
-my @dummy_data_for_entry_factory = (
+my @dummy_data_for_entry_factory    = (
 
 #'29-04-2026',   # Date with dashes # While this date is what we type as humans, the html form in the webpage will deliver yyyy-mm-dd instead.
 '2026-04-29',   # Providing value as a html date input field would.
@@ -86,17 +89,23 @@ adjdkjd
 ',
 
 );
+
+# Checks:
+my  $items_are_appropriate_class    =   array {all_items check_isa $entry_class_name;};
+
 # Object Tests:
-my          $entry_factory_object               =   Management::App::MVC::Model::BusinessLogic::EntryFactory->new(logger => $test_app->logger);
+my  $entry_factory_object           =   $factory_class_name->new(logger => $test_app->logger);
 
+isa_ok(
+    # Got                               # Expect                        # Test Name
+    $entry_factory_object           ,   [$factory_class_name],          "Our Entry is a $factory_class_name.",
+);
 
-isa_ok  (   $entry_factory_object               ,   ['Management::App::MVC::Model::BusinessLogic::EntryFactory'],   'Our Entry is a Management::App::MVC::Model::BusinessLogic::EntryFactory.'  );
+my  $output_list                    =   $entry_factory_object->multiple_entries(@dummy_data_for_entry_factory); 
 
 like(
-    [$entry_factory_object->multiple_entries(@dummy_data_for_entry_factory)], # Needs to be an arrayref for the array check below to work. Hence square brackets.
-    array {
-        all_items check_isa 'Management::App::MVC::Model::BusinessLogic::Entry';
-    }                                           ,                                                           'Multiple Entries method returns an array of multiple entry object instances.'
+    # Got                               # Expect                        # Test Name
+    $output_list                    ,  $items_are_appropriate_class,    'Multiple Entries method returns an array of multiple entry object instances.',
 );
 
 =head2 Done.
