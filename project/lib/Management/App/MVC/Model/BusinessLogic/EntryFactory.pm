@@ -10,7 +10,7 @@ use     Log::Any ();
 use     Log::Any::Adapter;
 
 field   $logger     :param;
-field   $time_zone  :param  :reader;
+#field   $time_zone  :param  :reader //= 'Europe/London';
 #field   $start_date :param;
 #field   $string     :param;
 
@@ -28,11 +28,22 @@ Returns an array of entries.
 
 # What approach should we have to logging? Should we have a log object or a language object?
 
-method multiple_entries ($start_yyyymmdd, $string) {
+method multiple_entries ($start_yyyymmdd, $string, $time_zone = 'Europe/London',) { # Should a default be = or //= !?
 
-    return () unless $start_yyyymmdd && $string; # Unhelpful premature exit. Perhaps specify that no true arguments were passed in.
+    my $log =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries' );
+    
+    $log->debug(
+        'Prepare to return an empty list as a quiet fail, if we don\'t have our prerequisites.',
+        {
+            start_yyyymmdd  =>  $start_yyyymmdd,
+            string          =>  $string,
+            time_zone       =>  $time_zone,
+        },
+    );
 
-    my $log =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory' );
+    return () unless $start_yyyymmdd && $string && $time_zone; # Unhelpful premature exit. Perhaps specify that no true arguments were passed in.
+
+
 
     #$start_date =   s/-/\//g; # Replace dashes with slashes.
     my ($year, $month, $day) = split /-|\//, $start_yyyymmdd;

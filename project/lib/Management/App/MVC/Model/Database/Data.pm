@@ -1,6 +1,7 @@
 use     Object::Pad v0.820;
 
 class   Management::App::MVC::Model::Database::Data;
+
 use     Management::App::Boilerplate::Code;
 use     Management::App::MVC::Model::Database::Data::Entry;
 use     Management::App::MVC::Model::Database::Data::Category;
@@ -64,8 +65,8 @@ method retrieve ($what_to_retrieve ||= undef) {
 
 method entry {
     my  @params                                     =   (
-                                                            data    =>  $self,
-                                                            logger  =>  $logger,
+                                                            data        =>  $self,
+                                                            logger      =>  $logger,
                                                             time_zone   =>  $time_zone,
                                                         );
     state   $entry                                  =   Management::App::MVC::Model::Database::Data::Entry->new(@params);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.

@@ -11,6 +11,7 @@ use     Management::App::MVC::Model::Database::Data;
 field $file_name        :param  :reader;
 field $logger           :param  :reader;
 field $database_type            :reader =   'Management::App::MVC::Model::Database::Type::SQLite'; # Change the type here if required.
+field $time_zone        :param  :reader //= 'Europe/London';
 
 method handle {
     state   $handle                     =   $self->connection->db;  # I presently believe the handle should always be the same one
@@ -32,8 +33,9 @@ method connection {
 
 method data {
     my      @params                     =   (
-                                                database => $self,
-                                                logger   => $self->logger
+                                                database    =>  $self,
+                                                logger      =>  $self->logger,
+                                                time_zone   =>  $time_zone,
                                             );
     state   $data                       =   Management::App::MVC::Model::Database::Data->new(@params);  # State means $data set only once then re-used.
 }

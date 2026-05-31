@@ -230,8 +230,10 @@ method get_entries_from_entryfactory ($valid_input //= {}) {
     # as entries are processed according to time range.
 
     return  $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'}?    Management::App::MVC::Model::BusinessLogic::EntryFactory
-                                                                            ->new( logger => $self->logger, )
-                                                                            ->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}):
+                                                                            ->new(
+                                                                                logger => $self->logger,
+                                                                            )
+                                                                            ->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}, $self->config->{'time_zone'},):
             ();
 
 }

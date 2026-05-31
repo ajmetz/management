@@ -15,7 +15,6 @@ stuff
 
 =cut
 
-#bob
 field   $start          :param  :reader     =   undef;
 field   $end            :param  :reader     =   undef;
 
@@ -42,7 +41,7 @@ field   $duration               :reader     =   undef;      # Undef is a clear i
 field   $duration_data          :reader     =   undef;      # Undef is a clear indication it has not been set / adjust block has failed to calculate one.
 field   $logger         :param  :reader;
 field   $id             :param  :accessor   =   undef;
-field   $language       :param  :accessor   =   Management::App::MVC::View::Language->try_or_die;
+field   $language       :param  :accessor   =   Management::App::MVC::View::Language->try_or_die; # Language class provides a fallback default if called without arguments.
 field   $time_zone      :param  :reader     //= 'Europe/London';
 
 field   $matches_and_captures_date_and_time =   qr/
@@ -70,6 +69,48 @@ field   $matches_and_captures_utc_epoch     =   qr/
                                                 /x;
 
 
+# Public Methods:
+
+method status_string {
+    return $language->localise(
+        'object.entry.status.formatting',
+        $self->status_array(
+            $language->localise('object.entry.status.category_delimiter')
+        ),
+    );
+}
+
+method status_log_string {
+    return $language->localise(
+        'object.entry.status.log_formatting',
+        $self->status_array(
+            $language->localise('object.entry.status.category_log_delimiter')
+        ),
+    );
+}
+
+# An array means a predictable order.
+method status_array ($category_delimiter //= $language->localise('object.entry.status.category_delimiter') ) {
+    return (
+        __CLASS__,
+        $self->id,
+        $self->time_zone,
+        $self->start,
+        $self->end,
+        $self->start_utc_epoch,
+        $self->end_utc_epoch,
+        $self->duration,
+        $self->top_category,
+        join(
+            $category_delimiter,
+            $self->categories->@*
+        ),
+        $self->details,
+    );
+}
+
+# Private Methods:
+
 method $date_time_is_possible_from_params {
     return  $start_day
             && $start_month
@@ -79,6 +120,8 @@ method $date_time_is_possible_from_params {
 }
 
 method $utc_epoch_to_time_zone_string ($utc_epoch) {
+
+    # Should this method be a Util function, rather than an Entry method?
 
     my  $log        =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$utc_epoch_to_time_zone_string', );
 
@@ -99,6 +142,126 @@ method $utc_epoch_to_time_zone_string ($utc_epoch) {
     $log->debug('About to return the following string: [_1]', $string);
 
     return $string;
+
+}
+
+method $set_duration_data {
+
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration_data', );
+
+    my  $delimiter  =   '|';
+
+    $duration_data  =   [
+                            split(
+                                quotemeta($delimiter),
+                                DateTime::Format::Duration->new(
+                                    normalise   =>  1, # While normalise will give us hours and minutes where we previously had only seconds - will 24 hours show as zero hours and 1 day? Worth testing.
+                                    pattern     =>  '%H'.$delimiter.'%M',
+                                )
+                                ->format_duration(
+                                    DateTime->from_epoch($end_utc_epoch)
+                                    ->subtract_datetime_absolute(
+                                        DateTime->from_epoch($start_utc_epoch)
+                                    )
+                                )
+                            )
+                        ];
+
+    $log->debug('Set duration data.', {duration_data => $duration_data}, );
+
+    return $self;
+
+}
+
+method $set_duration {
+
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration', );
+
+    $log->debug('End UTC Epoch is [_1] and Start UTC Epoch is [_2].', $end_utc_epoch, $start_utc_epoch);
+
+    $self->$set_duration_data;
+    
+    $duration       =   $language->localise(
+                            'model.entry.set_duration.duration_string', # i.e. 1hr 30mins
+                            $duration_data->@*,
+                        );
+
+    $log->debug('Duration is...', { duration => $duration }, );
+
+    return $self;
+
+}
+
+method $set_utc_epochs {
+
+    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_utc_epochs', );
+
+    # Premature exit if already set - this presumably needs more validation:
+
+    $log->debug('UTC epochs already set.') if $start_utc_epoch && $end_utc_epoch;
+
+    return $self if $start_utc_epoch && $end_utc_epoch;
+
+    my  $start_datetime =   DateTime->new(
+
+                                year        =>  $start_year,
+                                month       =>  $start_month,
+                                day         =>  $start_day,
+    
+                                hour        =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
+                                minute      =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
+                                time_zone   =>  $time_zone,
+    
+                            );
+
+    $log->debug('Start Datetime created in "[_2]" timezone: [_1]', $start_datetime->stringify, $time_zone);
+    $log->debug(
+        $start_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $start_datetime->set_time_zone('UTC');
+
+    $log->debug('Start Datetime converted to UTC timezone: [_1]', $start_datetime->stringify);
+    $log->debug(
+        $start_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $start_utc_epoch    =   $start_datetime->epoch;
+
+    my $end_datetime    =   DateTime->new(
+
+                                # Assume same year/month/day as start time, unless end year/month/day given:
+                                year        =>  $end_year,
+                                month       =>  $end_month,
+                                day         =>  $end_day,
+
+                                hour        =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
+                                minute      =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
+                                time_zone   =>  $time_zone,
+
+                            );
+
+    $log->debug('End Datetime created in "[_2]" timezone: [_1]', $end_datetime->stringify, $time_zone);
+    $log->debug(
+        $end_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $end_datetime->set_time_zone('UTC');
+
+    $log->debug('End Datetime converted to UTC timezone: [_1]', $end_datetime->stringify);
+    $log->debug(
+        $end_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );                            
+
+    $end_utc_epoch      =   $end_datetime->epoch;
+
+    $log->debug('UTC epochs set.', { start_utc_epoch => $start_utc_epoch, end_utc_epoch => $end_utc_epoch });
+
+    return $self;
 
 }
 
@@ -200,126 +363,6 @@ method $set_year_month_day_time {
 
 }
 
-method $set_utc_epochs {
-
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_utc_epochs', );
-
-    # Premature exit if already set - this presumably needs more validation:
-
-    $log->debug('UTC epochs already set.') if $start_utc_epoch && $end_utc_epoch;
-
-    return $self if $start_utc_epoch && $end_utc_epoch;
-
-    my  $start_datetime =   DateTime->new(
-
-                                year        =>  $start_year,
-                                month       =>  $start_month,
-                                day         =>  $start_day,
-    
-                                hour        =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%H'),
-                                minute      =>  0+Time::Piece->strptime($start_time, '%H:%M')->strftime('%M'),
-                                time_zone   =>  $time_zone,
-    
-                            );
-
-    $log->debug('Start Datetime created in "[_2]" timezone: [_1]', $start_datetime->stringify, $time_zone);
-    $log->debug(
-        $start_datetime->is_dst?  'Daylight saving is in effect.':
-        'Daylight saving is not in effect.',
-    );
-
-    $start_datetime->set_time_zone('UTC');
-
-    $log->debug('Start Datetime converted to UTC timezone: [_1]', $start_datetime->stringify);
-    $log->debug(
-        $start_datetime->is_dst?  'Daylight saving is in effect.':
-        'Daylight saving is not in effect.',
-    );
-
-    $start_utc_epoch    =   $start_datetime->epoch;
-
-    my $end_datetime    =   DateTime->new(
-
-                                # Assume same year/month/day as start time, unless end year/month/day given:
-                                year        =>  $end_year,
-                                month       =>  $end_month,
-                                day         =>  $end_day,
-
-                                hour        =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%H'),
-                                minute      =>  0+Time::Piece->strptime($end_time, '%H:%M')->strftime('%M'),
-                                time_zone   =>  $time_zone,
-
-                            );
-
-    $log->debug('End Datetime created in "[_2]" timezone: [_1]', $end_datetime->stringify, $time_zone);
-    $log->debug(
-        $end_datetime->is_dst?  'Daylight saving is in effect.':
-        'Daylight saving is not in effect.',
-    );
-
-    $end_datetime->set_time_zone('UTC');
-
-    $log->debug('End Datetime converted to UTC timezone: [_1]', $end_datetime->stringify);
-    $log->debug(
-        $end_datetime->is_dst?  'Daylight saving is in effect.':
-        'Daylight saving is not in effect.',
-    );                            
-
-    $end_utc_epoch      =   $end_datetime->epoch;
-
-    $log->debug('UTC epochs set.', { start_utc_epoch => $start_utc_epoch, end_utc_epoch => $end_utc_epoch });
-
-    return $self;
-
-}
-
-method $set_duration_data {
-
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration_data', );
-
-    my  $delimiter  =   '|';
-
-    $duration_data  =   [
-                            split(
-                                quotemeta($delimiter),
-                                DateTime::Format::Duration->new(
-                                    normalise   =>  1, # While normalise will give us hours and minutes where we previously had only seconds - will 24 hours show as zero hours and 1 day? Worth testing.
-                                    pattern     =>  '%H'.$delimiter.'%M',
-                                )
-                                ->format_duration(
-                                    DateTime->from_epoch($end_utc_epoch)
-                                    ->subtract_datetime_absolute(
-                                        DateTime->from_epoch($start_utc_epoch)
-                                    )
-                                )
-                            )
-                        ];
-
-    $log->debug('Set duration data.', {duration_data => $duration_data}, );
-
-    return $self;
-
-}
-
-method $set_duration {
-
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration', );
-
-    $log->debug('End UTC Epoch is [_1] and Start UTC Epoch is [_2].', $end_utc_epoch, $start_utc_epoch);
-
-    $self->$set_duration_data;
-    
-    $duration       =   $language->localise(
-                            'model.entry.set_duration.duration_string', # i.e. 1hr 30mins
-                            $duration_data->@*,
-                        );
-
-    $log->debug('Duration is...', { duration => $duration }, );
-
-    return $self;
-
-}
-
 method $instance_setup {
 
     my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$instance_setup', );
@@ -333,61 +376,28 @@ method $instance_setup {
 
 }
 
-method status_string {
-    return $language->localise(
-        'object.entry.status.formatting',
-        $self->status_array(
-            $language->localise('object.entry.status.category_delimiter')
-        ),
-    );
-}
-
-method status_log_string {
-    return $language->localise(
-        'object.entry.status.log_formatting',
-        $self->status_array(
-            $language->localise('object.entry.status.category_log_delimiter')
-        ),
-    );
-}
-
-# An array means a predictable order.
-method status_array ($category_delimiter //= $language->localise('object.entry.status.category_delimiter') ) {
-    return (
-        __CLASS__,
-        $self->id,
-        $self->time_zone,
-        $self->start,
-        $self->end,
-        $self->start_utc_epoch,
-        $self->end_utc_epoch,
-        $self->duration,
-        $self->top_category,
-        join(
-            $category_delimiter,
-            $self->categories->@*
-        ),
-        $self->details,
-    );
-}
-
-
+# Constructor Phases: 
 
 ADJUST {
 
     my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::new - ADJUST Phase', );
 
     $log->trace(
-        'About to call private method [_1] as part of new\'s ADJUST phase (See URL: [_2]).', # Phrase
-        '$instance_setup', # Private Method Name
-        'https://metacpan.org/pod/Object::Pad#The-ADJUST-phase', # URL
+
+        # Phrase:
+            'About to call private method [_1] as part of new\'s ADJUST phase (See URL: [_2]).',
+
+        # [_1] Private Method Name:
+            '$instance_setup',
+
+        # [_2] URL:
+            'https://metacpan.org/pod/Object::Pad#The-ADJUST-phase', 
+
     );
 
     $self->$instance_setup;
  
     $log->debug('Instance status is: ', { status_log_string => $self->status_log_string });
 }
-
-
 
 __END__

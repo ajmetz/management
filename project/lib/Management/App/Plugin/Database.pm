@@ -41,6 +41,7 @@ method register ($app, $config) {
                                     $app->config->{'sqlite_file'}
                                 )->to_string,
         logger              =>  $app->logger,
+        time_zone           =>  $app->config->{'time_zone'} // undef,
     };
 
     my  $helpers={
