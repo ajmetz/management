@@ -11,6 +11,7 @@ use     Data::Util qw(
 
 field   $database               :param  :reader;
 field   $logger                 :param  :reader;
+field   $time_zone              :param  :reader;
 field   $last_insert_id_lookup          :reader     =   {};
 
 method save ($what_to_save) {
@@ -65,6 +66,7 @@ method entry {
     my  @params                                     =   (
                                                             data    =>  $self,
                                                             logger  =>  $logger,
+                                                            time_zone   =>  $time_zone,
                                                         );
     state   $entry                                  =   Management::App::MVC::Model::Database::Data::Entry->new(@params);  # State means $entry set only once then re-used. This is the object model for entry crud commands and not an actual entry object.
 }

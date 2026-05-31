@@ -10,6 +10,7 @@ use     Log::Any ();
 use     Log::Any::Adapter;
 
 field   $logger     :param;
+field   $time_zone  :param  :reader;
 #field   $start_date :param;
 #field   $string     :param;
 
@@ -62,6 +63,7 @@ method multiple_entries ($start_yyyymmdd, $string) {
                                                                                                 start_year  =>  $year,
                                                                                                 start_time  =>  $LAST_PAREN_MATCH{start_time},
                                                                                                 end_time    =>  $LAST_PAREN_MATCH{end_time},
+                                                                                                time_zone   =>  $time_zone,
                                                                                                 categories  =>  [
                                                                                                                     split (
                                                                                                                         /,/,
