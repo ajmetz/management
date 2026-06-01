@@ -58,7 +58,7 @@ Then we create Dummy Data we will need...
 my  $test_app_config                =   {
                                             secrets             =>  ['wakkawakka'],
                                             default_language    =>  'en-GB',
-                                            time_zone           =>  'Europe/London',
+                                            time_zone           =>  'Asia/Tokyo',#'Europe/London',
                                             sqlite_file         =>  '../../data/database/test_database.db',
                                             migration_file      =>  'lib/Management/SQL/database_migration.sql',
                                         };
@@ -87,7 +87,7 @@ adjdkjd
 15:22-cjcxkxl something.
 15:34-15:35 - SOMETHING		- Else.
 ',
-
+$test_app->time_zone_string,
 );
 
 # Checks:
