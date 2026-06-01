@@ -38,10 +38,10 @@ method register ($app, $config) {
 
     my  $database_params = {
         file_name           =>  $app->home->rel_file(
-                                    $app->config->{'sqlite_file'}
+                                    $app->config('sqlite_file')
                                 )->to_string,
         logger              =>  $app->logger,
-        time_zone           =>  $app->config->{'time_zone'} // undef,
+        time_zone           =>  $app->config('time_zone') // undef,
     };
 
     my  $helpers={
@@ -74,7 +74,7 @@ method setup_database_migration ($app) {
 
     $app->database->connection->migrations->from_file(
         $app->home->rel_file(
-            $app->config->{'migration_file'}
+            $app->config('migration_file')
         )->to_string
     );
 

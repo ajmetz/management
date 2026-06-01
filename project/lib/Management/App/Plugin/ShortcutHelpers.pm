@@ -12,7 +12,7 @@ method register ($app, $conf) {
 
     my  $helpers                =   {
         business_logic_class    =>  sub { return    'Management::App::MVC::Model::BusinessLogic'    },
-        time_zone_string        =>  sub { return    $app->config->{'time_zone'}                     },
+        time_zone_string        =>  sub { return    $app->config('time_zone') // 'Europe/London'    },
     };
 
     for my $current (keys $helpers->%*) {
@@ -25,7 +25,7 @@ method register ($app, $conf) {
 
 __END__
 
-Could probably simply do $self->config->{'time_zone'} in the appropriate place(s).
+Could probably simply do $self->config('time_zone') in the appropriate place(s).
 Where do we do this sort of stuff?
 Database I think.
 

@@ -10,7 +10,9 @@ method startup {
 
     $self
     ->load_plugins
-    ->secrets( $self->config->{secrets} )
+    ->secrets(
+        $self->config('secrets')
+    )
     ->exclude_author_commands
     ->setup_customisation_of_mojolicious_file_paths
     ->setup_stash_defaults;
@@ -41,11 +43,11 @@ method load_plugins {
 
     $self->plugin('NotYAMLConfig', $config_params);
     $self->plugin('Management::App::Plugin::Language');
-    $self->plugin('Management::App::Plugin::LogAnyCustomisation');         # Uses Languages. New "logger" helper.
-    $self->plugin('Management::App::Plugin::Database');         # Uses Logger.
+    $self->plugin('Management::App::Plugin::LogAnyCustomisation');  # Uses Language. New "logger" helper.
+    $self->plugin('Management::App::Plugin::Database');             # Uses Logger.
     $self->plugin('Management::App::Plugin::Router');
     $self->plugin('Management::App::Plugin::TemplateNest');
-    $self->plugin('Management::App::Plugin::ShortcutHelpers');  # All other plugins had singular names and this is plural!
+    $self->plugin('Management::App::Plugin::ShortcutHelpers');      # All other plugins had singular names and this is plural!
 
     return $self;
 
@@ -81,6 +83,3 @@ method setup_customisation_of_mojolicious_file_paths {
 }
 
 __END__
-
-
-

@@ -229,12 +229,14 @@ method get_entries_from_entryfactory ($valid_input //= {}) {
     # We should think about that, as the business logic may not need the traditional "next" iterator,
     # as entries are processed according to time range.
 
-    return  $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'}?    Management::App::MVC::Model::BusinessLogic::EntryFactory
-                                                                            ->new(
-                                                                                logger => $self->logger,
-                                                                            )
-                                                                            ->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}, $self->config->{'time_zone'},):
-            ();
+    return  $valid_input->{'time_logging'}
+            && $valid_input->{'yyyymmdd'}
+            && $self->config('time_zone')?  Management::App::MVC::Model::BusinessLogic::EntryFactory
+                                            ->new(
+                                                logger => $self->logger,
+                                            )
+                                            ->multiple_entries($valid_input->{'yyyymmdd'}, $valid_input->{'time_logging'}, $self->config('time_zone'),):
+            (); # Otherwise empty list.
 
 }
 

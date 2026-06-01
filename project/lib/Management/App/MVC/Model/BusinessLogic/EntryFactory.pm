@@ -9,10 +9,9 @@ use     Management::App::MVC::Model::BusinessLogic::Entry;
 use     Log::Any ();
 use     Log::Any::Adapter;
 
-field   $logger     :param;
-#field   $time_zone  :param  :reader //= 'Europe/London';
-#field   $start_date :param;
-#field   $string     :param;
+field   $logger             :param;
+field   $default_time_zone          =   'Europe/London';
+
 
 =utf8
 
@@ -28,7 +27,7 @@ Returns an array of entries.
 
 # What approach should we have to logging? Should we have a log object or a language object?
 
-method multiple_entries ($start_yyyymmdd, $string, $time_zone = 'Europe/London',) { # Should a default be = or //= !?
+method multiple_entries ($start_yyyymmdd, $string, $time_zone = $default_time_zone,) { # Should a default be = or //= !?
 
     my $log =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries' );
     
@@ -99,38 +98,3 @@ method multiple_entries ($start_yyyymmdd, $string, $time_zone = 'Europe/London',
 
 __END__
 
-Brand New PDL:
-
-multiple_entries
-Desired - output an array of entry objects.
-
-input is a starting date, and a multiline string of data.
-
-=====
-
-    my  $logger;
-    if (!$Log::Any::Adapter::INIT) {
-        require Log::Any::Adapter;
-        Log::Any::Adapter->set('Stderr', log_level => 'trace');
-        $logger = Log::Any->get_logger;
-    }
-    else 
-    
-    
-======
-
-# Commandline execution with test data, and pretty output:
-unless (caller) {
-
-say $ARG->status_string for Management::App::MVC::Model::BusinessLogic::EntryFactory->multiple_entries(
-'29/04/2026',
-'
-15:02-15:15 - YOUTUBE		- Watched youtube videos.
-15:22-15:26 - PLANNING		- Getting organised.
-hjkdfshflhflaflalh
-adjdkjd
-15:22-cjcxkxl something.
-15:34-15:35 - SOMETHING		- Else.
-');
-
-};

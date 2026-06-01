@@ -15,7 +15,7 @@ method register ($app, $config) {
                             # within the Management::App::MVC::View::Language class.
                             # Alternatively, you can move the yml config file to a folder that triggers app reloads, so when the yaml config is changed, the app reloads.
                             state   $language   =   Management::App::MVC::View::Language->try_or_die(
-                                                        $app->config->{'default_language'}
+                                                        $app->config('default_language')
                                                     );
                         },
     };

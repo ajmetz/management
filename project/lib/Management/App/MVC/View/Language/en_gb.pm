@@ -373,6 +373,8 @@ Phrases: {
             
             'Day, Month, and Year are...'                                   =>  'Day, Month, and Year are...',
 
+            'Prepare to return an empty list as a quiet fail, if we don\'t have our prerequisites.'
+                =>  'Prepare to return an empty list as a quiet fail, if we don\'t have our prerequisites.',
 
             # Management::App::MVC::Model::BusinessLogic::Entry::new - ADJUST Phase
             
