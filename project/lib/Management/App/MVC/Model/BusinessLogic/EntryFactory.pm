@@ -27,7 +27,7 @@ Returns an array of entries.
 
 # What approach should we have to logging? Should we have a log object or a language object?
 
-method multiple_entries ($start_yyyymmdd, $string, $time_zone = $default_time_zone,) { # Should a default be = or //= !?
+method multiple_entries ($start_yyyymmdd, $string, $time_zone //= $default_time_zone,) {
 
     my $log =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries' );
     
