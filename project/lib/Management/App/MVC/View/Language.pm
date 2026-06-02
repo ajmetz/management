@@ -1,4 +1,4 @@
-use     Object::Pad v0.820;
+use     Management::App::Boilerplate::ObjectPadVersion;
 
 class   Management::App::MVC::View::Language;
 

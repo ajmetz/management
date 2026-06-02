@@ -10,9 +10,9 @@ use Management::App::Boilerplate::Test;
 use Test::Mojo;
 use Management::App::MVC::Model::BusinessLogic::Entry;
 use Mojo::Util qw(dumper);
-use Object::Pad::MetaFunctions qw(
-        deconstruct_object
-    );
+#use Object::Pad::MetaFunctions qw(
+#        deconstruct_object
+#    );
 
 =pod Name, Version, Synopsis, Description
 
