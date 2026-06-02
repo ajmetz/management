@@ -58,7 +58,7 @@ Then we create Dummy Data we will need...
 my  $test_app_config                =   {
                                             secrets             =>  ['wakkawakka'],
                                             default_language    =>  'en-GB',
-                                            time_zone           =>  'Asia/Tokyo',#'Europe/London',
+                                            time_zone           =>  'Europe/London',
                                             sqlite_file         =>  '../../data/database/test_database.db',
                                             migration_file      =>  'lib/Management/SQL/database_migration.sql',
                                         };
@@ -90,6 +90,26 @@ adjdkjd
 $test_app->time_zone_string,
 );
 
+my @dummy_data_with_tokyo_time_zone = (
+
+#'29-04-2026',   # Date with dashes # While this date is what we type as humans, the html form in the webpage will deliver yyyy-mm-dd instead.
+'2026-04-29',   # Providing value as a html date input field would.
+'
+15:02-15:15 - YOUTUBE		- Watched youtube videos.
+15:22-15:26 - PLANNING		- Getting organised.
+hjkdfshflhflaflalh
+adjdkjd
+15:22-cjcxkxl something.
+15:34-15:35 - SOMETHING		- Else.
+',
+'Asia/Tokyo',
+);
+
+
+
+
+'Asia/Tokyo',
+
 # Checks:
 my  $items_are_appropriate_class    =   array {all_items check_isa $entry_class_name;};
 
@@ -107,6 +127,16 @@ like(
     # Got                               # Expect                        # Test Name
     $output_list                    ,  $items_are_appropriate_class,    'Multiple Entries method returns an array of multiple entry object instances.',
 );
+
+my  $output_list_tokyo              =   $entry_factory_object->multiple_entries(@dummy_data_with_tokyo_time_zone); 
+
+like(
+    # Got                               # Expect                        # Test Name
+    $output_list_tokyo              ,  $items_are_appropriate_class,    'Multiple Entries method returns an array of multiple entry object instances, for a different timezone.',
+);
+
+# TODO: Add a time check, to see if the London and Tokyo times are as we'd expect.
+
 
 =head2 Done.
 
