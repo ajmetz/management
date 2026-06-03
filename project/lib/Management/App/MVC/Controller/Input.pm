@@ -392,10 +392,10 @@ method show_days {
 method get_valid_days_input {
     # Conditional initial values:
     return  $self->validation->has_data
-            && $self->validation->required('time_range_start_year')->in($time_range_class->list_of_acceptable_years)->is_valid
-            && $self->validation->required('time_range_start_month')->in($time_range_class->list_of_acceptable_months)->is_valid
-            && $self->validation->required('time_range_end_year')->in($time_range_class->list_of_acceptable_years)->is_valid
-            && $self->validation->required('time_range_end_month')->in($time_range_class->list_of_acceptable_months)->is_valid?     $self->validation->output:
+            && $self->validation->required('time_range_start_year')->in($time_range_class->list_of_acceptable_years)->is_valid('time_range_start_year')
+            && $self->validation->required('time_range_start_month')->in($time_range_class->list_of_acceptable_months)->is_valid('time_range_start_month')
+            && $self->validation->required('time_range_end_year')->in($time_range_class->list_of_acceptable_years)->is_valid('time_range_end_year')
+            && $self->validation->required('time_range_end_month')->in($time_range_class->list_of_acceptable_months)->is_valid('time_range_end_month')?     $self->validation->output:
             undef;
 
 }

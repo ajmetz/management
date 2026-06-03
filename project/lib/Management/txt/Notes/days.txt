@@ -1,0 +1,19 @@
+Okay, so ...
+
+We'll be populating the show_days subroutine/method in Input.pm.
+Obviously, it shouldn't be in Input.pm because it's not handling input.
+
+We'll refactor where things are later,
+and for now, just get it working.
+
+Erm...
+
+Right.
+
+So the first thing we need to do, is process the validated input.
+
+We require utc epochs, and we have a start day and month.
+So here, we'd likely use the string to epoch util, if we still have it!?
+
+What do we have?
+

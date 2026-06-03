@@ -1,0 +1,2 @@
+Shifted notes to the notes folder, leaving this file for eventual/resultant psuedocode.
+
