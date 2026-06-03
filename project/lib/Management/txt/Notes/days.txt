@@ -76,3 +76,24 @@ Okay, then.
 Let's iterate on the url "/days" until we have our epochs.
 
 11:44 - did some iteration. Begun with logging.
+
+11:57 - So it turns out, we simply use a matches_and_captures regex in Entry.pm (BusinessLogic) to grab values from a string.
+
+That's just for setting the values however, i.e. start_day, etc, for Entry attributes.
+once those attributes are populated,
+it actually defers to set_utc_epochs to generate an epoch from them.
+
+This begins by creating a datetime from the string.
+
+So, in our show_days - we can use our input to create a datetime.
+
+We use the webapp's time_zone_string to set timezone.
+
+Then we have our GMT, DST datetime,
+and can simply convert to UTC, and then to epoch.
+
+Okay, this now appears simpler than expected, and thus doable.
+
+So let's do it.
+
+12:07
