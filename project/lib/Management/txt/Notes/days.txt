@@ -17,3 +17,62 @@ So here, we'd likely use the string to epoch util, if we still have it!?
 
 What do we have?
 
+10:33 - I don't know what we have.
+You wanted to look somewhere?
+Yeah.
+Open Input.pm - see if we have any epoch subs/functions.
+
+Okay, Input.pm has nothing of the sort. Entry.pm has utc to string util.
+These really need to be taken out of the class, and into a Util or Functions module.
+
+10:37 - So now I am not sure where, if anywhere, we convert utc to a time string.
+Let's run the entry.t test, and read its verbose output.
+
+10:41 - Right. We may wish to switch to a date input, rather than day and month drop downs, to avoid 31st of Feb errors, etc.
+
+Hm. An old PerlMonks thread implies people use timelocal or timegm to validate
+
+10:52 - Turning to Perldocs, we see there's https://metacpan.org/pod/Date::Calc or TimeLocal.
+https://metacpan.org/pod/Time::Local - this implies one should use timelocal_modern for Y2K compliance
+
+I think Date::Calc will be simpler.
+
+10:57
+
+10:58 - Okay, for now, let's just assume, we're happy with the input
+
+10:59 - Oh, wait, XD. It's simply years and months. They always stay the same, ^_^. No complicated days.
+You still need to convert to epoch, which means fetching the last day of the month.
+Be sure to check if any cpan modules you use, count months 1 to 12 or 0 to 11.
+
+I woould like to grab some food from asda.
+
+Yeah, I know.
+
+This could be wrong.
+
+We may end up missing our flatmate's delivery, and you do have cheese downstairs - you could simply eat some of that.
+
+Okay. Let's go eat some cheese.
+
+Get changed too.
+
+11:37 - what's going on?
+You've not coded a damn thing.
+
+What am I supposed to be coding?
+
+No idea.
+
+We're trying to turn a date into an epoch, with input only a year and a month.
+
+Well, that sounds fine. Let's try and do that.
+
+That would be easier to do in isolation, would it not?
+Shutup.
+It is in isolation already.
+
+Okay, then.
+Let's iterate on the url "/days" until we have our epochs.
+
+11:44 - did some iteration. Begun with logging.

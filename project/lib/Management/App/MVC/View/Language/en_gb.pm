@@ -364,6 +364,9 @@ Phrases: {
 
             'Values before validation:'                                     =>  'Values before validation:',
 
+            # Management::App::MVC::Controller::Input::show_days
+            'Input Provided: '                                              =>  'Input Provided: ',
+            
 
             # Management::App::MVC::Controller::Root::hello_world            
             'Testing from Hello World!'                                     =>  'Testing from Hello World! bob',

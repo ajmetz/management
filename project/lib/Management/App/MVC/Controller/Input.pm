@@ -385,7 +385,10 @@ method ask_days {
 
 }
 
-method show_days {
+method show_days ($valid_input) {
+    
+    my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::show_days' );
+    $log->debug('Input Provided: ', {valid_input => $valid_input});
     return 'Listing some days';
 }
 
@@ -397,6 +400,9 @@ method get_valid_days_input {
             && $self->validation->required('time_range_end_year')->in($time_range_class->list_of_acceptable_years)->is_valid('time_range_end_year')
             && $self->validation->required('time_range_end_month')->in($time_range_class->list_of_acceptable_months)->is_valid('time_range_end_month')?     $self->validation->output:
             undef;
+            
+    # Perhaps switch to using https://metacpan.org/pod/Date::Calc to check years and months.
+    
 
 }
 
