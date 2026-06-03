@@ -232,7 +232,6 @@ method $set_utc_epochs {
 
     my $end_datetime    =   DateTime->new(
 
-                                # Assume same year/month/day as start time, unless end year/month/day given:
                                 year        =>  $end_year,
                                 month       =>  $end_month,
                                 day         =>  $end_day,

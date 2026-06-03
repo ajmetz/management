@@ -8,6 +8,9 @@ use     Template::Nest;
 use     Management::App::MVC::Model::BusinessLogic::EntryFactory;
 use     Management::App::MVC::Model::BusinessLogic::TimeRange;
 use     DateTime;
+use     Date::Calc qw(
+            Days_in_Month
+        );
 
 field   $time_range_class           =   'Management::App::MVC::Model::BusinessLogic::TimeRange';
 
@@ -389,7 +392,72 @@ method show_days ($valid_input) {
     
     my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::show_days' );
     $log->debug('Input Provided: ', {valid_input => $valid_input});
-    return 'Listing some days';
+    
+    my  $start_datetime =   DateTime->new(
+
+                                year        =>  $valid_input->{'time_range_start_year'},
+                                month       =>  $valid_input->{'time_range_start_month'},
+                                day         =>  1,
+    
+                                hour        =>  0,
+                                minute      =>  0,
+                                time_zone   =>  $self->time_zone_string,
+    
+                            );
+
+    $log->debug('Start Datetime created in "[_2]" timezone: [_1]', $start_datetime->stringify, $self->time_zone_string);
+    $log->debug(
+        $start_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $start_datetime->set_time_zone('UTC');
+
+    $log->debug('Start Datetime converted to UTC timezone: [_1]', $start_datetime->stringify);
+    $log->debug(
+        $start_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    my $start_utc_epoch    =   $start_datetime->epoch;
+
+    my $end_datetime    =   DateTime->new(
+
+                                year        =>  $valid_input->{'time_range_end_year'},
+                                month       =>  $valid_input->{'time_range_end_month'},
+                                day         =>  Days_in_Month(
+                                                    $valid_input->{'time_range_end_year'},
+                                                    $valid_input->{'time_range_end_month'},
+                                                ),
+                                hour        =>  23,
+                                minute      =>  59,
+                                second      =>  59,
+                                time_zone   =>  $self->time_zone_string,
+
+                            );
+
+    $log->debug('End Datetime created in "[_2]" timezone: [_1]', $end_datetime->stringify, $self->time_zone_string);
+    $log->debug(
+        $end_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );
+
+    $end_datetime->set_time_zone('UTC');
+
+    $log->debug('End Datetime converted to UTC timezone: [_1]', $end_datetime->stringify);
+    $log->debug(
+        $end_datetime->is_dst?  'Daylight saving is in effect.':
+        'Daylight saving is not in effect.',
+    );                            
+
+    my  $end_utc_epoch      =   $end_datetime->epoch;
+
+    $log->debug('UTC epochs set.', { start_utc_epoch => $start_utc_epoch, end_utc_epoch => $end_utc_epoch });
+    
+    
+
+    
+    return 'Listing some days, between '.$start_utc_epoch.' and '.$end_utc_epoch.'.';
 }
 
 method get_valid_days_input {
