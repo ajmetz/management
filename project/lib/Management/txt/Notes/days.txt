@@ -97,3 +97,9 @@ Okay, this now appears simpler than expected, and thus doable.
 So let's do it.
 
 12:07
+
+12:45 - Didn't work at first as needed to install Date::Calc, then kill morbo, and then restart.
+
+Okay - now it works, and we have our epochs.
+
+We then wish to create a query from the epochs, yes?
