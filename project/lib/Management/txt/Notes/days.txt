@@ -1,3 +1,57 @@
+9:04am 3rd jun 2026 
+
+let's do Time Management.
+
+So, days are actually a name for an entry range search,
+So for days, we have a form input - start day, end day.
+
+Then we had a sub that recieves the valid input, and we're supposed to do something with that input.
+
+What we have to do, is turn it into a data retrieve query.
+So, do we already have data retrieve? Is it possible to obtain entries in a dual conditional range?
+
+Yeah, you can simply do:
+where end time is more or equals to start range, or where start time is less or equal to end range.
+
+That should do it.
+
+So go look at your code. What does Data.pm already have on the retrieve side?
+Entry could have a useful retrieve too, however, we actually want to retrieve multiple entries.
+So we're after a list of ids to look up.
+
+Okay, that at least makes sense.
+
+Okay, there is data.pm and it accepts a table name and a query.
+My problem is I have forgotten what a query looks like.
+Do we have any examples?
+
+9:19 - Read some of https://metacpan.org/pod/JSON::LINQ
+
+9:50 - Gmail and Whatsapp and closed browser windows.
+
+Right - what am I supposed to be doing?
+
+Looking for examples of queries I guess.
+Are they in the test files?
+
+Probably.
+
+9:51
+
+Okay, the test just retrieves by id. It delegates to the Data::Entry to construct a query.
+The query is basically,
+a hashref, where values are array refs,
+containing fields and where clauses.
+
+So we could do this in different ways.
+We can have the Input class, construct the query and send it to the Data model.
+Or we could have the input class, construct the where clause, and send it to a retrieve_multiple_ids method,
+and have the query constructed there.
+
+Obviously, I know, none of this is input. So it shouldn't really be in the input class.
+
+=======
+
 Okay, so ...
 
 We'll be populating the show_days subroutine/method in Input.pm.

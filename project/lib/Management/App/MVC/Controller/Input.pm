@@ -454,10 +454,33 @@ method show_days ($valid_input) {
 
     $log->debug('UTC epochs set.', { start_utc_epoch => $start_utc_epoch, end_utc_epoch => $end_utc_epoch });
     
+    # Next we need a list of entry ids.
+    my $what_to_retrieve    =   {
+        entries =>  [
+                        # Field:
+                        ['id'],
+                        # Where:
+                        {
+                            end_utc_epoch => { '>=' => $start_utc_epoch },
+                            start_utc_epoch => { '<=' => $end_utc_epoch },
+                        },
+                    ],
+    };
     
+    # where end time is more or equals to start range, or where start time is less or equal to end range.
 
+#    my @list_of_entry_ids   =   $self->database->data->retrieve($what_to_retrieve);
+#    $log->debug('List of entry ids:', { list => [@list_of_entry_ids] }); # {entries => [{id => 1},{id => 2},{id => 3}]}
+
+    my $data   =   $self->database->data->retrieve($what_to_retrieve);
+    my  @list_of_ids    =   ();
+
+    (push @list_of_ids   =>  $ARG->{id} ) for $data->{entries}->@*;
+    $log->debug('List of entry ids:', { list => [@list_of_ids]}); # 
+
+    return 'Listing some days, between '.$start_utc_epoch.' and '.$end_utc_epoch.'.'.'
+List of ids:'.join(",", @list_of_ids);
     
-    return 'Listing some days, between '.$start_utc_epoch.' and '.$end_utc_epoch.'.';
 }
 
 method get_valid_days_input {

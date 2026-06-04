@@ -366,6 +366,7 @@ Phrases: {
 
             # Management::App::MVC::Controller::Input::show_days
             'Input Provided: '                                              =>  'Input Provided: ',
+            'List of entry ids:'                                            =>  'List of entry ids:',
             
 
             # Management::App::MVC::Controller::Root::hello_world            
