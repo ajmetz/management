@@ -476,7 +476,14 @@ method show_days ($valid_input) {
     my  @list_of_ids    =   ();
 
     (push @list_of_ids   =>  $ARG->{id} ) for $data->{entries}->@*;
-    $log->debug('List of entry ids:', { list => [@list_of_ids]}); # 
+    $log->debug('List of entry ids:', { list => [@list_of_ids]}); # [1,2,3]
+
+    my  @list_of_entries    =   ();
+    for my $id (@list_of_ids) {
+        push @list_of_entries, $self->database->data->entry->retrieve($id); # Refactor this to check the return value is valid before pushing it. A simple class instance check will suffice.
+    };
+
+    $log->debug('List of entry objects:', { list => [@list_of_entries]}); # 
 
     return 'Listing some days, between '.$start_utc_epoch.' and '.$end_utc_epoch.'.'.'
 List of ids:'.join(",", @list_of_ids);
