@@ -66,6 +66,7 @@ my          $app                =   Test::Mojo->new('Management')->app;
 my          $data               =   Management::App::MVC::Model::Database::Data->new(
                                         database    =>  $app->database,
                                         logger      =>  $app->logger,
+                                        time_zone   =>  $app->config('time_zone'),
                                     );
 isa_ok  (   $data               ,   ['Management::App::MVC::Model::Database::Data'],             'Our Management::App::MVC::Model::Database::Data object is '.
                                                                                             'of Management::App::MVC::Model::Database::Data class.'     );
