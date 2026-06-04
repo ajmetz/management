@@ -1,0 +1,521 @@
+
+4th June 2026
+
+19:02 - Back from a walk where I thought about, and understood how we do the layouts.
+
+19:05 - So let's get that info down.
+
+We begin with list of entries for both types of view - waking day, and 24 hours. 
+Both are a little silly, as the time range may encompass many days, or even less than a day.
+The point is, if we begin on a particular day, are we starting from 0:00am?
+Or are we starting from the point we woke up that day?
+To determine, we look for a tag that indicates a date's waking start,
+and a date's waking end (sleeping end?).
+
+We have no presently designed how that works.
+It could be that we store days with metadata separate to entries,
+or it could be that an individual entry is marked, as contained a wake or sleep event.
+Yes - each entry could have a waking_day value that could be - start, end, undef.
+
+20:42 - Was day dreaming. Got lost in web browser, looking at multiple job adverts, worried about money.
+
+It all began when I wanted to know more about the current chart.js verses the one we're using.
+That took me to the browser, and I got lost thereafter.
+
+Right!
+
+Let's simply go home and go to bed!?
+
+No - I want to start my work. I've done nothing all day!!!
+
+You've done a tiny bit - you've figured out what you're supposed to be doing.
+
+Okay, so let's do it!
+
+20:44 - Okay, we'll set a timer, and see if we make progress in the next 30mins. If we do not, we are packing up to leave.
+
+20:44 - 10min timer set.
+What's our goal?
+Create a mock static page,
+based on a set of assumptions.
+
+Those assumptions are:
+
+Two sets of entries - 24hour, and waking day.
+Four entries - two with a single category, one with two categories, and one entry with three categories. All have an additional top category.
+
+display:block (or display:inline) and display:none toggling onclick should be functional.
+
+Okay.
+
+20:47 - So let's embody our assumptions in some data:
+
+Entry1:
+    
+    15:00-15:10 - YOUTUBE
+Entry2
+Entry3
+Entry4
+
+20:49 - Our top categories are:
+
+OTHER
+MANAGEMENT
+COMMUNICATION
+    # Time      # Categories        # Details: 
+    15:00-15:10 Email               Emailed someone.
+ROUTINE
+    15:10-15:20 CategoryA           
+ACTION
+
+20:54 - 10 min timer sounded, and we're making progress.
+
+So how do multiple categories work?
+
+
+OTHER
+MANAGEMENT
+    # Time      # Categories                    # Details:                              #Duration:
+    14:50-15:00 Planning                        Thought what to do.                     10mins
+COMMUNICATION
+    15:00-15:20 Email                           Emailed someone.                        20mins
+ROUTINE
+    15:20-15:30 CategoryA, CategoryB            Something in both category A and B.     10mins
+ACTION
+    15:30-16:00 CategoryA, CategoryB            Something in both category A and C.     30mins
+    16:00-16:40 CategoryA, CategoryB, CategoryC Something in categories A, C, and D.    40mins
+    
+21:00 - Okay, I think we've done it, =).
+
+So from that, we will want multiple pie charts.
+
+1) Top Category pie chart:
+    Management - 10mins
+    Comms - 20mins
+    Routine - 10mins
+    
+    Ah! Problem. We cannot mix top categories!
+    
+So!
+
+
+OTHER
+MANAGEMENT
+    # Time      # Categories                    # Details:                              #Duration:
+    14:50-15:00 Planning                        Thought what to do.                     10mins
+COMMUNICATION
+    15:00-15:20 Email                           Emailed someone.                        20mins
+ROUTINE
+    15:20-15:30 CategoryA, CategoryB            Something in both category A and B.     10mins
+ACTION
+    15:30-16:00 CategoryC, CategoryD            Something in both category C and D.     30mins
+    16:00-16:40 CategoryC, CategoryD, CategoryE Something in categories C, D and E.     40mins
+    
+21:03 - Okay.
+
+So how many pie charts?
+1) Top Category pie chart:
+    Management - 10mins
+    Comms - 20mins
+    Routine - 10mins
+    Action - 70mins
+    Total: 100% = 110
+
+21:06 - Let's make it easier maths:
+
+OTHER
+MANAGEMENT
+    # Time      # Categories                    # Details:                              #Duration:
+    14:50-15:00 Planning                        Thought what to do.                     15mins
+COMMUNICATION
+    15:00-15:20 Email                           Emailed someone.                        25mins
+ROUTINE
+    15:20-15:30 CategoryA, CategoryB            Something in both category A and B.     10mins
+ACTION
+    15:30-16:00 CategoryC, CategoryD            Something in both category C and D.     20mins
+    16:00-16:40 CategoryC, CategoryD, CategoryE Something in categories C, D and E.     30mins
+    
+So how many pie charts?
+1) Top Category pie chart:
+    Management - 15mins 15%
+    Comms - 25mins  25%
+    Routine - 10mins    10%
+    Action - 50mins 50%
+    Total: 100% = 100mins - 100%
+    
+2) Management Pie Chart:
+    Planning    -   15mins  - 100%
+
+3) Communication Pie Chart:
+    Email   - 25mins - 100%
+    
+4) Routine Pie Chart:
+    Category A - 10mins
+
+5) Category A Pie Chart
+    Category B - 10mins - 100%
+
+6) Category B Pie Chart
+    Category B - 10mins - 100%
+
+7) Action Pie Chart
+    Category C - 50mins - 100%
+
+8) Category C Pie Chart
+    Category D - 50mins - 100%
+
+9) Category D Pie Chart
+    Category D  - 20mins - 40%
+    Category E  - 30mins - 60%
+    
+21:16 - That is really dumb!
+
+Let's try something different, in addition:
+
+21:47 - walked to asda, bought crisps, walked back, went to toilet (peed). Wish to leave now. Not got much patience for this.
+
+Let's first type what we thought of:
+
+OTHER
+MANAGEMENT
+    # Time      # Categories                    # Details:                              #Duration:
+    14:50-15:00 Planning                        Thought what to do.                     10mins
+COMMUNICATION
+    15:00-15:20 Email                           Emailed someone.                        20mins
+ROUTINE
+    15:20-15:30 CategoryA, CategoryB            Something in both category A and B.     10mins
+ACTION
+    15:30-16:00 CategoryC, CategoryD            Something in both category C and D.     20mins
+    16:00-16:40 CategoryC, CategoryD, CategoryE Something in categories C, D and E.     30mins
+    16:40-16:50 CategoryC, CategoryE, CategoryF Something in categories C, E and F.     10mins
+    
+So how many pie charts?
+1) Top Category pie chart:
+    Management - 10mins 10%
+    Comms - 20mins  20%
+    Routine - 10mins    10%
+    Action - 60mins 60%
+    Total: 100% = 100mins - 100%
+    
+2) Management Pie Chart:
+    Planning    -   10mins  - 100%
+
+3) Communication Pie Chart:
+    Email   - 20mins - 100%
+    
+4) Routine Pie Chart:
+    Category A - 10mins
+
+5) Category A Pie Chart
+    Category B - 10mins - 100%
+
+6) Category B Pie Chart
+    Category B - 10mins - 100%  <--- Duplication!? Yes. When you're at the last category as in 5, you do not link to another pie chart.
+
+7) Action Pie Chart
+    Category C - 60mins - 100%
+
+8) Category C Pie Chart
+    Category D - 50mins - 84%
+    Category E - 10mins - 16%
+    60:100
+    50:84 (83.3333)
+    10:16 (16.6666)
+
+9) Category D Pie Chart
+    Category D  - 20mins - 40%
+    Category E  - 30mins - 60%
+    
+10) Category E Pie Chart
+    Category F - 10mins - 100%
+    
+21:58 - So the above is dumb and weird, and I want to keep it that way, as I love the freedom.
+Alternatively, we could make a Category E PieChart compare E-F and E
+It depends if you want to show a pie chart by the level / category array index,
+or if you want to shoe a pie chart by a match of the same category name.
+Okay, the only thing there that splits across array indexes, is CategoryE.
+
+So okay, let's pack up, and think - would you wish to show Category E against Category E, with a drill down to Category E at 16:00 verses Category EF at 16:40? Or would you want drill down to be D and E and then F?
+
+22:02 - Well, that's some food for thought, isn't it?
+
+My understanding, is the vast majority of catgories will be a single mid level category, and clicking will reveal detail.
+
+Where is detail revealed presently?
+
+22:03
+
+OTHER
+MANAGEMENT
+    # Time      # Categories                    # Details:                              #Duration:
+    14:50-15:00 Planning                        Thought what to do.                     10mins
+COMMUNICATION
+    15:00-15:20 Email                           Emailed someone.                        20mins
+ROUTINE
+    15:20-15:30 CategoryA, CategoryB            Something in both category A and B.     10mins
+ACTION
+    15:30-16:00 CategoryC, CategoryD            Something in both category C and D.     20mins
+    16:00-16:40 CategoryC, CategoryD, CategoryE Something in categories C, D and E.     30mins
+    16:40-16:50 CategoryC, CategoryE, CategoryF Something in categories C, E and F.     10mins
+    
+So how many pie charts?
+1) Top Category pie chart:
+    Management - 10mins 10%
+    Comms - 20mins  20%
+    Routine - 10mins    10%
+    Action - 60mins 60%
+    Total: 100% = 100mins - 100%
+    Details: All Entries.
+    
+2) Management Pie Chart:
+    Planning    -   10mins  - 100%
+    Details: Planning Entries
+
+3) Communication Pie Chart:
+    Email   - 20mins - 100%
+    Details: Email Entries
+
+4) Routine Pie Chart:
+    Category A - 10mins
+    Details: Category A (15:20)
+    
+5) Category A Pie Chart
+    Category B - 10mins - 100%
+    Details: Category B (15:20)
+    
+6) Category B Pie Chart
+    Category B - 10mins - 100%  <--- Duplication!? Yes. When you're at the last category as in 5, you do not link to another pie chart.
+    Details: Category B (15:20)
+
+7) Action Pie Chart
+    Category C - 60mins - 100%
+    Details: Category C
+
+8) Category C Pie Chart
+    Category D - 50mins - 84%
+    Category E - 10mins - 16%
+    Details: D & E
+    60:100
+    50:84 (83.3333)
+    10:16 (16.6666)
+
+9) Category D Pie Chart
+    Category D  - 20mins - 40%
+    Category E  - 30mins - 60%
+    Details: E, and D remainder
+    
+10) Category E Pie Chart
+    Category F - 10mins - 100%
+    Details: F
+    
+22:11 - Thought of another edge case:
+
+OTHER
+MANAGEMENT
+    # Time      # Categories                        # Details:                          #Duration:
+    14:50-15:00 Planning                            Thought what to do.                 10mins
+COMMUNICATION
+    15:00-15:20 Email                               Emailed someone.                    20mins
+ROUTINE
+    15:20-15:30 CategoryA, CategoryB                Something in both category A and B. 10mins
+ACTION
+    15:30-16:00 CategoryC, CategoryD                Something in both category C and D. 20mins
+    16:00-16:40 CategoryC, CategoryD, CategoryE     Something in categories C, D and E. 30mins
+    16:40-16:45 CategoryC, CategoryE, CategoryF     Something in categories C, E and F. 5mins
+    16:45-16:50 CategoryC, CategoryE, CategoryE,    Something in categories C, E and E. 5mins
+    
+So how many pie charts?
+1) Top Category pie chart:
+    Management - 10mins 10%
+    Comms - 20mins  20%
+    Routine - 10mins    10%
+    Action - 60mins 60%
+    Total: 100% = 100mins - 100%
+    Details: All Entries.
+    
+2) Management Pie Chart:
+    Planning    -   10mins  - 100%
+    Details: Planning Entries
+
+3) Communication Pie Chart:
+    Email   - 20mins - 100%
+    Details: Email Entries
+
+4) Routine Pie Chart:
+    Category A - 10mins
+    Details: Category A (15:20)
+    
+5) Category A Pie Chart
+    Category B - 10mins - 100%
+    Details: Category B (15:20)
+    
+6) Category B Pie Chart
+    Category B - 10mins - 100%  <--- Duplication!? Yes. When you're at the last category as in 5, you do not link to another pie chart.
+    Details: Category B (15:20)
+
+7) Action Pie Chart
+    Category C - 60mins - 100%
+    Details: Category C
+
+8) Category C Pie Chart
+    Category D - 50mins - 84%
+    Category E - 10mins - 16%
+    Details: D & E
+    60:100
+    50:84 (83.3333)
+    10:16 (16.6666)
+
+9) Category D Pie Chart
+    Category D  - 20mins - 40%
+    Category E  - 30mins - 60%
+    Details: E, and D remainder
+    
+10) Category E Pie Chart
+    Category E - 5mins - 50%
+    Category F - 5mins - 50%
+    Details: E, F (ommitting D-E)
+    
+22:20 - Okay, so that answers our question!
+
+We do not show all by category name. We work only on level.
+
+Is that wise?
+
+What happens if we ignore level, and work only with category name?
+
+You cannot. Because while it seems to make sense to show all categories of the same together - they are a parent.
+So a pie chart for a category of a specific name, is actually showing that category's children. And there may not be any children.
+
+What?
+
+22:24
+
+Basically, we couldn't show D, E, and F, under C, because one of the Ds is both D and E - unless there is a way to show overlap.
+Keeping everything on its levels, prevents overlap.
+
+What it does prevent however, is subcategories, making sense as a final category in comparison with others with the same final category.
+If they're on different levels, they'll never be compared.
+
+You should of course, be able to edit the categories, if you want a comparison.
+
+Do we store parent information?
+
+22:29 - Every category has a top category, but normal categories are all children, of top categories, with no inter-relations between them, or heirarchies between them.
+So we have the above flexibility, to compare categories at different levels. But it's always about whether you drill down another level or not.
+
+
+22:27
+
+22:31
+
+# Time      # Top Category  # Categories                        # Details:                          #Duration:
+14:50-15:00 MANAGEMENT      Planning                            Thought what to do.                 10mins
+15:00-15:20 COMMUNICATION   Email                               Emailed someone.                    20mins
+15:20-15:30 ROUTINE         CategoryA, CategoryB                Something in both category A and B. 10mins
+15:30-16:00 ACTION          CategoryC, CategoryD                Something in both category C and D. 20mins
+16:00-16:40 ACTION          CategoryC, CategoryD, CategoryE     Something in categories C, D and E. 30mins
+16:40-16:45 ACTION          CategoryC, CategoryE, CategoryF     Something in categories C, E and F. 5mins
+16:45-16:50 ACTION          CategoryC, CategoryE, CategoryE,    Something in categories C, E and E. 5mins
+    
+So how many pie charts?
+1) Top Category pie chart:
+    Management - 10mins 10%
+    Comms - 20mins  20%
+    Routine - 10mins    10%
+    Action - 60mins 60%
+    Total: 100% = 100mins - 100%
+    Details: All Entries.
+    
+2) Management Pie Chart:
+    Planning    -   10mins  - 100%
+    Details: Planning Entries
+
+3) Communication Pie Chart:
+    Email   - 20mins - 100%
+    Details: Email Entries
+
+4) Routine Pie Chart:
+    Category A - 10mins
+    Details: Category A (15:20)
+    
+5) Category A Pie Chart
+    Category B - 10mins - 100%
+    Details: Category B (15:20)
+    
+6) Category B Pie Chart
+    Category B - 10mins - 100%  <--- Duplication!? Yes. When you're at the last category as in 5, you do not link to another pie chart.
+    Details: Category B (15:20)
+
+7) Action Pie Chart
+    Category C - 60mins - 100%
+    Details: Category C
+
+8) Category C Pie Chart
+    Category D - 50mins - 84%
+    Category E - 10mins - 16%
+    Details: D & E
+    60:100
+    50:84 (83.3333)
+    10:16 (16.6666)
+
+9) Category D Pie Chart
+    Category D  - 20mins - 40%
+    Category E  - 30mins - 60%
+    Details: E, and D remainder
+    
+10) Category E Pie Chart
+    Category E - 5mins - 50%
+    Category F - 5mins - 50%
+    Details: E, F (ommitting D-E)
+    
+22:33 - Should Pie Charts simply be levels?
+
+# Time      # Top Category  # Categories                        # Details:                          #Duration:
+14:50-15:00 MANAGEMENT      Planning                            Thought what to do.                 10mins
+15:00-15:20 COMMUNICATION   Email                               Emailed someone.                    20mins
+15:20-15:30 ROUTINE         CategoryA, CategoryB                Something in both category A and B. 10mins
+15:30-16:00 ACTION          CategoryC, CategoryD                Something in both category C and D. 20mins
+16:00-16:40 ACTION          CategoryC, CategoryD, CategoryE     Something in categories C, D and E. 30mins
+16:40-16:45 ACTION          CategoryC, CategoryE, CategoryF     Something in categories C, E and F. 5mins
+16:45-16:50 ACTION          CategoryC, CategoryE, CategoryE,    Something in categories C, E and E. 5mins
+    
+So how many pie charts?
+1) Top Category pie chart:
+    Management - 10mins 10%
+    Comms - 20mins  20%
+    Routine - 10mins    10%
+    Action - 60mins 60%
+    Total: 100% = 100mins - 100%
+    Details: All Entries.
+    
+2) Level 1 Pie Chart:
+    Planning    -   10mins  - 10%
+    Email       -   20mins
+    Category A
+    Category C
+    ...this looks identical
+
+
+3) Level 2 Pie Chart:
+    B   - 10mins
+    D   - 50mins
+    E   - 10mins
+
+
+4) Level 3 Pie Chart:
+    E - 35mins
+    F - 5mins
+    
+
+22:36 - I like that because it's less pie charts.
+
+However, it is not drilling down on the one pie slice we clicked, is it?
+It's navigating by level, and not by category.
+
+We could have level tabs above, and navigate through levels too, if you wanted.
+Then we'd have to have Level 1, Level 2, and Level 3 in addition, to the previous 10 pie charts.
+So - it can be an added extra.
+
+But it's not needed.
+
+Okay. How would you have multiple pie charts?

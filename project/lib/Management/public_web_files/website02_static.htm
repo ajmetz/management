@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en-gb">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Draft Layout</title>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            <!--
+
+                /* Boiler Plate */
+
+                body {
+                    -webkit-text-size-adjust: none;
+                    font-size:11pt;
+                    border:0px;
+                    padding:0px;
+                    margin:0px;
+                    height:100%;
+                    background-color:#ffffff;
+                }
+
+                table {
+                    font-family:Verdana, Helvetica, Arial, sans-serif;
+                    font-size:11pt;
+                    border:0px;
+                    border-collapse:collapse;
+                    border-spacing:0px;
+                }
+
+                td {
+                    padding:0px;
+                }
+
+                img {
+                    border:0px;
+                }
+
+                td img {
+                    display:block;
+                    margin-right:auto;
+                    margin-left:auto;
+                    padding:0px;
+                }
+
+                select {
+                    width:100%;
+                }
+
+                a {
+                    color: blue;
+                }
+
+            -->
+        </style>
+    </head>
+    <body>
+        <BR><BR>
+        <BR><BR>
+
+        <table>
+            <tr>
+                <td><img src="transbit.gif" width="25"></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+
+<!--
+Okay - this is where everything happens
+-->
+                    <table>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><strong>Time Range:</strong></td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="definition-of-day" value="time-awake" checked></td>
+                                        <td>Waking Day</td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="definition-of-day" value="24-hours"></td>
+                                        <td>24 Hours (0:00->23:59)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Order:</strong></td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="order" value="by_duration" checked></td>
+                                        <td>By Duration</td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="order" value="chronological"></td>
+                                        <td>Chronological</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="transbit.gif" width="10"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div style="width:500px;">
+                                                <canvas id="myChart" style="background-color:#0000FF;"></canvas>
+                                            </div>
+                                        </td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td>PUT-DETAILS-BOX-HERE</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table>
+                        <tr>
+                            <td>PUT-DAY-SIZE-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-ROUTINE-CHECKLIST-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-HEALTH-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-DIET-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-KEY-TIMES-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-SLEEP-HERE</td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><img src="transbit.gif" width="25"></td>
+            </tr>
+        </table>
+    </body>
+<script src="chart.umd.js"></script>
+<script>
+
+const ctx = document.getElementById('myChart');
+
+let dataValue = {
+    datasets: [{
+        data: [117,107,74,59,47,47,45,43,42,39,33,29,28,26,18,17,17,6,9,7,6,3,3,2],
+        rotation: 0,
+        backgroundColor: [
+          'rgb(255, 200, 0)',
+          'rgb(100, 200, 100)',
+          'rgb(255, 100, 100)'
+        ],
+        hoverOffset: 100
+    }],
+    labels: [
+        'Solutions',
+        'Logging',
+        'Unaccounted',
+        'Getting Ready',
+        'Web Browsing',
+        'Youtube',
+        'Phone',
+        'Coding',
+        'Food & Exercise',
+        'Messaging',
+        'Distress',
+        'Email',
+        'Shopping',
+        'Recap',
+        'Internet Banking',
+        'Analytics',
+        'Toilet',
+        'Planning',
+        'Writing',
+        'Thinking',
+        'Social Media',
+        'GamesMags',
+        'TimeTracking',
+        'Work'
+    ],
+}
+
+new Chart(ctx, {
+    type: 'pie',
+    data: dataValue,
+
+    options: {
+        plugins: {
+            legend: {
+                display: false,
+            }
+        },
+        layout: {
+            padding: 50
+        },
+        // Event handler for a click on a chart element
+        onClick: function (event, elements) {
+    
+            const clickedElement = elements[0];
+    
+            const datasetIndex = clickedElement.index;
+    
+            const label = dataValue.labels[datasetIndex];
+    
+            const labelValue = dataValue.datasets[0].data[datasetIndex];
+    
+            // Show an alert with information about the clicked segment
+            alert(`Clicked on: ${label} and it\'s value is ${labelValue}`);
+            window.open('https://www.unitedgames.co.uk','_blank');
+        }
+        
+    }
+});
+</script>
+</html>
