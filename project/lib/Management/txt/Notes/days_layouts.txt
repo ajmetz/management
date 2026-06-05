@@ -519,3 +519,61 @@ So - it can be an added extra.
 But it's not needed.
 
 Okay. How would you have multiple pie charts?
+
+23:46 - Back home. What is our final data?
+
+# Time      # Top Category  # Categories                        # Details:                          #Duration:
+14:50-15:00 MANAGEMENT      Planning                            Thought what to do.                 10mins
+15:00-15:20 COMMUNICATION   Email                               Emailed someone.                    20mins
+15:20-15:30 ROUTINE         CategoryA, CategoryB                Something in both category A and B. 10mins
+15:30-16:00 ACTION          CategoryC, CategoryD                Something in both category C and D. 20mins
+16:00-16:40 ACTION          CategoryC, CategoryD, CategoryE     Something in categories C, D and E. 30mins
+16:40-16:45 ACTION          CategoryC, CategoryE, CategoryF     Something in categories C, E and F. 5mins
+16:45-16:50 ACTION          CategoryC, CategoryE, CategoryE,    Something in categories C, E and E. 5mins
+
+
+1) Top Category pie chart:
+    Management - 10mins 10%
+    Comms - 20mins  20%
+    Routine - 10mins    10%
+    Action - 60mins 60%
+    Total: 100% = 100mins - 100%
+    Details: All Entries.
+
+2) Management Pie Chart:
+    Planning    -   10mins  - 100%
+    Details: Planning Entries
+
+3) Communication Pie Chart:
+    Email   - 20mins - 100%
+    Details: Email Entries
+
+4) Routine Pie Chart:
+    Category A - 10mins - 100%
+    Details: Category A (15:20)
+
+5) Category A Pie Chart
+    Category B - 10mins - 100%
+    Details: Category B (15:20)
+
+6) Action Pie Chart
+    Category C - 60mins - 100%
+    Details: Category C
+
+7) Category C Pie Chart
+    Category D - 50mins - 84%
+    Category E - 10mins - 16%
+    Details: D & E
+    60:100
+    50:84 (83.3333)
+    10:16 (16.6666)
+
+8) Category D Pie Chart
+    Category D  - 20mins - 40%
+    Category E  - 30mins - 60%
+    Details: E, and D remainder .... or should this just be clicked from d-e and show e at 100%?
+
+9) Category E Pie Chart
+    Category E - 5mins - 50%
+    Category F - 5mins - 50%
+    Details: E, F (ommitting D-E)
