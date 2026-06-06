@@ -119,7 +119,8 @@ Okay - this is where everything happens
                                             </div>
                                         </td>
                                         <td><img src="transbit.gif" width="10"></td>
-                                        <td>PUT-DETAILS-BOX-HERE</td>
+                                        <td><a id="myBackLink" onclick="" href="#" style="display:none;">&lt;--Back</a><BR>
+                                        PUT-DETAILS-BOX-HERE</td>
                                     </tr>
                                 </table>
                             </td>
@@ -162,7 +163,7 @@ Okay - this is where everything happens
 
 const ctx = document.getElementById('myChart');
 
-let dataValue2 = {
+let pie3 = {
     datasets: [{
         data: [100],
         rotation: 0,
@@ -181,7 +182,26 @@ let dataValue2 = {
     ],
 }
 
-let dataValue = {
+let pie2 = {
+    datasets: [{
+        data: [100],
+        rotation: 0,
+        backgroundColor: [
+          'rgb(255, 200, 0)',
+          'rgb(100, 200, 100)',
+          'rgb(255, 100, 100)'
+        ],
+        hoverOffset: 100
+    }],
+    labels: [
+        'Planning',
+    ],
+        links: [
+        'text',
+    ],
+}
+
+let pie1 = {
     datasets: [{
         data: [10,20,10,60],
         rotation: 0,
@@ -199,7 +219,7 @@ let dataValue = {
         'ACTION',
     ],
     links: [
-        dataValue2,
+        pie2,
         'COMMUNICATION',
         'ROUTINE',
         'ACTION',
@@ -210,7 +230,7 @@ let dataValue = {
 
 new Chart(ctx, {
     type: 'pie',
-    data: dataValue,
+    data: pie1,
 
     options: {
         plugins: {
@@ -222,23 +242,24 @@ new Chart(ctx, {
             padding: 50
         },
         // Event handler for a click on a chart element
-        onClick: function (event, elements) {
+        onClick: function (event, elements, chart) {
     
             const clickedElement = elements[0];
     
             const datasetIndex = clickedElement.index;
     
-            const label = dataValue.labels[datasetIndex];
+            const label = chart.data.labels[datasetIndex];
     
-            const labelValue = dataValue.datasets[0].data[datasetIndex];
+            const labelValue = chart.data.datasets[0].data[datasetIndex];
             
-            const linkValue = dataValue.links[datasetIndex];
+            const linkValue = chart.data.links[datasetIndex];
     
             // Show an alert with information about the clicked segment
              alert(`Clicked on: ${label} and it\'s value is ${labelValue}`);
             // window.open('https://www.unitedgames.co.uk','_blank');
             //alert(`Clicked on: ${label} and it\'s value is ${labelValue} with a link of ${linkValue}.`);
-            this.data = dataValue.links[datasetIndex];
+            this.data = chart.data.links[datasetIndex];
+
             this.update();
         }
         
