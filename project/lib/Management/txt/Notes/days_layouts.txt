@@ -577,3 +577,32 @@ Okay. How would you have multiple pie charts?
     Category E - 5mins - 50%
     Category F - 5mins - 50%
     Details: E, F (ommitting D-E)
+    
+5th June 2026:
+
+13:24 - Would we ever need to show single item 100% pie charts?
+If it's just a single item, clicking it show go straight to showing the drill down text.
+Yeah, but you'd show that alongside the pie chart 100%. 
+But of course - how do you get back, once you drill down?
+
+Yeah, we've got to decide how we want the user experience to be.
+
+What did Tom do?
+
+Tom didn't have anything clicking anywhere. He simply displayed a pie chart. That was it.
+
+13:43 - We can display all entries on the right / details section, and then have a function that changes them all to display:none via their shared class, and accepts strings for the ones to turn on, and turns on the ones that strings have been passed in for.
+
+Okay - what are the strings/names of the entries? Best bet would be to use a database entry_id, as that is already a unique identifier. Failing that, you can use the time range string.
+Okay, we'll use the entry_id, as that will always be unique.
+
+13:48 - We need to design the layout for the entries too!
+
+6th June (next day)
+
+14:48 - Ah! Layout for the entries!
+
+14:57 - No, our goal should be simpler. We just 
+
+15:01 - We are adding all data above, to website04_static
+
