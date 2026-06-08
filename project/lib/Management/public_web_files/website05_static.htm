@@ -166,7 +166,7 @@ const ctx = document.getElementById('myChart');
 
 let pie_e = {
     datasets: [{
-        data: [100],
+        data: [5.5],
         rotation: 0,
         backgroundColor: [
           'rgb(255, 200, 0)',
@@ -176,35 +176,17 @@ let pie_e = {
         hoverOffset: 100
     }],
     labels: [
-        'Planning',
+        'Category E',
+        'Category F',
     ],
         links: [
-        'datavalue3',
+        pie_d
     ],
 }
 
 let pie_d = {
     datasets: [{
-        data: [40,60],
-        rotation: 0,
-        backgroundColor: [
-          'rgb(255, 200, 0)',
-          'rgb(100, 200, 100)',
-          'rgb(255, 100, 100)'
-        ],
-        hoverOffset: 100
-    }],
-    labels: [
-        'Planning',
-    ],
-        links: [
-        'datavalue3',
-    ],
-}
-
-let pie_c = {
-    datasets: [{
-        data: [84,16],
+        data: [20,30],
         rotation: 0,
         backgroundColor: [
           'rgb(255, 200, 0)',
@@ -218,13 +200,35 @@ let pie_c = {
         'Category E',
     ],
         links: [
-        'datavalue3',
+        pie_c,
+        pie_e
+    ],
+}
+
+let pie_c = {
+    datasets: [{
+        data: [50,10],
+        rotation: 0,
+        backgroundColor: [
+          'rgb(255, 200, 0)',
+          'rgb(100, 200, 100)',
+          'rgb(255, 100, 100)'
+        ],
+        hoverOffset: 100
+    }],
+    labels: [
+        'Category D',
+        'Category E',
+    ],
+        links: [
+        pie_d,
+        pie_e
     ],
 }
 
 let pie_a = {
     datasets: [{
-        data: [100],
+        data: [10],
         rotation: 0,
         backgroundColor: [
           'rgb(255, 200, 0)',
@@ -237,13 +241,13 @@ let pie_a = {
         'Category B',
     ],
         links: [
-        pie_routine,
+        pie_routine
     ],
 }
 
 let pie_action = {
     datasets: [{
-        data: [100],
+        data: [60],
         rotation: 0,
         backgroundColor: [
           'rgb(255, 200, 0)',
@@ -256,13 +260,13 @@ let pie_action = {
         'Category C',
     ],
         links: [
-        pie_top,
+        pie_c
     ],
 }
 
 let pie_routine = {
     datasets: [{
-        data: [100],
+        data: [10],
         rotation: 0,
         backgroundColor: [
           'rgb(255, 200, 0)',
@@ -275,13 +279,13 @@ let pie_routine = {
         'Category A',
     ],
         links: [
-        pie_top,
+        pie_a
     ],
 }
 
 let pie_communication = {
     datasets: [{
-        data: [100],
+        data: [20],
         rotation: 0,
         backgroundColor: [
           'rgb(255, 200, 0)',
@@ -294,13 +298,13 @@ let pie_communication = {
         'Email',
     ],
         links: [
-        pie_top,
+        pie_top
     ],
 }
 
 let pie_management = {
     datasets: [{
-        data: [100],
+        data: [10],
         rotation: 0,
         backgroundColor: [
           'rgb(255, 200, 0)',
@@ -313,7 +317,7 @@ let pie_management = {
         'Planning',
     ],
         links: [
-        pie_top,
+        pie_top
     ],
 }
 
@@ -338,7 +342,7 @@ let pie_top = {
         pie_management,
         pie_communication,
         pie_routine,
-        pie_action,
+        pie_action
     ],
 }
 
@@ -346,7 +350,7 @@ let pie_top = {
 
 new Chart(ctx, {
     type: 'pie',
-    data: pie1,
+    data: pie_top,
 
     options: {
         plugins: {
