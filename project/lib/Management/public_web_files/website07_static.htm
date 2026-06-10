@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html lang="en-gb">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Draft Layout</title>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            <!--
+
+                /* Boiler Plate */
+
+                body {
+                    -webkit-text-size-adjust: none;
+                    font-size:11pt;
+                    border:0px;
+                    padding:0px;
+                    margin:0px;
+                    height:100%;
+                    background-color:#ffffff;
+                }
+
+                table {
+                    font-family:Verdana, Helvetica, Arial, sans-serif;
+                    font-size:11pt;
+                    border:0px;
+                    border-collapse:collapse;
+                    border-spacing:0px;
+                }
+
+                td {
+                    padding:0px;
+                }
+
+                img {
+                    border:0px;
+                }
+
+                td img {
+                    display:block;
+                    margin-right:auto;
+                    margin-left:auto;
+                    padding:0px;
+                }
+
+                select {
+                    width:100%;
+                }
+
+                a {
+                    color: blue;
+                }
+
+            -->
+        </style>
+    </head>
+    <body>
+        <BR><BR>
+        <BR><BR>
+
+        <table>
+            <tr>
+                <td><img src="transbit.gif" width="25"></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+
+<!--
+Okay - this is where everything happens
+-->
+                    <table>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><strong>Time Range:</strong></td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="definition-of-day" value="time-awake" checked></td>
+                                        <td>Waking Day</td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="definition-of-day" value="24-hours"></td>
+                                        <td>24 Hours (0:00->23:59)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Order:</strong></td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="order" value="by_duration" checked></td>
+                                        <td>By Duration</td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><input type="radio" name="order" value="chronological"></td>
+                                        <td>Chronological</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="transbit.gif" width="10"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div style="width:500px;">
+                                                <canvas id="myChart" style="background-color:#0000FF;display:block;"></canvas>
+                                            </div>
+                                        </td>
+                                        <td><img src="transbit.gif" width="10"></td>
+                                        <td><a id="myBackLink" onclick="" href="#" style="display:none;">&lt;--Back</a><BR>
+                                        PUT-DETAILS-BOX-HERE</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table>
+                        <tr>
+                            <td>PUT-DAY-SIZE-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-ROUTINE-CHECKLIST-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-HEALTH-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-DIET-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-KEY-TIMES-HERE</td>
+                        </tr>
+                        <tr>
+                            <td>PUT-SLEEP-HERE</td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><img src="transbit.gif" width="25"></td>
+            </tr>
+        </table>
+    </body>
+<script src="chart.umd.js"></script>
+<script>
+
+const ctx = document.getElementById('myChart');
+
+
+class PieData {
+    constructor(labelled_data) {
+        this.datasets = [
+            {
+                data: Object.values(labelled_data),
+                rotation: 0,
+                backgroundColor:    [
+                                      'rgb(255, 200, 0)',
+                                      'rgb(100, 200, 100)',
+                                      'rgb(255, 100, 100)'
+                                    ],
+                hoverOffset: 100,
+            }
+        ];
+        this.labels         =   Object.keys(labelled_data);
+        this.links          =   [];
+        this.testbob        =   'Bob';
+    }
+    set_links(links_array) {
+        this.links  =   links_array;
+    }
+}
+
+let pie_e = new PieData({
+    'Category E':5,
+    'Category F':5,
+})
+
+console.log(pie_e.datasets[0].data);
+ 
+
+let pie_d = new PieData ({
+        'Category D':20,
+        'Category E':30,
+})
+
+
+let pie_c = new PieData ({
+        'Category D':50,
+        'Category E':10,
+})
+
+
+
+let pie_a = new PieData ({
+        'Category B':10,
+})
+
+
+
+let pie_action = new PieData ({
+        'Category C':60,
+})
+
+
+
+
+let pie_routine = new PieData ({
+        'Category A':10,
+})
+
+
+
+let pie_communication = new PieData ({
+        'Email':20,
+})
+
+
+
+let pie_management = new PieData ({
+        'Planning':10,
+})
+
+
+let pie_top = new PieData ({
+        'MANAGEMENT':10,
+        'COMMUNICATION':20,
+        'ROUTINE':10,
+        'ACTION':60,
+})
+
+pie_e.set_links([
+    pie_d,
+])
+
+pie_d.set_links([
+    pie_c,
+    pie_e,
+])
+
+pie_c.set_links([
+    pie_d,
+    pie_e,
+])
+
+pie_a.set_links([
+    pie_top,
+])
+
+pie_action.set_links([
+    pie_c,
+])
+
+pie_routine.set_links([
+    pie_a,
+])
+
+
+pie_communication.set_links([
+    pie_top,
+])
+
+
+pie_management.set_links([
+    pie_top,
+])
+
+
+pie_top.set_links([
+    pie_management,
+    pie_communication,
+    pie_routine,
+    pie_action,
+])
+
+
+new Chart(ctx, {
+    type: 'pie',
+    data: pie_top,
+
+    options: {
+        plugins: {
+            legend: {
+                display: false,
+            }
+        },
+        layout: {
+            padding: 50
+        },
+        // Event handler for a click on a chart element
+        onClick: function (event, elements, chart) {
+    
+            const clickedElement = elements[0];
+    
+            const datasetIndex = clickedElement.index;
+    
+            const label = chart.data.labels[datasetIndex];
+    
+            const labelValue = chart.data.datasets[0].data[datasetIndex];
+            
+            const linkValue = chart.data.links[datasetIndex];
+    
+            // Show an alert with information about the clicked segment
+             alert(`Clicked on: ${label} and it\'s value is ${labelValue}`);
+            // window.open('https://www.unitedgames.co.uk','_blank');
+            //alert(`Clicked on: ${label} and it\'s value is ${labelValue} with a link of ${linkValue}.`);
+            this.data = chart.data.links[datasetIndex];
+
+            this.update();
+        }
+        
+    }
+});
+</script>
+</html>

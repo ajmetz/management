@@ -734,9 +734,38 @@ Or something like that.
 
 In short - we need to refactor the javascript code.
 
+Mon 8th Jun 2026
+
+10:56 - 
 
 
+11:01 - Okay. So how do we do this?
 
+Just try it off the top of your head.
+
+Okay. We'll do it in a website06.
+
+11:25 - There was some indecision on whether to use prototypes or classes in JavaScript.
+It seems prototypes is the JavaScript way and more performant,
+and classes is syntax sugar that gets converted to prototypes under the hood 
+- this is based on heresay on stack overflow, and needs verifying.
+Have gone with Classes, as this is an app for personal use, so doesn't need to be performant.
+Classes seem clearer, and more similar to my Perl code too.
+
+11:27
+
+12:22 - Cannot get the damn thing working. Let's try a new approach with a seven.
+
+12:47 - Got it working, but the link to go back is flawed.
+If you drill down two layers, then going back to the last layer means the last layer is left going forwards to the next layer, so it doesn't work.
+
+You need to click to drill down, and click something else to go back.
+
+However, it is at least done!
+
+I dislike how this would work as a template.
+I do not want to be using Perl code to generate javascript code.
+If there's away to simply place data without having to edit javascript code, that would be better.
 
 
 
