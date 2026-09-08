@@ -361,7 +361,7 @@ Phrases: {
             'What fields failed validation:'                                =>  'What fields failed validation:',
 
             # Management::App::MVC::Controller::Input::get_valid_add_entries_input
-
+            'Prematurely exit if we do not have data to validate.'          =>  'Prematurely exit if we do not have data to validate.',
             'Values before validation:'                                     =>  'Values before validation:',
 
             # Management::App::MVC::Controller::Input::show_days

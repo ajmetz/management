@@ -71,7 +71,6 @@ method entries {
         ),
         { dumping_value => $valid_input },
     );
-    $log->debug('What fields failed validation:', { failing_fields => $self->validation->failed });
 
     my  $layout_data_structure      =   $valid_input && $valid_input->{'stage'}?    $valid_input->{'stage'} eq 'confirm'?   $self->confirm_input($valid_input):
                                                                                     $valid_input->{'stage'} eq 'save'?      $self->save_input($valid_input):
@@ -99,6 +98,9 @@ method entries {
 method get_valid_add_entries_input {
      my  $log                        =   $self->logger->clone( prefix => __SUB__ );
 
+    $log->trace('Prematurely exit if we do not have data to validate.',);
+    return undef unless $self->validation->has_data;
+    
     $log->debug('Values before validation:', {dumping_values => $self->validation->input});   
     my  @fields_to_validate = qw(
         time_logging
@@ -139,6 +141,7 @@ method get_valid_add_entries_input {
         $log->debug('Errors stashed:', $self->stash('add_entries')->{errors});
         $log->debug('Valid fields stashed:', $self->stash('add_entries')->{valid});
 
+    $log->debug('What fields failed validation:', { failing_fields => $self->validation->failed });
         
     return  $self->stash('add_entries')->{valid};
 
