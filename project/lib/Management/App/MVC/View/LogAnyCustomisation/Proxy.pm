@@ -11,7 +11,7 @@ use Log::Any::Adapter::Util ();
 use overload;
 use Mojo::Util qw(dumper);
 use Sub::Util qw(subname);
-use Ref::Util qw(is_coderef);
+use Data::Util qw(is_code_ref);
 
 sub _stringify_params {
     #warn 'Inside _stringify_params';
@@ -71,7 +71,7 @@ sub clone {
     my %hash                =   (@_);
     my $prefix_from_subname =   exists($hash{prefix})
                                 && defined ($hash{prefix})
-                                && is_coderef($hash{prefix})?  subname($hash{prefix}):
+                                && is_code_ref($hash{prefix})?  subname($hash{prefix}):
                                 undef;
     (   $hash{prefix}       =   $prefix_from_subname    )
                                 if $prefix_from_subname;
