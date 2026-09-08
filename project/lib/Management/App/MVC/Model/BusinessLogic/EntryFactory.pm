@@ -29,7 +29,7 @@ Returns an array of entries.
 
 method multiple_entries ($start_yyyymmdd, $string, $time_zone //= $default_time_zone,) {
 
-    my $log =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::EntryFactory::multiple_entries' );
+    my $log =   $logger->clone( prefix => __SUB__ );
     
     $log->debug(
         'Prepare to return an empty list as a quiet fail, if we don\'t have our prerequisites.',

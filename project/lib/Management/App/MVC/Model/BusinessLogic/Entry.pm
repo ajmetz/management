@@ -123,7 +123,7 @@ method $utc_epoch_to_time_zone_string ($utc_epoch) {
 
     # Should this method be a Util function, rather than an Entry method?
 
-    my  $log        =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$utc_epoch_to_time_zone_string', );
+    my  $log        =   $logger->clone( prefix => __SUB__, );
 
     my  $datetime   =   DateTime->from_epoch($utc_epoch);
     
@@ -147,7 +147,7 @@ method $utc_epoch_to_time_zone_string ($utc_epoch) {
 
 method $set_duration_data {
 
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration_data', );
+    my  $log    =   $logger->clone( prefix => __SUB__, );
 
     my  $delimiter  =   '|';
 
@@ -175,7 +175,7 @@ method $set_duration_data {
 
 method $set_duration {
 
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_duration', );
+    my  $log    =   $logger->clone( prefix => __SUB__, );
 
     $log->debug('End UTC Epoch is [_1] and Start UTC Epoch is [_2].', $end_utc_epoch, $start_utc_epoch);
 
@@ -194,7 +194,7 @@ method $set_duration {
 
 method $set_utc_epochs {
 
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_utc_epochs', );
+    my  $log    =   $logger->clone( prefix => __SUB__, );
 
     # Premature exit if already set - this presumably needs more validation:
 
@@ -268,7 +268,7 @@ method $set_year_month_day_time {
 
         # Initial Values:
 
-        my  $log                =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$set_year_month_day_time', );
+        my  $log                =   $logger->clone( prefix => __SUB__, );
 
         $log->trace('About to begin processing the start input param, to ensure it delivers the string we want.');
 
@@ -364,7 +364,7 @@ method $set_year_month_day_time {
 
 method $instance_setup {
 
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::$instance_setup', );
+    my  $log    =   $logger->clone( prefix => __SUB__, );
 
     $log->trace('About to set the order in which we will run our setup-related private methods.');
 
@@ -379,7 +379,7 @@ method $instance_setup {
 
 ADJUST {
 
-    my  $log    =   $logger->clone( prefix => 'Management::App::MVC::Model::BusinessLogic::Entry::new - ADJUST Phase', );
+    my  $log    =   $logger->clone( prefix => __SUB__, );
 
     $log->trace(
 

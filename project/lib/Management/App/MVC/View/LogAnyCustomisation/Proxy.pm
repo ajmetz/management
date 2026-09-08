@@ -10,6 +10,8 @@ our $VERSION = '1.719'; # AJM - 21/Apr/2026 - based off of this Log::Any::Proxy 
 use Log::Any::Adapter::Util ();
 use overload;
 use Mojo::Util qw(dumper);
+use Sub::Util qw(subname);
+use Ref::Util qw(is_coderef);
 
 sub _stringify_params {
     #warn 'Inside _stringify_params';
@@ -63,8 +65,18 @@ sub new {
 }
 
 sub clone {
-    my $self = shift;
-    return (ref $self)->new( %{ $self }, @_ );
+    my $self                =   shift;
+
+    # Andrew (2026-09-08) edits this to support a __SUB__ coderef prefix value, if provided:
+    my %hash                =   (@_);
+    my $prefix_from_subname =   exists($hash{prefix})
+                                && defined ($hash{prefix})
+                                && is_coderef($hash{prefix})?  subname($hash{prefix}):
+                                undef;
+    (   $hash{prefix}       =   $prefix_from_subname    )
+                                if $prefix_from_subname;
+
+    return (ref $self)->new( %{ $self }, %hash );
 }
 
 sub init { }

@@ -58,7 +58,7 @@ method reset_add_entries_fields {
 
 method entries {
 
-    my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::entries' );
+    my  $log                        =   $self->logger->clone( prefix => __SUB__ );
     $log->trace('About to set initial values.');
 
     # Initial Values:
@@ -97,7 +97,7 @@ method entries {
 }
 
 method get_valid_add_entries_input {
-     my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::get_valid_add_entries_input' );
+     my  $log                        =   $self->logger->clone( prefix => __SUB__ );
 
     $log->debug('Values before validation:', {dumping_values => $self->validation->input});   
     my  @fields_to_validate = qw(
@@ -165,7 +165,7 @@ method request_input {
 
 method confirm_input ($valid_input = {}) {
 
-    my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::confirm_input' );
+    my  $log                        =   $self->logger->clone( prefix => __SUB__ );
 
     $log->trace('About to set initial values.');
 
@@ -247,7 +247,7 @@ method save_input ($valid_input //= {}) {
 
     return  $self->request_input unless $valid_input->{'time_logging'} && $valid_input->{'yyyymmdd'};
 
-    my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::save_input' );
+    my  $log                        =   $self->logger->clone( prefix => __SUB__ );
 
     $log->trace('About to set initial values.');
 
@@ -390,7 +390,7 @@ method ask_days {
 
 method show_days ($valid_input) {
     
-    my  $log                        =   $self->logger->clone( prefix => 'Management::App::MVC::Controller::Input::show_days' );
+    my  $log                        =   $self->logger->clone( prefix => __SUB__ );
     $log->debug('Input Provided: ', {valid_input => $valid_input});
     
     my  $start_datetime =   DateTime->new(

@@ -77,7 +77,7 @@ method save ($entry) {
     
     
     # Initial Values
-    my $log                         =   $logger->clone( prefix => 'Management::App::MVC::Model::Database::Data::Entry::save');
+    my $log                         =   $logger->clone( prefix => __SUB__, );
     $log->trace('About to set initial values.');
     my  @nothing                    =   ();
     my  $save                       =   {};
@@ -256,7 +256,7 @@ method retrieve_last_saved {
 method retrieve ($id) {
 
     # Initial Values:
-    my  $log                                =   $logger->clone( prefix => 'Management::App::MVC::Model::Database::Data::Entry::retrieve', );
+    my  $log                                =   $logger->clone( prefix => __SUB__, );
 
     $log->trace('About to set initial values.');
 
