@@ -115,7 +115,7 @@ Okay - this is where everything happens
                                     <tr>
                                         <td>
                                             <div style="width:500px;">
-                                                <div style="display:block;" id="chart_back_link"><a href="#">Top</a></div>
+                                                <div style="display:block;" id="chart_back_link"></div>
                                                 <canvas id="myChart" style="background-color:#FFFFFF;display:block;"></canvas>
                                             </div>
                                         </td>
@@ -185,6 +185,9 @@ class PieData {
     set_links(links_array) {
         this.links  =   links_array;
     }
+    set_breadcrumbs(breadcrumbs_string) {
+        this.breadcrumbs  =   breadcrumbs_string;
+    }
 }
 
 let pie_e = new PieData({
@@ -246,7 +249,7 @@ let pie_top = new PieData ({
 })
 
 pie_e.set_links([
-    pie_d,
+    pie_f,
 ])
 
 pie_d.set_links([
@@ -289,6 +292,49 @@ pie_top.set_links([
     pie_action,
 ])
 
+pie_e.set_breadcrumbs([
+    '<a href="#">Top</a>',
+])
+
+pie_d.set_links([
+    pie_c,
+    pie_e,
+])
+
+pie_c.set_links([
+    pie_d,
+    pie_e,
+])
+
+pie_a.set_links([
+    pie_top,
+])
+
+pie_action.set_links([
+    pie_c,
+])
+
+pie_routine.set_links([
+    pie_a,
+])
+
+
+pie_communication.set_links([
+    pie_top,
+])
+
+
+pie_management.set_links([
+    pie_top,
+])
+
+
+pie_top.set_links([
+    pie_management,
+    pie_communication,
+    pie_routine,
+    pie_action,
+])
 
 new Chart(ctx, {
     type: 'pie',
