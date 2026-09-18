@@ -767,12 +767,156 @@ I dislike how this would work as a template.
 I do not want to be using Perl code to generate javascript code.
 If there's away to simply place data without having to edit javascript code, that would be better.
 
+12:52 - We could place JSON...?
+
+-----
+
+9th Sept
+
+22:55 - So, we have two identical categories next to one another - Category E, Category E. 
+In the static demo, that doesn't matter, because the first E is our pie chart,
+and then second E is the bottom most layer, which we never show as a pie chart. 
+In essence, the last category doubles as a piechart element name. 
+We can only drill down to the detail text field, and not to another category piechart, 
+unless it were to show 100% that one element/categorised entry.
+What this means, is that when we have our website09_static.htm file (work in progress at time of writing - 08 was the last stable one)
+we should anticipate where multiple identical categories appear in succession, something be done to make the pie chart data names unique.
+This could be a suffix added to duplicate category names, or, perhaps the piecharts could be named differently to the categories they represent 
+- for example, each category could be considered a level, starting with top. So they could be named level 1, level 2, level 3, etc, or mid-level1, mid-level2.
+No - this is dumb.
+Call them by pie_category as originally done, and if you get two in a row with the same name and different attributes (i.e. different links and breadcrumbs)
+then add a number after. I.e. pie_category2
+Would we add a number always?
+No.
+
+Okay.
+
+That's that.
 
 
+23:06 - Now...let's think about bread crumbs:
 
 
+# Time      # Top Category  # Categories                        # Details:                          #Duration:
+14:50-15:00 MANAGEMENT      Planning                            Thought what to do.                 10mins
+15:00-15:20 COMMUNICATION   Email                               Emailed someone.                    20mins
+15:20-15:30 ROUTINE         CategoryA, CategoryB                Something in both category A and B. 10mins
+15:30-16:00 ACTION          CategoryC, CategoryD                Something in both category C and D. 20mins
+16:00-16:40 ACTION          CategoryC, CategoryD, CategoryE     Something in categories C, D and E. 30mins
+16:40-16:45 ACTION          CategoryC, CategoryE, CategoryF     Something in categories C, E and F. 5mins
+16:45-16:50 ACTION          CategoryC, CategoryE, CategoryE,    Something in categories C, E and E. 5mins
+
+9) Category E Pie Chart
+    Category E - 5mins
+    Category F - 5mins
+    Details: E, F (ommitting D-E)
+    Breadcrumbs: 
+
+8) Category D Pie Chart
+    Category D  - 20mins
+    Category E  - 30mins
+    Details: E, and D remainder .... or should this just be clicked from d-e and show e at 100%?
+
+7) Category C Pie Chart
+    Category D - 50mins
+    Category E - 10mins
+    Details: D & E
+    60:100
+    50:84 (83.3333)
+    10:16 (16.6666)
+
+6) Category A Pie Chart
+    Category B - 10mins
+    Details: Category B (15:20)
+
+5) Action Pie Chart
+    Category C - 60mins
+    Details: Category C
+
+4) Routine Pie Chart:
+    Category A - 10mins
+    Details: Category A (15:20)
+
+3) Communication Pie Chart:
+    Email   - 20mins
+    Details: Email Entries
+
+2) Management Pie Chart:
+    Planning    -   10mins
+    Details: Planning Entries
+
+1) Top Category pie chart:
+    Management - 10mins
+    Comms - 20mins
+    Routine - 10mins
+    Action - 60mins
+    Total: 100% = 100mins
+    Details: All Entries.
 
 
+23:12 - Immediately I realise, you already are showing the last category as a 100% pie chart. It's harmless to do. I'd have simply thought it completely unuseful.
 
+23:21 - Erm. Basically. We've established you can have multiple identical categories in a row sequentially. What about vertically? So we rows and columns, right?
+Each column, is a new drill down level. So in that last column, ...we have two CategoryE, and in the first column, we have four category Cs. 
+So - that category C is one pie chart. It's a single parent, with multiple children. Column two - the CategoryE is again, a parent with F and E2 as children. 
+Well...there's your first problem. You cannot call 16:45-16:50's second E, E2, if it's at the same depth as 16:00-16:40's E1. 
 
-    
+I think it's a lot easier than we think. Take each entry's list of categories, and assess the number of layers, then you take the sum of the time range entries,
+and for each layer depth, collapse categories with the same name into one another. 
+
+So here, our third column CategoryE, covers both 30min and 5mn duration items. 35mins in total.
+
+What if it went further?
+
+# Time      # Top Category  # Categories                                # Details:                          #Duration:
+14:50-15:00 MANAGEMENT      Planning                                    Thought what to do.                 10mins
+15:00-15:20 COMMUNICATION   Email                                       Emailed someone.                    20mins
+15:20-15:30 ROUTINE         CategoryA, CategoryB                        Something in both category A and B. 10mins
+15:30-16:00 ACTION          CategoryC, CategoryD                        Something in both category C and D. 20mins
+16:00-16:40 ACTION          CategoryC, CategoryD, CategoryE             Something in categories C, D and E. 30mins
+16:40-16:45 ACTION          CategoryC, CategoryE, CategoryF, Category E Something in categories C, E and F, and E. 5mins
+16:45-16:50 ACTION          CategoryC, CategoryE, CategoryE, Category E Something in categories C, E and E, and E. 5mins
+
+23:33 - Now if the third column of categories get collapsed, that third colum CategoryE now represents the item that ends in that category, 
+and one that has a further child CategoryE
+This is interesting as we do not have alignment.
+So what happens with 15:30-16:00 vs 16:00-16:40? There too, we have one Category D ending earlier than another.
+Ah! It repeats the last category at the new level, because when you drill down deeper, and another element doesn't go deep, it is already at its deepest level, so
+shows its deepest level, whichever that would be.
+
+So, if we were to prevent the last level depth from being shown, because it risks being 100% one element/entry,
+which, let's face it, is so harmless, it doesn't matter / wouldn't be a problem,
+then the last depth to be shown, depends on the entry with the longest/deepest list of categories!!!
+
+Such interesting qualities. We already have all the attributes saveable to a database, and yet it's a bit of a conceptual leap,
+for how you get your head around how these qualities are to be represented in the JavaScript code.
+
+How does this impact breadcrumbs?
+If I was on C, and seeing D and E, my breadcrumbs would be Top->C
+If I then clicked D, and I saw a child D and E, my breadcrumbs would then be Top->C->D
+If I instead had clicked E, and seen E and F, and then clicked E again, yes, the final E too would collapse into itself as one category, of 40mins, showing three entries.
+What's interesting is that, that is true for the last level, because the 30min entry has met its final depth,
+however, at the column 2 CategoryE, we only see 10min entries (five mins E, five mins F at the next column) because at the current column, the 30min item is considered Category D.
+Indeed! And that's confusing and weird, and also exactly how we want it.
+We wish to have that powerful flexibility....even if we ain't gonna use it, ^_^.
+
+So that does mean, I am working on unecessary complexity?
+
+I've thought of a way everything I need can work,
+and so to have come to less complex concludes, I would have had to have imposed scope limits from the start.
+Limits, such as - only have one category, not multiple categories, ^_^. Lol.
+
+Since we are where we are, the complexity is a solution,
+and while complex as a concept,
+the code can be made simple.
+
+Okay?
+
+Okay, =).
+
+I don't know how to name the categories in a way that reflects their level. I realise they are stored in an array, which has indexes anyway, which can act as our levels,
+ and inform us of the last item as needed.
+ 
+ Let's take a break to rest and think.
+ 
+ 
